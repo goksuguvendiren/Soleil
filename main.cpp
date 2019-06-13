@@ -75,7 +75,7 @@ int main(int argc, const char** argv)
         if (!pinhole_camera)
             cv::flip(image, image, -1);
         cv::imshow("window", image);
-        key = cv::waitKey(20);
+        key = cv::waitKey(0);
     }
 
     return 0;

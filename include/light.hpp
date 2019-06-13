@@ -12,7 +12,7 @@ namespace rtr
     class light
     {
     public:
-        light(const glm::vec3& pos, const glm::vec3& col) : position(pos), color(col) {}
+        light(const glm::vec3& pos, const glm::vec3& col) : position(pos), color(col), power(20) {}
         glm::vec3 position;
         glm::vec3 color;
 

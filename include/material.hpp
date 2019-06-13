@@ -40,6 +40,7 @@ namespace rtr
                 return PathType::Reflected;
             else if (rr < trans)
                 return PathType::Transmitted;
+            return PathType::Absorbed;
         }
 
         glm::vec3 sample(const glm::vec3& hit_normal) const;
