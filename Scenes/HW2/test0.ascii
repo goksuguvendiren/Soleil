@@ -1,0 +1,209 @@
+Composer format 2.1 ascii
+camera {
+  position 0 0 -4
+  viewDirection 0 0 1
+  focalDistance 20
+  orthoUp 0 1 0
+  verticalFOV 0.7142857143
+}
+point_light {
+  position 0 0.7 0
+  color 1 1 1
+}
+
+sphere {
+  name "near_right"
+  numMaterials 1
+  material {
+    diffColor 0.56 0.35 0.14
+    ambColor 0.2 0.2 0.2
+    specColor 0 0 0
+    emisColor 0 0 0
+    shininess 0.2
+    ktran 0
+  }
+  origin -0.4 -0.7 -0.40
+  radius 0.3
+  xaxis 1 0 0
+  xlength 0.3
+  yaxis 0 1 0
+  ylength 0.3
+  zaxis 0 0 1
+  zlength 0.3
+}
+sphere {
+  name "far_left"
+  numMaterials 1
+  material {
+    diffColor 0.56 0.35 0.14
+    ambColor 0.2 0.2 0.2
+    specColor 0 0 0
+    emisColor 0 0 0
+    shininess 0.2
+    ktran 0
+  }
+  origin 0.4 -0.7 0.40
+  radius 0.3
+  xaxis 1 0 0
+  xlength 0.3
+  yaxis 0 1 0
+  ylength 0.3
+  zaxis 0 0 1
+  zlength 0.3
+}
+
+poly_set {
+  name "Floor"
+  numMaterials 1
+  material {
+    diffColor 1 1 1
+    ambColor 0 0 0
+    specColor 0 0 0
+    emisColor 0 0 0
+    shininess 0.0
+    ktran 0
+  }
+  type POLYSET_TRI_MESH
+  normType PER_FACE_NORMAL
+  materialBinding PER_OBJECT_MATERIAL
+  hasTextureCoords FALSE
+  rowSize 0
+  numPolys 2
+  poly {
+    numVertices 3
+    pos -1 -1 -1
+    pos -1 -1  1
+    pos  1 -1 -1
+  }
+  poly {
+  	numVertices 3
+    pos -1 -1  1
+  	pos  1 -1 -1
+    pos  1 -1  1
+  }
+ }
+
+
+
+
+poly_set {
+  name "Ceiling"
+  numMaterials 1
+  material {
+    diffColor 1 1 1
+    ambColor 0 0 0
+    specColor 0 0 0
+    emisColor 0 0 0
+    shininess 0.0
+    ktran 0
+  }
+  type POLYSET_TRI_MESH
+  normType PER_FACE_NORMAL
+  materialBinding PER_OBJECT_MATERIAL
+  hasTextureCoords FALSE
+  rowSize 0
+  numPolys 2
+  poly {
+    numVertices 3
+    pos  1  1 -1
+    pos  1  1  1
+    pos -1  1  1
+  }
+  poly {
+  	numVertices 3
+    pos  1  1 -1
+    pos -1  1  1
+    pos -1  1 -1
+  }
+
+poly_set {
+  name "Back_wall"
+  numMaterials 1
+  material {
+    diffColor 1 1 1
+    ambColor 0 0 0
+    specColor 0 0 0
+    emisColor 0 0 0
+    shininess 0.0
+    ktran 0
+  }
+  type POLYSET_TRI_MESH
+  normType PER_FACE_NORMAL
+  materialBinding PER_OBJECT_MATERIAL
+  hasTextureCoords FALSE
+  rowSize 0
+  numPolys 2
+  poly {
+    numVertices 3
+    pos 1 -1 1
+    pos -1 -1 1
+    pos -1 1 1
+  }
+  poly {
+  	numVertices 3
+    pos 1 -1 1
+    pos -1 1 1
+    pos 1 1 1
+  }
+
+
+  poly_set {
+  name "Right_wall_green"
+  numMaterials 1
+  material {
+    diffColor 0 1 0
+    ambColor 0 0 0
+    specColor 0 0 0
+    emisColor 0 0 0
+    shininess 0.0
+    ktran 0
+  }
+  type POLYSET_TRI_MESH
+  normType PER_FACE_NORMAL
+  materialBinding PER_OBJECT_MATERIAL
+  hasTextureCoords FALSE
+  rowSize 0
+  numPolys 2
+  poly {
+    numVertices 3
+    pos -1 -1 1
+    pos -1 -1 -1
+    pos -1 1 -1
+  }
+  poly {
+    numVertices 3
+    pos -1 1 -1
+    pos -1 -1 1
+    pos -1 1 1
+  }
+
+  poly_set {
+  name "Left_wall_red"
+  numMaterials 1
+  material {
+    diffColor 1 0 0
+    ambColor 0 0 0
+    specColor 0 0 0
+    emisColor 0 0 0
+    shininess 0.0
+    ktran 0
+  }
+  type POLYSET_TRI_MESH
+  normType PER_FACE_NORMAL
+  materialBinding PER_OBJECT_MATERIAL
+  hasTextureCoords FALSE
+  rowSize 0
+  numPolys 2
+  poly {
+    numVertices 3
+    pos 1 -1 1
+    pos 1 -1 -1
+    pos 1 1 -1
+  }
+  poly {
+    numVertices 3
+    pos 1 1 -1
+    pos 1 -1 1
+    pos 1 1 1
+  }
+}
