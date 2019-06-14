@@ -8,7 +8,7 @@
     <IntersectionTestEpsilon>1e-5</IntersectionTestEpsilon>
 
 	<Camera id="1">
-		<Position>0 0 20</Position>
+		<Position>0 0 30</Position>
 		<Gaze>0 0 -1</Gaze>
 		<Up>0 1 0</Up>
         <NearPlane>-10 10 -10 6</NearPlane>
@@ -26,7 +26,7 @@
         <!-- <AmbientLight>20 20 20</AmbientLight> -->
         <PointLight id="1">
             <Position>0 4.5 0</Position>
-            <Intensity>3 3 3</Intensity>
+            <Intensity>1 1 1</Intensity>
         </PointLight>
     </Lights>
 
@@ -67,7 +67,7 @@
             <AmbientReflectance>0 0 0</AmbientReflectance>
             <DiffuseReflectance>0 0 0</DiffuseReflectance>
             <SpecularReflectance>0 0 0</SpecularReflectance>
-            <Transparency>0.99 0.99 0.99</Transparency>
+            <Transparency>0.8 0.99 0.99</Transparency>
             <RefractionIndex>2.0</RefractionIndex>
         </Material>
         <Material id="7">
@@ -102,7 +102,7 @@
         10 6 -10
         -10 6 -10
         5 -6 1
-        -5 -6 -5
+        -5 -6 2
         0 6 0
     </VertexData>
 
@@ -155,7 +155,7 @@
             <Radius>4</Radius>
         </Sphere>
         <Sphere id="8">
-            <Material>8</Material>
+            <Material>6</Material>
             <Center>10</Center>
             <Radius>4</Radius>
         </Sphere>

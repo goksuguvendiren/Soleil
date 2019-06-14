@@ -43,7 +43,7 @@ namespace rtr
             return PathType::Absorbed;
         }
 
-        glm::vec3 sample(const glm::vec3& hit_normal) const;
+        glm::vec3 sample(const glm::vec3& hit_normal, const payload& pld) const;
         
         glm::vec3 diffuse;
         glm::vec3 ambient;
