@@ -9,12 +9,13 @@
 
 namespace rtr
 {
+class ray;
 class scene;
 class photon_map;
 class photon_integrator
 {
 public:
-    photon_integrator(unsigned int w, unsigned int h, int num_ph = 100) : width(w), height(h), num_photons(num_ph)
+    photon_integrator(unsigned int w, unsigned int h, int num_ph = 5'000) : width(w), height(h), num_photons(num_ph)
     {
         frame_buffer.resize(width * height);
     }
@@ -30,6 +31,8 @@ private:
     void render_line(const rtr::scene &scene, const glm::vec3& row_begin, int i, const rtr::photon_map& p_map);
     glm::vec3 render_pixel(const rtr::scene& scene, const rtr::camera& camera, const rtr::photon_map& p_map, const glm::vec3& pix_center,
                                         const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
+
+    glm::vec3 render_ray(const rtr::scene& scene, const rtr::ray& ray, const rtr::photon_map& p_map);
 };
 
 template <int sq_sample_pp>

@@ -109,10 +109,10 @@ glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) co
     if (pld && (pld->param < light_distance)) // some base case checks to terminate
     {
         auto& diffuse = pld->material->diffuse;
-        auto normalized_diffuse = diffuse / std::max(std::max(diffuse.x, diffuse.y), diffuse.z);
+        auto normalized_diffuse = diffuse;// diffuse / std::max(std::max(diffuse.x, diffuse.y), diffuse.z);
         return shadow * normalized_diffuse * pld->material->trans;
     }
-    
+
     auto hit_position = pld->hit_pos + ray.direction() * 1e-4f;
     rtr::ray shadow_ray = rtr::ray(hit_position, ray.direction(), ray.rec_depth, false);
     
