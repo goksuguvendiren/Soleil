@@ -10,32 +10,34 @@
 #include "scene.hpp"
 #include "material.hpp"
 #include "photon_map.hpp"
+#include "photon.hpp"
+//#include "integrator.hpp"
 
 void trace_photons(const rtr::scene& scene, const rtr::photon& photon, std::vector<rtr::photon>& hit_photons)
 {
-    auto photon_ray = rtr::ray(photon.origin(), photon.direction(), 0, false);
-    auto hit = scene.hit(photon_ray);
+//    auto photon_ray = rtr::ray(photon.origin(), photon.direction(), 0, false);
+//    auto hit = scene.hit(photon_ray);
 //    std::cerr << "Hit photon! \n";
 
-    if (!hit) return;
-
-    // there's a hit, save the photon in the photon map
-    hit_photons.emplace_back(photon.power(), hit->hit_pos, photon_ray.direction());
-
-    // decide the photon's fate with russian roulette
-    rtr::PathType decision = hit->material->russian_roulette();
-
-    if(decision == rtr::PathType::Absorbed) 
-    {
-        std::cerr << "Photon absorbed\n";
-        return;
-    }
-    
-     auto direction = hit->material->sample(hit->hit_normal);
-
-////  TODO: update the power now!
-    rtr::photon new_photon(photon.power() * hit->material->diffuse, hit->hit_pos, direction);
-    trace_photons(scene, new_photon, hit_photons);
+//    if (!hit) return;
+//
+//    // there's a hit, save the photon in the photon map
+//    hit_photons.emplace_back(photon.power(), hit->hit_pos, photon_ray.direction());
+//
+//    // decide the photon's fate with russian roulette
+//    rtr::PathType decision = hit->material->russian_roulette();
+//
+//    if(decision == rtr::PathType::Absorbed)
+//    {
+//        std::cerr << "Photon absorbed\n";
+//        return;
+//    }
+//
+//     auto direction = hit->material->sample(hit->hit_normal);
+//
+//////  TODO: update the power now!
+//    rtr::photon new_photon(photon.power() * hit->material->diffuse, hit->hit_pos, direction);
+//    trace_photons(scene, new_photon, hit_photons);
 }
 
 inline void UpdateProgress(float progress)
@@ -67,7 +69,7 @@ glm::vec3 rtr::photon_integrator::render_pixel(const rtr::scene& scene, const rt
         for (int m = 0; m < sq_sample_pp; ++m)
         {
             auto camera_pos = camera.position(); // random sample on the lens if not pinhole
-            auto sub_pix_position = get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
+            auto sub_pix_position = rtr::get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
             auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
             auto payload = scene.hit(ray);

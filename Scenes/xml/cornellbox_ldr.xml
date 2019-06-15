@@ -65,7 +65,7 @@
         </Material>
         <Material id="6">
             <AmbientReflectance>0 0 0</AmbientReflectance>
-            <DiffuseReflectance>0 0 0</DiffuseReflectance>
+            <DiffuseReflectance>0.1 0.1 0.1</DiffuseReflectance>
             <SpecularReflectance>0 0 0</SpecularReflectance>
             <Transparency>0.99 0.99 0.99</Transparency>
             <RefractionIndex>2.0</RefractionIndex>
@@ -150,7 +150,7 @@
             </Faces>
         </Mesh> -->
         <Sphere id="7">
-            <Material>8</Material>
+            <Material>6</Material>
             <Center>9</Center>
             <Radius>4</Radius>
         </Sphere>

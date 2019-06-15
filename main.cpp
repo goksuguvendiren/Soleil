@@ -4,6 +4,7 @@
 #include "scene.hpp"
 #include "scene_loaders.hpp"
 #include "photon_integrator.hpp"
+#include "mc_integrator.hpp"
 
 int main(int argc, const char** argv)
 {
@@ -45,7 +46,7 @@ int main(int argc, const char** argv)
 
     auto width = 400;
     auto height = 400;
-    rtr::renderer<rtr::photon_integrator> r(width, height);
+    rtr::renderer<rtr::mc_integrator> r(width, height);
     std::vector<glm::vec3> accum_buffer;
     std::vector<glm::vec3> result_buffer;
     std::vector<glm::vec3> output_buffer;

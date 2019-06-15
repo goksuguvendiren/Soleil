@@ -54,8 +54,6 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
     return min_hit;
 }
 
-
-
 glm::vec3 rtr::scene::trace(const rtr::ray& ray) const
 {
     auto color = glm::vec3{0.f, 0.f, 0.f};
@@ -67,7 +65,8 @@ glm::vec3 rtr::scene::trace(const rtr::ray& ray) const
 //    return glm::vec3(1.0f);
 //    return (pld->material->diffuse);
     
-    auto sample_direction = sample_hemisphere(pld->hit_normal);
+//    auto sample_direction = sample_hemisphere(pld->hit_normal);
+    auto sample_direction = pld->material->sample(pld->hit_normal, *pld);
     auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
     
     return  pld->material->shade(*this, *pld) * trace(reflection_ray);

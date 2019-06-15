@@ -18,5 +18,6 @@ add_executable(PathTracer main.cpp src/scene_io.cpp include/scene.hpp src/scene.
 		include/scene_loaders.hpp src/material.cpp include/payload.hpp include/utils.hpp
         include/area_light.hpp	include/tinyxml/tinyxml2.h include/tinyxml/tinyxml2.cpp 
 		include/photon_map.hpp src/photon_map.cpp include/photon.hpp src/photon_integrator.cpp 
-		include/photon_integrator.hpp include/KDTree.hpp src/KDTree.cpp)
+		include/photon_integrator.hpp include/KDTree.hpp src/KDTree.cpp include/mc_integrator.hpp
+	    include/integrator.hpp	src/mc_integrator.cpp)
 target_link_libraries(PathTracer ${OpenCV_LIBS})
