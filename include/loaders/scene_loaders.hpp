@@ -5,6 +5,7 @@
 
 #include "tinyxml/tinyxml2.h"
 
+#include "random_spheres.hpp"
 
 inline rtr::primitives::face::normal_types to_rtr(NormType normal)
 {
@@ -476,10 +477,7 @@ namespace loaders
             {
                 auto data = reinterpret_cast<SphereIO*>(obj->data);
                 
-                scene.spheres.emplace_back(obj->name ? obj->name : "", to_vec3(data->origin), data->radius,
-                                     to_vec3(data->xaxis), data->xlength,
-                                     to_vec3(data->yaxis), data->ylength,
-                                     to_vec3(data->zaxis), data->zlength);
+                scene.spheres.emplace_back(obj->name ? obj->name : "", to_vec3(data->origin), data->radius);
                 
                 auto& sph = scene.spheres.back();
                 

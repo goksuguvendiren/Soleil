@@ -25,13 +25,11 @@ inline void UpdateProgress(float progress)
     std::cout.flush();
 };
 
-
-
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera, const glm::vec3& pix_center,
                                            const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 1;
+    constexpr int sq_sample_pp = 2;
     auto is_lens = std::bool_constant<true>();
 
     glm::vec3 color = {0, 0, 0};
@@ -48,7 +46,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
         }
     }
 
-    return color / float(sq_sample_pp * sq_sample_pp);
+    return glm::sqrt(color / float(sq_sample_pp * sq_sample_pp));
 }
 
 void rtr::mc_integrator::render_line(const rtr::scene &scene, const glm::vec3& row_begin, int i)

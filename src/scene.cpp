@@ -56,20 +56,23 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
 
 glm::vec3 rtr::scene::trace(const rtr::ray& ray) const
 {
-    auto color = glm::vec3{0.f, 0.f, 0.f};
+    auto t = (ray.direction().y + 1.f) * 0.5f;
+    auto color = (1.f - t) * glm::vec3(1.f, 1.f, 1.f) + t * glm::vec3(0.5f, 0.7f, 1.f);
+
     std::optional<rtr::payload> pld = hit(ray);
     
     if (!pld) return color;
     if (pld->ray.rec_depth >= max_recursion_depth) return pld->material->shade(*this, *pld);
     
-//    return glm::vec3(1.0f);
+//    return (pld->hit_normal + 1.f) / 2.f;
 //    return (pld->material->diffuse);
     
-//    auto sample_direction = sample_hemisphere(pld->hit_normal);
     auto sample_direction = pld->material->sample(pld->hit_normal, *pld);
     auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
     
-    return  pld->material->shade(*this, *pld) * trace(reflection_ray);
+    auto colr = pld->material->shade(*this, *pld);
+
+    return colr * trace(reflection_ray); //->shade(*this, *pld) * trace(reflection_ray);
     
 //
 //    color = pld->material->shade(*this, *pld);

@@ -2,9 +2,22 @@
 #include <scene_io.h>
 #include "renderer.hpp"
 #include "scene.hpp"
-#include "scene_loaders.hpp"
+#include "loaders/scene_loaders.hpp"
 #include "photon_integrator.hpp"
 #include "mc_integrator.hpp"
+
+void save_image(const std::string& filename, const std::vector<glm::vec3>& buffer, unsigned int width, unsigned int height)
+{
+    std::fstream file(filename);
+
+    file << "P3\n";
+    file << width << " " << height << "\n255\n";
+
+    for (int i = 0; i < buffer.size(); ++i)
+    {
+        file << buffer[i].r << " " << buffer[i].g << " " << buffer[i].b << '\n';
+    }
+}
 
 int main(int argc, const char** argv)
 {
@@ -35,14 +48,14 @@ int main(int argc, const char** argv)
         }
     }
     
-    rtr::scene scene = rtr::loaders::load(scene_path);
+    rtr::scene scene = rtr::loaders::load_random_spheres(); //rt::loaders::load(scene_path);
     scene.camera.pinhole = pinhole_camera;
     scene.camera.image_plane_dist = image_plane_distance;
     scene.camera.lens_width = lens_width;
     scene.camera.focal_dist = focal_length;
 
     auto end = std::chrono::system_clock::now();
-    std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
+    std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
 
     auto width = 400;
     auto height = 400;
@@ -63,7 +76,7 @@ int main(int argc, const char** argv)
         output_buffer = r.render(scene);
         end = std::chrono::system_clock::now();
         
-        std::cerr << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
+        std::cerr << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
         
         for(int i = 0; i < output_buffer.size(); ++i)
             accum_buffer[i] += output_buffer[i];
@@ -78,6 +91,7 @@ int main(int argc, const char** argv)
         cv::imshow("window", image);
         key = cv::waitKey(0);
     }
+    save_image("output.ppm", result_buffer, width, height);
 
     return 0;
 }
