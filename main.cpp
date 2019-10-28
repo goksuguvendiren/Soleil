@@ -57,7 +57,7 @@ int main(int argc, const char** argv)
     int n_frames = 0;
     
     int key = 0;
-    while(key != 27)
+    // while(key != 27)
     {
         begin = std::chrono::system_clock::now();
         output_buffer = r.render(scene);
@@ -75,8 +75,10 @@ int main(int argc, const char** argv)
         cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
         if (!pinhole_camera)
             cv::flip(image, image, -1);
-        cv::imshow("window", image);
-        key = cv::waitKey(0);
+        // cv::imshow("window", image);
+        std::cerr << image << '\n';
+        cv::imwrite("window.png", image * 255);
+        // key = cv::waitKey(0);
     }
 
     return 0;
