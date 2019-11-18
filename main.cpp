@@ -57,13 +57,13 @@ int main(int argc, const char** argv)
     int n_frames = 0;
     
     int key = 0;
-    // while(key != 27)
+    while(key != 27)
     {
         begin = std::chrono::system_clock::now();
         output_buffer = r.render(scene);
         end = std::chrono::system_clock::now();
         
-        std::cerr << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
+        std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
         
         for(int i = 0; i < output_buffer.size(); ++i)
             accum_buffer[i] += output_buffer[i];
@@ -76,9 +76,11 @@ int main(int argc, const char** argv)
         if (!pinhole_camera)
             cv::flip(image, image, -1);
         // cv::imshow("window", image);
-        std::cerr << image << '\n';
         cv::imwrite("window.png", image * 255);
-        // key = cv::waitKey(0);
+        // std::cin.ignore();
+
+        // using namespace std::chrono_literals;
+        // std::this_thread::sleep_for(1s);
     }
 
     return 0;

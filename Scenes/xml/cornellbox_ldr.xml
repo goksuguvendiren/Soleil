@@ -26,7 +26,7 @@
         <!-- <AmbientLight>20 20 20</AmbientLight> -->
         <PointLight id="1">
             <Position>0 4.5 0</Position>
-            <Intensity>1 1 1</Intensity>
+            <Intensity>3 3 3</Intensity>
         </PointLight>
     </Lights>
 
@@ -150,12 +150,12 @@
             </Faces>
         </Mesh> -->
         <Sphere id="7">
-            <Material>6</Material>
+            <Material>4</Material>
             <Center>9</Center>
             <Radius>4</Radius>
         </Sphere>
         <Sphere id="8">
-            <Material>6</Material>
+            <Material>4</Material>
             <Center>10</Center>
             <Radius>4</Radius>
         </Sphere>
