@@ -4,6 +4,7 @@
 #include "scene.hpp"
 #include "scene_loaders.hpp"
 #include "photon_integrator.hpp"
+#include "mc_integrator.hpp"
 
 int main(int argc, const char** argv)
 {
@@ -45,7 +46,7 @@ int main(int argc, const char** argv)
 
     auto width = 400;
     auto height = 400;
-    rtr::renderer<rtr::photon_integrator> r(width, height);
+    rtr::renderer<rtr::mc_integrator> r(width, height);
     std::vector<glm::vec3> accum_buffer;
     std::vector<glm::vec3> result_buffer;
     std::vector<glm::vec3> output_buffer;
@@ -62,7 +63,7 @@ int main(int argc, const char** argv)
         output_buffer = r.render(scene);
         end = std::chrono::system_clock::now();
         
-        std::cerr << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
+        std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
         
         for(int i = 0; i < output_buffer.size(); ++i)
             accum_buffer[i] += output_buffer[i];
@@ -74,8 +75,12 @@ int main(int argc, const char** argv)
         cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
         if (!pinhole_camera)
             cv::flip(image, image, -1);
-        cv::imshow("window", image);
-        key = cv::waitKey(0);
+        // cv::imshow("window", image);
+        cv::imwrite("window.png", image * 255);
+        // std::cin.ignore();
+
+        // using namespace std::chrono_literals;
+        // std::this_thread::sleep_for(1s);
     }
 
     return 0;

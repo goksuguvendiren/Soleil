@@ -54,8 +54,6 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
     return min_hit;
 }
 
-
-
 glm::vec3 rtr::scene::trace(const rtr::ray& ray) const
 {
     auto color = glm::vec3{0.f, 0.f, 0.f};
@@ -67,7 +65,8 @@ glm::vec3 rtr::scene::trace(const rtr::ray& ray) const
 //    return glm::vec3(1.0f);
 //    return (pld->material->diffuse);
     
-    auto sample_direction = sample_hemisphere(pld->hit_normal);
+//    auto sample_direction = sample_hemisphere(pld->hit_normal);
+    auto sample_direction = pld->material->sample(pld->hit_normal, *pld);
     auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
     
     return  pld->material->shade(*this, *pld) * trace(reflection_ray);
@@ -110,10 +109,10 @@ glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) co
     if (pld && (pld->param < light_distance)) // some base case checks to terminate
     {
         auto& diffuse = pld->material->diffuse;
-        auto normalized_diffuse = diffuse / std::max(std::max(diffuse.x, diffuse.y), diffuse.z);
+        auto normalized_diffuse = diffuse;// diffuse / std::max(std::max(diffuse.x, diffuse.y), diffuse.z);
         return shadow * normalized_diffuse * pld->material->trans;
     }
-    
+
     auto hit_position = pld->hit_pos + ray.direction() * 1e-4f;
     rtr::ray shadow_ray = rtr::ray(hit_position, ray.direction(), ray.rec_depth, false);
     

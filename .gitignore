@@ -1,2 +1,7 @@
+.idea
 .vscode
+cmake-build-debug
+cmake-xcode
+cmake-build-release
+docs
 build

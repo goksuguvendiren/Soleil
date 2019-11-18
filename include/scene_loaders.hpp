@@ -313,7 +313,8 @@ namespace loaders
             if ((tmp_m = child->FirstChildElement("RefractionIndex"))) {
                 refraction_index = tmp_m->FloatText(1.f);
             }
-            
+
+            mat.trans = 1.f;
             mat.refr_index = refraction_index;
         }
 
