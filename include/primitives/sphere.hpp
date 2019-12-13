@@ -16,7 +16,6 @@ namespace rtr
     struct payload;
     namespace primitives
     {
-        
         class sphere
         {
         public:
@@ -29,6 +28,12 @@ namespace rtr
             name(nm), origin(pos), radius(r)
             {
                 materials.push_back(m);
+            }
+
+            sphere() :
+            name("default sphere"), origin(glm::vec3(0, 0, 0)), radius(1.f)
+            {
+                materials.push_back(rtr::material());
             }
 
             std::vector<material> materials;

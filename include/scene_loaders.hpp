@@ -195,19 +195,19 @@ namespace loaders
             std::cerr << err << std::endl;
         }
         
-        rtr::scene scene;
+        rtr::scene_information info;
         
         // create a default camera located at the origin, looking at the -z direction.
         auto focal_distance = 12.2118f;
         auto vertical_fov = 0.785398f;
 
-        scene.camera = rtr::camera(glm::vec3{278, 273, -800}, glm::vec3{0, 0, 1}, glm::vec3{0, 1, 0}, focal_distance, vertical_fov, focal_distance, false ); // focal dist = image plane dist
+        info.camera = rtr::camera(glm::vec3{278, 273, -800}, glm::vec3{0, 0, 1}, glm::vec3{0, 1, 0}, focal_distance, vertical_fov, focal_distance, false ); // focal dist = image plane dist
 //        //    camera = rtr::camera(glm::vec3{-1, 3, 10}, glm::vec3{0, 0, -1}, glm::vec3{0, 1, 0}, focal_distance, vertical_fov, focal_distance, false ); // focal dist = image plane dist
 //        //    camera = rtr::camera(glm::vec3{-1, 3, 10}, glm::vec3{0, 0, -1}, glm::vec3{0, 1, 0}, focal_distance, vertical_fov);
 
         // create default light sources
-        scene.lghts.emplace_back(glm::vec3{-1.84647, 0.778452, 2.67544}, glm::vec3{1, 1, 1});
-        scene.lghts.emplace_back(glm::vec3{2.09856, 1.43311, 0.977627}, glm::vec3{1, 1, 1});
+        info.lghts.emplace_back(glm::vec3{-1.84647, 0.778452, 2.67544}, glm::vec3{1, 1, 1});
+        info.lghts.emplace_back(glm::vec3{2.09856, 1.43311, 0.977627}, glm::vec3{1, 1, 1});
 
         int id = 0;
         for(auto& shape : shapes)
@@ -237,9 +237,9 @@ namespace loaders
                 faces.push_back(face_new);
             }
             
-            scene.meshes.emplace_back(faces, "");
+            info.meshes.emplace_back(faces, "");
             
-            auto& m = scene.meshes.back();
+            auto& m = info.meshes.back();
             m.id = id++;
             
         
@@ -271,7 +271,7 @@ namespace loaders
 //                std::cerr << "This obj doesn't have any materials, default diffuse material will be used!" << '\n';
 //            }
         }
-        return scene;
+        return rtr::scene(std::move(info));
 	}
     
     inline glm::vec3 GetElem(tinyxml2::XMLElement* element)
@@ -346,7 +346,7 @@ namespace loaders
     
     inline rtr::scene load_from_xml(const std::string& filename)
     {
-        rtr::scene scene;
+        rtr::scene_information info;
         
         tinyxml2::XMLDocument document;
         document.LoadFile(filename.c_str());
@@ -365,19 +365,19 @@ namespace loaders
         
         if (auto elem = docscene->FirstChildElement("BackgroundColor")){
             auto color = GetElem(elem);
-            scene.background_color = color;
+            info.background_color = color;
         }
         
         if (auto elem = docscene->FirstChildElement("ShadowRayEpsilon")){
-            scene.shadow_ray_epsilon = elem->FloatText();
+            info.shadow_ray_epsilon = elem->FloatText();
         }
         
         if (auto elem = docscene->FirstChildElement("MaxRecursionDepth")){
-            scene.max_recursion_depth = elem->IntText(1);
+            info.max_recursion_depth = elem->IntText(1);
         }
         
         if (auto elem = docscene->FirstChildElement("IntersectionTestEpsilon")){
-            scene.intersection_test_epsilon = elem->FloatText();
+            info.intersection_test_epsilon = elem->FloatText();
         }
         
         if (auto elem = docscene->FirstChildElement("Camera"))
@@ -394,7 +394,7 @@ namespace loaders
             }
             auto vertical_fov = 0.985398f;
             
-            scene.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, focal_distance, false );
+            info.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, focal_distance, false );
         }
         else {
             std::cerr << "Could not read camera information\n";
@@ -406,8 +406,8 @@ namespace loaders
             for (auto child = elem->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
             {
                 if (child->Name() == std::string("PointLight"))
-                    scene.lghts.push_back(load_point_light(child));
-                else scene.dir_lghts.push_back(load_directional_light(child));
+                    info.lghts.push_back(load_point_light(child));
+                else info.dir_lghts.push_back(load_directional_light(child));
             }
         }
 
@@ -436,22 +436,22 @@ namespace loaders
         
         if(auto objects = docscene->FirstChildElement("Objects"))
         {
-            scene.spheres = LoadSpheres(objects, vertices, materials);
-            scene.meshes = LoadMeshes(objects, vertices, materials);
+            info.spheres = LoadSpheres(objects, vertices, materials);
+            info.meshes = LoadMeshes(objects, vertices, materials);
         }
         
         // scene.print();
         
-        return scene;
+        return rtr::scene(std::move(info));
     }
     
     inline rtr::scene load_from_veach(const std::string& filename)
     {
-        rtr::scene scene;
+        rtr::scene_information info;
         
         auto io = readScene(filename.c_str());
         auto& cam = io->camera;
-        scene.camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV);
+        info.camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV);
         //    camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, 12.f, false);
         
         auto* light = io->lights;
@@ -459,11 +459,11 @@ namespace loaders
         {
             if (light->type == LightType::POINT_LIGHT)
             {
-                scene.lghts.emplace_back(to_vec3(light->position), to_vec3(light->color));
+                info.lghts.emplace_back(to_vec3(light->position), to_vec3(light->color));
             }
             else if (light->type == LightType::DIRECTIONAL_LIGHT)
             {
-                scene.dir_lghts.emplace_back(to_vec3(light->direction), to_vec3(light->color));
+                info.dir_lghts.emplace_back(to_vec3(light->direction), to_vec3(light->color));
             }
             light = light->next;
         }
@@ -477,12 +477,12 @@ namespace loaders
             {
                 auto data = reinterpret_cast<SphereIO*>(obj->data);
                 
-                scene.spheres.emplace_back(obj->name ? obj->name : "", to_vec3(data->origin), data->radius,
+                info.spheres.emplace_back(obj->name ? obj->name : "", to_vec3(data->origin), data->radius,
                                      to_vec3(data->xaxis), data->xlength,
                                      to_vec3(data->yaxis), data->ylength,
                                      to_vec3(data->zaxis), data->zlength);
                 
-                auto& sph = scene.spheres.back();
+                auto& sph = info.spheres.back();
                 
                 //            std::cerr << glm::length(sph.origin - to_vec3(cam->position)) << '\n';
                 sph.id = id++;
@@ -522,14 +522,14 @@ namespace loaders
                     faces.emplace_back(vertices, to_rtr(data->normType), to_rtr(data->materialBinding));
                 }
                 
-                scene.meshes.emplace_back(faces, obj->name ? obj->name : "");
-                auto& mesh = scene.meshes.back();
+                info.meshes.emplace_back(faces, obj->name ? obj->name : "");
+                auto& mesh = info.meshes.back();
                 mesh.id = id++;
                 mesh.materials = std::move(materials);
             }
             obj = obj->next;
         }
-        return scene;
+        return rtr::scene(std::move(info));
     }
     
     inline rtr::scene load(const std::string& filename)

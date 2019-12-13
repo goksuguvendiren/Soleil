@@ -92,6 +92,8 @@ namespace rtr
                 }
             }
 
+            const rtr::aabb& bounding_box() const { return tree.bounding_box(); }
+
         private:
             rtr::kd_tree tree;
         };
