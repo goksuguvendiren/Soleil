@@ -25,8 +25,6 @@ inline void UpdateProgress(float progress)
     std::cout.flush();
 };
 
-
-
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera, const glm::vec3& pix_center,
                                            const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below)
 {
@@ -96,7 +94,7 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
                 auto row_begin = pix_center + below * float(j);
                 render_line(scene, row_begin, j);
                 n++;
-                UpdateProgress(n / (float)height);
+                // UpdateProgress(n / (float)height);
             }
         }));
     }

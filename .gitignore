@@ -1,7 +1,10 @@
 .idea
 .vscode
+.clangd
+compile_commands.json
 cmake-build-debug
 cmake-xcode
 cmake-build-release
 docs
 build
+Scenes

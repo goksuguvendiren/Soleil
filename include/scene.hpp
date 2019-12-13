@@ -62,5 +62,12 @@ namespace rtr
         std::vector<rtr::primitives::mesh> meshes;
         std::vector<rtr::light> lghts;
         std::vector<rtr::dir_light> dir_lghts;
+
+    // private:
+        std::string output_file_name;
+        std::string output_hdr_name;
+        int samples_per_pixel = 16;
+        bool scene_bvh = true;
+        bool progressive_render = true;
     };
 }

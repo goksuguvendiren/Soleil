@@ -14,8 +14,9 @@ namespace rtr
     {
     public:
         camera() = default;
-        camera(const glm::vec3& pos, const glm::vec3& view, const glm::vec3& up, float foc, float fov, float ipd = 1.0f, bool pin = true) :
-                eye_pos(pos), view_dir(glm::normalize(view)), up_dir(glm::normalize(up)), focal_dist(foc), vert_fov(fov), pinhole(pin), image_plane_dist(ipd)
+        camera(const glm::vec3& pos, const glm::vec3& view, const glm::vec3& up, float foc, float fov, int w, int h, float ipd = 1.0f, bool pin = true) :
+                eye_pos(pos), view_dir(view), up_dir(glm::normalize(up)), focal_dist(foc), vert_fov(fov), pinhole(pin), image_plane_dist(ipd),
+                width(w), height(h)
         {
             if (pin)
             {
@@ -50,6 +51,9 @@ namespace rtr
         float image_plane_dist;
         float lens_width;
         float focal_dist;
+
+        int width;
+        int height;
         
     private:
         glm::vec3 eye_pos;

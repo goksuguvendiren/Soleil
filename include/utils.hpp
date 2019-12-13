@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include <glm/gtc/quaternion.hpp>
+#include "nlohmann/json.hpp"
 
 #pragma once
 
@@ -83,4 +84,10 @@ inline bool hasEnding (std::string const &fullString, std::string const &ending)
 inline glm::vec3 to_vec3(float* vert)
 {
     return {vert[0], vert[1], vert[2]};
+}
+
+
+inline glm::vec3 to_vec3(nlohmann::json& vert)
+{
+    return {float(vert[0]), float(vert[1]), float(vert[2])};
 }
