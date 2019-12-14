@@ -66,11 +66,9 @@ glm::vec3 rtr::scene::trace(const rtr::ray& ray) const
         if (pld)
         {
             auto res_color = pld->material->shade(*this, *pld);
-            // std::cerr << "returning: " << res_color << '\n';
             return res_color;
         }
-        // assert(pld && "Should always hit the bounding sphere");
-        return color;
+        assert(pld && "Should always hit the bounding sphere");
     }
 
     if (pld->ray.rec_depth >= information.max_recursion_depth) return pld->material->shade(*this, *pld);

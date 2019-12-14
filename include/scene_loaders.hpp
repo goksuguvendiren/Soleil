@@ -394,7 +394,7 @@ namespace loaders
             }
             auto vertical_fov = 0.985398f;
             
-            info.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, focal_distance, false );
+            info.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, focal_distance, true );
         }
         else {
             std::cerr << "Could not read camera information\n";

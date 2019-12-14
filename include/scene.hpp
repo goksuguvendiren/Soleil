@@ -62,19 +62,20 @@ namespace rtr
             rtr::material m;
             m.diffuse = glm::vec3(2.f, 2.f, 2.f);
 
-            bounding_sphere = rtr::primitives::sphere("scene bounding box", center, glm::length(center - bounding_box.max), m);
+            float constant = 3.f;
+            bounding_sphere = rtr::primitives::sphere("scene bounding box", center, glm::length(center - bounding_box.max) * constant, m);
         }
 
         const rtr::camera& get_camera() const { return information.camera; }
+        void set_camera(rtr::camera& cam) { information.camera = std::move(cam); }
 
         std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
         template <class FnT>
         void for_each_light(FnT&& func) const
         {
-            //TODO: use lights();
-            std::for_each(information.lghts.begin(), information.lghts.end(), func);
-            std::for_each(information.dir_lghts.begin(), information.dir_lghts.end(), func);
+            std::for_each(lights().begin(), lights().end(), func);
+            std::for_each(dir_lights().begin(), dir_lights().end(), func);
         }
 
         const std::vector<rtr::light>& lights() const { return information.lghts; }
@@ -86,7 +87,7 @@ namespace rtr
         
         void print() const;
         
-//    private:
+   private:
         rtr::primitives::sphere bounding_sphere;
         scene_information information;
     };

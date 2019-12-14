@@ -36,10 +36,10 @@ int main(int argc, const char** argv)
     }
     
     rtr::scene scene = rtr::loaders::load(scene_path);
-    scene.information.camera.pinhole = pinhole_camera;
-    scene.information.camera.image_plane_dist = image_plane_distance;
-    scene.information.camera.lens_width = lens_width;
-    scene.information.camera.focal_dist = focal_length;
+    // scene.information.camera.pinhole = pinhole_camera;
+    // scene.information.camera.image_plane_dist = image_plane_distance;
+    // scene.information.camera.lens_width = lens_width;
+    // scene.information.camera.focal_dist = focal_length;
 
     auto end = std::chrono::system_clock::now();
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
@@ -77,7 +77,7 @@ int main(int argc, const char** argv)
             cv::flip(image, image, -1);
         cv::imshow("window", image);
         key = cv::waitKey(10);
-        // cv::imwrite("window.png", image * 255);
+        cv::imwrite("photon_mapping.png", image * 255);
         // std::cin.ignore();
 
         // using namespace std::chrono_literals;
