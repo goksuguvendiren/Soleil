@@ -29,6 +29,7 @@ namespace rtr
     struct scene_information
     {
         scene_information() = default;
+
         glm::vec3 background_color;
         glm::vec3 ambient_light;
         float shadow_ray_epsilon          = 1e-3;
@@ -40,6 +41,12 @@ namespace rtr
         std::vector<rtr::light> lghts;
         std::vector<rtr::dir_light> dir_lghts;
 
+        bool progressive_render = false;
+        int samples_per_pixel;
+
+        std::string output_file_name;
+        std::string output_hdr_name;
+        // info.scene_bvh = renderer_settings["scene_bvh"];
         rtr::camera camera;
     };
 
@@ -86,6 +93,8 @@ namespace rtr
         glm::vec3 shadow_trace(const rtr::ray& ray, float light_distance) const;
         
         void print() const;
+
+        std::string output_file_name() const { return information.output_file_name; }
         
    private:
         rtr::primitives::sphere bounding_sphere;

@@ -136,7 +136,8 @@ rtr::primitives::mesh load_quad(const glm::mat4x4& transform)
 
 rtr::scene load_mitsuba(const std::string& filename)
 {
-    rtr::scene scene;
+    // rtr::scene scene;
+    rtr::scene_information info;
     std::ifstream input_file(filename);
     nlohmann::json scene_json;
     input_file >> scene_json;
@@ -145,12 +146,14 @@ rtr::scene load_mitsuba(const std::string& filename)
      * Load the renderer settings
      */
     auto renderer_settings = scene_json["renderer"];
-    scene.progressive_render = false;
-    scene.samples_per_pixel = renderer_settings["spp"];
-    scene.output_file_name = renderer_settings["output_file"];
-    scene.output_hdr_name = renderer_settings["hdr_output_file"];
-    scene.scene_bvh = renderer_settings["scene_bvh"];
+    info.progressive_render = false;
+    info.samples_per_pixel = renderer_settings["spp"];
+    info.output_file_name = renderer_settings["output_file"];
+    info.output_hdr_name = renderer_settings["hdr_output_file"];
+    // info.scene_bvh = renderer_settings["scene_bvh"];
     // scene.max_recursion_depth = scene_json["integrator"]["max_bounces"];
+
+    std::cerr << renderer_settings["scene_bvh"] << '\n';
 
     /*
      * Load the camera settings
@@ -171,7 +174,7 @@ rtr::scene load_mitsuba(const std::string& filename)
     int width = camera_settings["resolution"];
     int height = camera_settings["resolution"];
 
-    scene.camera =
+    info.camera =
         rtr::camera(position, lookat_dir, up_dir, foc, fov, width, height, image_plane_distance, pinhole == "pinhole");
 
     // std::cerr << width << '\n';
@@ -189,9 +192,8 @@ rtr::scene load_mitsuba(const std::string& filename)
         all_materials.insert(mat);
     }
 
-
-    scene.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{100, 100, 100});
-    scene.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
+    info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{100, 100, 100});
+    info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
 
     /*
      * Load the primitives
@@ -209,12 +211,12 @@ rtr::scene load_mitsuba(const std::string& filename)
             // if (primitive["file"])
             auto mesh = load_mesh("../Scenes/Mitsuba/veach-bidir/" + std::string(primitive["file"]));
             mesh.materials.push_back(mesh_material);
-            scene.meshes.emplace_back(std::move(mesh));
+            info.meshes.emplace_back(std::move(mesh));
         } else if (type == "quad")
         {
             auto quad = load_quad(transform);
             std::cerr << "hi\n";
-            scene.meshes.emplace_back(std::move(quad));
+            info.meshes.emplace_back(std::move(quad));
         }
 
         if (primitive.find("power") != primitive.end())
@@ -222,11 +224,11 @@ rtr::scene load_mitsuba(const std::string& filename)
             auto power_json = primitive["power"];
             std::cerr << std::setw(4) << power_json << '\n';
             auto light_material = power_json.is_array() ? emissive(to_vec3(power_json)) : emissive(float(power_json));
-            scene.meshes.back().materials.push_back(light_material);
+            info.meshes.back().materials.push_back(light_material);
         }
     }
 
-    return scene;
+    return rtr::scene(std::move(info));
 }
 } // namespace loaders
 } // namespace rtr

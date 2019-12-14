@@ -37,18 +37,8 @@ int main(int argc, const char** argv)
 
     rtr::scene scene = rtr::loaders::load(scene_path);
 
-    // scene.camera.pinhole = pinhole_camera;
-    // scene.camera.image_plane_dist = image_plane_distance;
-    // scene.camera.lens_width = lens_width;
-    // scene.camera.focal_dist = focal_length;
-    // scene.camera.width = 400;
-    // scene.camera.height = 400;
-
-    // std::cerr << scene.camera.width << '\n';
-    // std::cerr << scene.camera.height << '\n';
-
-    auto width = scene.camera.width;
-    auto height = scene.camera.height;
+    auto width = scene.get_camera().width;
+    auto height = scene.get_camera().height;
 
     auto end = std::chrono::system_clock::now();
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
@@ -78,13 +68,14 @@ int main(int argc, const char** argv)
         n_frames++;
         for (int i = 0; i < accum_buffer.size(); ++i) result_buffer[i] = accum_buffer[i] / float(n_frames);
 
-        cv::Mat image(width, height, CV_32FC3, result_buffer.data());
+        cv::Mat image(height, width, CV_32FC3, result_buffer.data());
         cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
         // if (!pinhole_camera)
-        cv::flip(image, image, -1);
-        // cv::imshow(scene.output_file_name, image);
-        // key = cv::waitKey(0);
-        cv::imwrite(scene.output_file_name, image * 255);
+        //     cv::flip(image, image, -1);
+        cv::imshow(scene.output_file_name(), image);
+
+        key = cv::waitKey(0);
+        cv::imwrite(scene.output_file_name() + ".png", image * 255);
         // std::cin.ignore();
 
         // using namespace std::chrono_literals;

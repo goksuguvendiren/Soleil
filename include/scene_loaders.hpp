@@ -287,6 +287,17 @@ namespace loaders
         return color;
     }
     
+    inline std::pair<int, int> GetIntPair(tinyxml2::XMLElement* element)
+    {
+        std::pair<int, int> resolution;
+        
+        std::istringstream ss {element->GetText()};
+        ss >> resolution.first;
+        ss >> resolution.second;
+        
+        return resolution;
+    }
+
     inline std::pair<int, rtr::material> load_material(tinyxml2::XMLElement *child)
     {
         int id;
@@ -395,7 +406,9 @@ namespace loaders
             }
             auto vertical_fov = 0.985398f;
             
-            info.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, focal_distance, true );
+            auto res = GetIntPair(elem->FirstChildElement("ImageResolution"));
+
+            info.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, res.first, res.second, focal_distance, true);
         }
         else {
             std::cerr << "Could not read camera information\n";
@@ -443,6 +456,7 @@ namespace loaders
         
         // scene.print();
         
+        std::cerr << "scene loader: " << info.camera.width << '\n';
         return rtr::scene(std::move(info));
     }
     
@@ -454,8 +468,8 @@ namespace loaders
         auto& cam = io->camera;
         int width = 400;
         int height = 400;
-        scene.camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, width, height);
-        //    camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, 12.f, false);
+        info.camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, width, height);
+        //   camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, 12.f, false);
         
         auto* light = io->lights;
         while(light != nullptr)
