@@ -8,7 +8,8 @@ glm::vec3 rtr::material::shade(const rtr::scene& scene, const rtr::payload& pld)
     auto amb = (1 - trans) * ambient * diffuse;
     glm::vec3 color = amb;
 
-    scene.for_each_light([&pld, &color, this, &scene](auto light) {
+    scene.for_each_light([&pld, &color, this, &scene](auto light)
+    {
         float epsilon = 1e-4;
         auto hit_position = pld.hit_pos + pld.hit_normal * epsilon;
         rtr::ray shadow_ray = rtr::ray(hit_position, light.direction(hit_position), pld.ray.rec_depth + 1, false);
@@ -29,7 +30,6 @@ glm::vec3 rtr::material::shade(const rtr::scene& scene, const rtr::payload& pld)
 
         color += (diffuse + specular) * light.color * attenuation * shadow;
     });
-
     return color;
 }
 

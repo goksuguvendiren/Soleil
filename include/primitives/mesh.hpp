@@ -100,7 +100,11 @@ public:
                 if (!vertex.mat)
                     vertex.mat = &materials[0];
             }
-        }
+            const rtr::aabb& bounding_box() const { return tree.bounding_box(); }
+
+        private:
+            rtr::kd_tree tree;
+        };
     }
 
 private:

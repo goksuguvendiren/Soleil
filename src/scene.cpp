@@ -35,7 +35,7 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
 {
     std::optional<rtr::payload> min_hit = std::nullopt;
 
-    for (auto& sphere : spheres)
+    for (auto& sphere : information.spheres)
     {
         auto hit = sphere.hit(ray);
         if (!hit)
@@ -46,7 +46,7 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
         }
     }
 
-    for (auto& mesh : meshes)
+    for (auto& mesh : information.meshes)
     {
         auto hit = mesh.hit(ray);
         if (!hit)
@@ -73,17 +73,24 @@ glm::vec3 rtr::scene::trace(const rtr::ray& ray) const
     auto color = glm::vec3{0.f, 0.f, 0.f};
     std::optional<rtr::payload> pld = hit(ray);
 
-    if (!pld)
-        return color;
-    if (pld->ray.rec_depth >= max_recursion_depth)
-        return pld->material->shade(*this, *pld);
-    // std::cerr << "hit\n";
-    //    return glm::vec3(1.0f);
-    // if (pld->material)
-    // return pld->material->diffuse;
-    // return ((pld->hit_normal + 1.f) / 2.f);
+    if (!pld) 
+    {
+        // miss: then hit the bounding box.
+        auto pld = bounding_sphere.hit(ray);
+        if (pld)
+        {
+            auto res_color = pld->material->shade(*this, *pld);
+            return res_color;
+        }
+        assert(pld && "Should always hit the bounding sphere");
+    }
 
-    //    auto sample_direction = sample_hemisphere(pld->hit_normal);
+    if (pld->ray.rec_depth >= information.max_recursion_depth) return pld->material->shade(*this, *pld);
+    
+//    return glm::vec3(1.0f);
+//    return (pld->material->diffuse);
+    
+//    auto sample_direction = sample_hemisphere(pld->hit_normal);
     auto sample_direction = pld->material->sample(pld->hit_normal, *pld);
     auto reflection_ray =
         rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
@@ -145,10 +152,10 @@ glm::vec3 rtr::scene::photon_trace(const rtr::ray& photon_ray) const
 void rtr::scene::print() const
 {
     std::cerr << "Camera : \n";
-    std::cerr << "\t Pos : " << camera.center() << '\n';
+    std::cerr << "\t Pos : " << information.camera.center() << '\n';
     std::cerr << "Meshes : \n";
     int i = 0;
-    for (auto& m : meshes)
+    for (auto& m : information.meshes)
     {
         std::cerr << "\t\t Mesh " << i++ << " : \n";
         std::cerr << "\t\t Material " << m.materials[0].diffuse << " : \n";
@@ -163,7 +170,7 @@ void rtr::scene::print() const
     }
     std::cerr << "Spheres : \n";
     i = 0;
-    for (auto& s : spheres)
+    for (auto& s : information.spheres)
     {
         std::cerr << "\t\t Sphere " << i++ << " : \n";
         std::cerr << "\t\t Material " << s.materials[0].diffuse << " : \n";

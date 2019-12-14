@@ -26,32 +26,9 @@ namespace rtr
     //     class mesh;
     // }
 
-    class scene
+    struct scene_information
     {
-    public:
-        scene() = default;
-        const rtr::camera& get_camera() const { return camera; }
-
-        std::optional<rtr::payload> hit(const rtr::ray& ray) const;
-
-        template <class FnT>
-        void for_each_light(FnT&& func) const
-        {
-            std::for_each(lghts.begin(), lghts.end(), func);
-            std::for_each(dir_lghts.begin(), dir_lghts.end(), func);
-        }
-
-        const std::vector<rtr::light>& lights() const { return lghts; }
-        const std::vector<rtr::dir_light>& dir_lights() const { return dir_lghts; }
-
-        rtr::camera camera;
-        glm::vec3 trace(const rtr::ray& ray) const;
-        glm::vec3 photon_trace(const rtr::ray& ray) const;
-        glm::vec3 shadow_trace(const rtr::ray& ray, float light_distance) const;
-        
-        void print() const;
-        
-//    private:
+        scene_information() = default;
         glm::vec3 background_color;
         glm::vec3 ambient_light;
         float shadow_ray_epsilon          = 1e-3;
@@ -63,11 +40,55 @@ namespace rtr
         std::vector<rtr::light> lghts;
         std::vector<rtr::dir_light> dir_lghts;
 
-    // private:
-        std::string output_file_name;
-        std::string output_hdr_name;
-        int samples_per_pixel = 16;
-        bool scene_bvh = true;
-        bool progressive_render = true;
+        rtr::camera camera;
+    };
+
+    class scene
+    {
+    public:
+        scene(scene_information sc_info) : information(std::move(sc_info)) 
+        { 
+            rtr::aabb bounding_box;
+            for (auto& m : information.meshes)
+            {
+                std::cerr << m.bounding_box().min << ", " << m.bounding_box().max << '\n';
+                bounding_box = combine(bounding_box, m.bounding_box());
+            }
+
+            bounding_box = combine(bounding_box, information.camera.center());
+
+            auto center = (bounding_box.max + bounding_box.min) / 2.f;
+
+            rtr::material m;
+            m.diffuse = glm::vec3(2.f, 2.f, 2.f);
+
+            float constant = 3.f;
+            bounding_sphere = rtr::primitives::sphere("scene bounding box", center, glm::length(center - bounding_box.max) * constant, m);
+        }
+
+        const rtr::camera& get_camera() const { return information.camera; }
+        void set_camera(rtr::camera& cam) { information.camera = std::move(cam); }
+
+        std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+
+        template <class FnT>
+        void for_each_light(FnT&& func) const
+        {
+            std::for_each(lights().begin(), lights().end(), func);
+            std::for_each(dir_lights().begin(), dir_lights().end(), func);
+        }
+
+        const std::vector<rtr::light>& lights() const { return information.lghts; }
+        const std::vector<rtr::dir_light>& dir_lights() const { return information.dir_lghts; }
+
+        glm::vec3 trace(const rtr::ray& ray) const;
+        glm::vec3 photon_trace(const rtr::ray& ray) const;
+        glm::vec3 shadow_trace(const rtr::ray& ray, float light_distance) const;
+        
+        void print() const;
+        
+   private:
+        rtr::primitives::sphere bounding_sphere;
+        scene_information information;
     };
 }

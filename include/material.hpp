@@ -24,7 +24,9 @@ enum class PathType
 class material
 {
 public:
-    material() = default;
+    material() : diffuse({0.1f, 0.1f, 0.1f}), ambient({0.1f, 0.1f, 0.1f}), specular({0.f, 0.f, 0.f}), emissive(0), exp(0), trans(0), refr_index(1.f)
+    {}
+
     material(const glm::vec3& diff, const glm::vec3& amb, const glm::vec3& spec, const glm::vec3& ems, float p, float t)
         : diffuse(diff)
         , ambient(amb)

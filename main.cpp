@@ -37,10 +37,10 @@ int main(int argc, const char** argv)
 
     rtr::scene scene = rtr::loaders::load(scene_path);
 
-    scene.camera.pinhole = pinhole_camera;
-    scene.camera.image_plane_dist = image_plane_distance;
-    scene.camera.lens_width = lens_width;
-    scene.camera.focal_dist = focal_length;
+    // scene.camera.pinhole = pinhole_camera;
+    // scene.camera.image_plane_dist = image_plane_distance;
+    // scene.camera.lens_width = lens_width;
+    // scene.camera.focal_dist = focal_length;
     // scene.camera.width = 400;
     // scene.camera.height = 400;
 

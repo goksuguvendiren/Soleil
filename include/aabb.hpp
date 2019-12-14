@@ -18,7 +18,12 @@ namespace rtr
     class aabb
     {
     public:
-        aabb() = default;
+        aabb()
+        {
+            min = glm::vec3(std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity(), std::numeric_limits<float>::infinity());
+            max = glm::vec3(-std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity(), -std::numeric_limits<float>::infinity());
+        }
+
         aabb(const std::array<rtr::vertex, 3>& faces)
         {
             min = glm::min(glm::min(std::get<0>(faces).position(), std::get<1>(faces).position()), std::get<2>(faces).position());
@@ -38,6 +43,20 @@ namespace rtr
             box.max.x = std::max(left.max.x, right.max.x);
             box.max.y = std::max(left.max.y, right.max.y);
             box.max.z = std::max(left.max.z, right.max.z);
+            
+            return box;
+        }
+        
+        friend aabb combine(const aabb& b, const glm::vec3& point)
+        {
+            aabb box;
+            box.min.x = std::min(b.min.x, point.x);
+            box.min.y = std::min(b.min.y, point.y);
+            box.min.z = std::min(b.min.z, point.z);
+            
+            box.max.x = std::max(b.max.x, point.x);
+            box.max.y = std::max(b.max.y, point.y);
+            box.max.z = std::max(b.max.z, point.z);
             
             return box;
         }
