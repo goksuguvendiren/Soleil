@@ -549,7 +549,7 @@ namespace loaders
         return rtr::scene(std::move(info));
     }
 
-    rtr::scene load_mitsuba(const std::string& filename);
+    rtr::scene load_tungsten(const std::string& filename);
     
     inline rtr::scene load(const std::string& filename)
     {
@@ -567,7 +567,7 @@ namespace loaders
         }        
         else if (hasEnding(filename, ".json"))
         {
-            return load_mitsuba(filename);
+            return load_tungsten(filename);
         }
         else
         {

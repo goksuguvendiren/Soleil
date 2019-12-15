@@ -134,7 +134,7 @@ rtr::primitives::mesh load_quad(const glm::mat4x4& transform)
     return rtr::primitives::mesh(faces, "quad");
 }
 
-rtr::scene load_mitsuba(const std::string& filename)
+rtr::scene load_tungsten(const std::string& filename)
 {
     // rtr::scene scene;
     rtr::scene_information info;
