@@ -209,7 +209,7 @@ rtr::scene load_mitsuba(const std::string& filename)
         if (type == "mesh")
         {
             // if (primitive["file"])
-            auto mesh = load_mesh("../Scenes/Mitsuba/veach-bidir/" + std::string(primitive["file"]));
+            auto mesh = load_mesh("../Scenes/Tungsten/veach-bidir/" + std::string(primitive["file"]));
             mesh.materials.push_back(mesh_material);
             info.meshes.emplace_back(std::move(mesh));
         } else if (type == "quad")

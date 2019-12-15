@@ -95,6 +95,9 @@ namespace rtr
         void print() const;
 
         std::string output_file_name() const { return information.output_file_name; }
+
+        const rtr::primitives::sphere& environment_sphere() const { return bounding_sphere; }
+        int recursion_depth() const { return information.max_recursion_depth; }
         
    private:
         rtr::primitives::sphere bounding_sphere;

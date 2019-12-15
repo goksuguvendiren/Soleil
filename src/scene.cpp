@@ -68,63 +68,6 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
     return min_hit;
 }
 
-glm::vec3 rtr::scene::trace(const rtr::ray& ray) const
-{
-    auto color = glm::vec3{0.f, 0.f, 0.f};
-    std::optional<rtr::payload> pld = hit(ray);
-
-    if (!pld) 
-    {
-        // miss: then hit the bounding box.
-        auto pld = bounding_sphere.hit(ray);
-        if (pld)
-        {
-            auto res_color = pld->material->shade(*this, *pld);
-            return res_color;
-        }
-        assert(pld && "Should always hit the bounding sphere");
-    }
-
-    if (pld->ray.rec_depth >= information.max_recursion_depth) return pld->material->shade(*this, *pld);
-    
-//    return glm::vec3(1.0f);
-//    return (pld->material->diffuse);
-    
-//    auto sample_direction = sample_hemisphere(pld->hit_normal);
-    auto sample_direction = pld->material->sample(pld->hit_normal, *pld);
-    auto reflection_ray =
-        rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
-
-    return pld->material->shade(*this, *pld) * trace(reflection_ray);
-
-    //
-    //    color = pld->material->shade(*this, *pld);
-    //
-    //    // Reflection :
-    //    if (pld->material->specular.x > 0.f || pld->material->specular.y > 0.f || pld->material->specular.z > 0.f)
-    //    {
-    //        auto reflection_direction = reflect(ray.direction(), pld->hit_normal);
-    //        rtr::ray reflected_ray(pld->hit_pos + (reflection_direction * 1e-3f), reflection_direction,
-    //        pld->ray.rec_depth + 1, false); color += pld->material->specular * trace(reflected_ray);
-    //    }
-    //
-    //    // Refraction
-    //    if (pld->material->trans > 0.f)
-    //    {
-    //        auto eta_1 = 1.f;
-    //        auto eta_2 = 1.5f;
-    //
-    //        auto refraction_direction = refract(ray.direction(), pld->hit_normal, eta_2 / eta_1);
-    //        if (glm::length(refraction_direction) > 0.1)
-    //        {
-    //            rtr::ray refracted_ray(pld->hit_pos + (refraction_direction * 1e-3f), refraction_direction,
-    //            pld->ray.rec_depth + 1, false); color += pld->material->trans * trace(refracted_ray);
-    //        }
-    //    }
-
-    return color;
-}
-
 // Do it recursively
 glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) const
 {

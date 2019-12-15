@@ -25,6 +25,61 @@ inline void UpdateProgress(float progress)
     std::cout.flush();
 };
 
+glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray) const
+{
+    auto color = glm::vec3{0.f, 0.f, 0.f};
+    auto pld = scene.hit(ray);
+
+    if (!pld) 
+    {
+        // miss: then hit the bounding box.
+        auto pld = scene.environment_sphere().hit(ray);
+        if (pld)
+        {
+            auto res_color = pld->material->shade(scene, *pld);
+            return res_color;
+        }
+        // assert(pld && "Should always hit the bounding sphere");
+        return color;
+    }
+
+    if (pld->ray.rec_depth >= scene.recursion_depth()) return pld->material->shade(scene, *pld); // replace with russian roulette
+    
+//    return glm::vec3(1.0f);
+//    return (pld->material->diffuse);
+    
+//    auto sample_direction = sample_hemisphere(pld->hit_normal);
+    auto sample_direction = pld->material->sample(pld->hit_normal, *pld);
+    auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
+
+    return pld->material->shade(scene, *pld) * shade(scene, reflection_ray);
+
+    //
+    //    color = pld->material->shade(*this, *pld);
+    //
+    //    // Reflection :
+    //    if (pld->material->specular.x > 0.f || pld->material->specular.y > 0.f || pld->material->specular.z > 0.f)
+    //    {
+    //        auto reflection_direction = reflect(ray.direction(), pld->hit_normal);
+    //        rtr::ray reflected_ray(pld->hit_pos + (reflection_direction * 1e-3f), reflection_direction,
+    //        pld->ray.rec_depth + 1, false); color += pld->material->specular * trace(reflected_ray);
+    //    }
+    //
+    //    // Refraction
+    //    if (pld->material->trans > 0.f)
+    //    {
+    //        auto eta_1 = 1.f;
+    //        auto eta_2 = 1.5f;
+    //
+    //        auto refraction_direction = refract(ray.direction(), pld->hit_normal, eta_2 / eta_1);
+    //        if (glm::length(refraction_direction) > 0.1)
+    //        {
+    //            rtr::ray refracted_ray(pld->hit_pos + (refraction_direction * 1e-3f), refraction_direction,
+    //            pld->ray.rec_depth + 1, false); color += pld->material->trans * trace(refracted_ray);
+    //        }
+    //    }
+}
+
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera, const glm::vec3& pix_center,
                                            const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below)
 {
@@ -42,7 +97,9 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
             auto sub_pix_position = get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
             auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
-            color += scene.trace(ray);
+            // color += scene.trace(ray);
+
+            color += shade(scene, ray);
         }
     }
 
