@@ -7,7 +7,7 @@
 #include "mc_integrator.hpp"
 #include "camera.hpp"
 #include "scene.hpp"
-#include "material.hpp"
+#include "materials/base.hpp"
 #include "integrator.hpp"
 
 inline void UpdateProgress(float progress)

@@ -1,9 +1,9 @@
-#include "material.hpp"
+#include "materials/base.hpp"
 
 #include "payload.hpp"
 #include "scene.hpp"
 
-glm::vec3 rtr::material::shade(const rtr::scene& scene, const rtr::payload& pld) const
+glm::vec3 rtr::materials::base::shade(const rtr::scene& scene, const rtr::payload& pld) const
 {
     auto amb = (1 - trans) * ambient * diffuse;
     glm::vec3 color = amb;
@@ -51,7 +51,7 @@ static glm::vec3 refract(const glm::vec3& I, const glm::vec3& N, const float& io
     return k < 0 ? glm::vec3{0, 0, 0} : eta * I + (eta * cosi - sqrtf(k)) * n;
 }
 
-glm::vec3 rtr::material::sample(const glm::vec3& hit_normal, const payload& pld) const
+glm::vec3 rtr::materials::base::sample(const glm::vec3& hit_normal, const payload& pld) const
 {
     glm::vec3 sample_direction;
     if (trans > 0)

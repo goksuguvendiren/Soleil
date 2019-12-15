@@ -66,7 +66,7 @@ namespace rtr
 
             auto center = (bounding_box.max + bounding_box.min) / 2.f;
 
-            rtr::material m;
+            rtr::materials::base m;
             m.diffuse = glm::vec3(2.f, 2.f, 2.f);
 
             float constant = 3.f;

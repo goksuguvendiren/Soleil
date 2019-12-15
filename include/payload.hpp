@@ -17,7 +17,7 @@ namespace rtr
         glm::vec3 hit_pos;
         rtr::ray ray;
         float param = std::numeric_limits<float>::infinity();
-        const rtr::material* material;
+        const rtr::materials::base* material;
         glm::vec2 texture_coords;
         int obj_id;
     };

@@ -8,7 +8,7 @@
 #include "photon.hpp"
 #include "camera.hpp"
 #include "scene.hpp"
-#include "material.hpp"
+#include "materials/base.hpp"
 #include "photon_map.hpp"
 
 void trace_photons(const rtr::scene& scene, const rtr::photon& photon, std::vector<rtr::photon>& hit_photons)

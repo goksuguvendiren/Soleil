@@ -99,7 +99,7 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
     return mesh;
 }
 
-std::pair<std::string, rtr::material> load_material(const nlohmann::json& material_json)
+std::pair<std::string, rtr::materials::base> load_material(const nlohmann::json& material_json)
 {
     std::string name = material_json["name"];
     auto albedo_json = material_json["albedo"];
@@ -115,7 +115,7 @@ std::pair<std::string, rtr::material> load_material(const nlohmann::json& materi
         albedo.z = albedo_json[2];
     }
 
-    return std::make_pair(name, rtr::material(albedo, {0.1, 0.1, 0.1}, {0, 0, 0}, {0, 0, 0}, 0, 0));
+    return std::make_pair(name, rtr::materials::base(albedo, {0.1, 0.1, 0.1}, {0, 0, 0}, {0, 0, 0}, 0, 0));
 }
 
 rtr::primitives::mesh load_quad(const glm::mat4x4& transform)
@@ -185,7 +185,7 @@ rtr::scene load_mitsuba(const std::string& filename)
      * Load the materials
      */
     auto materials = scene_json["bsdfs"];
-    std::map<std::string, rtr::material> all_materials;
+    std::map<std::string, rtr::materials::base> all_materials;
     for (auto& material : materials)
     {
         auto mat = load_material(material);
@@ -223,7 +223,7 @@ rtr::scene load_mitsuba(const std::string& filename)
         {
             auto power_json = primitive["power"];
             std::cerr << std::setw(4) << power_json << '\n';
-            auto light_material = power_json.is_array() ? emissive(to_vec3(power_json)) : emissive(float(power_json));
+            auto light_material = power_json.is_array() ? materials::emissive(to_vec3(power_json)) : materials::emissive(float(power_json));
             info.meshes.back().materials.push_back(light_material);
         }
     }

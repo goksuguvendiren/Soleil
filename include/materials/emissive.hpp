@@ -1,10 +1,12 @@
-#include "material.hpp"
+#include "materials/base.hpp"
 
 #include <glm/glm.hpp>
 
 namespace rtr
 {
-class emissive : public material
+namespace materials
+{
+class emissive : public base
 {
 public:
     emissive(float p)
@@ -29,4 +31,5 @@ public:
 private:
     glm::vec3 power;
 };
+} // namespace materials
 } // namespace rtr

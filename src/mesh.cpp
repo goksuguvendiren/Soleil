@@ -22,12 +22,12 @@ inline bool is_back_face(const glm::vec3& surface_normal, const glm::vec3& direc
     return glm::dot(surface_normal, direction) < 0;
 }
 
-thread_local std::array<rtr::material, 4096> interpolated_material;
+thread_local std::array<rtr::materials::base, 4096> interpolated_material;
 thread_local int idx = 0;
 
-inline rtr::material interpolate_materials(rtr::material* a, float alpha, rtr::material* b, float beta, rtr::material* c, float gamma)
+inline rtr::materials::base interpolate_materials(rtr::materials::base* a, float alpha, rtr::materials::base* b, float beta, rtr::materials::base* c, float gamma)
 {
-    rtr::material mat;
+    rtr::materials::base mat;
 
     auto interpolate = [alpha, beta, gamma](auto propa, auto propb, auto propc)
     {
@@ -86,7 +86,7 @@ std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray &ray) cons
         normal = glm::normalize(surface_normal);
     }
 
-    material* mtrl_ptr = nullptr;
+    materials::base* mtrl_ptr = nullptr;
     if (material_type == material_binding::per_vertex)
     {
         auto ind = idx;

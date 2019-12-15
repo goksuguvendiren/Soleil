@@ -97,7 +97,7 @@ inline auto GetTransformations(std::istringstream& stream)
     return result;
 }
 
-inline std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices, const std::map<int, rtr::material>& materials)
+inline std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices, const std::map<int, rtr::materials::base>& materials)
 {
     std::vector<rtr::primitives::sphere> spheres;
     
@@ -119,7 +119,7 @@ inline std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *el
     return spheres;
 }
 
-inline std::vector<rtr::primitives::mesh> LoadMeshes(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices, const std::map<int, rtr::material>& materials)
+inline std::vector<rtr::primitives::mesh> LoadMeshes(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices, const std::map<int, rtr::materials::base>& materials)
 {
     std::vector<rtr::primitives::mesh> meshes;
     
@@ -298,7 +298,7 @@ namespace loaders
         return resolution;
     }
 
-    inline std::pair<int, rtr::material> load_material(tinyxml2::XMLElement *child)
+    inline std::pair<int, rtr::materials::base> load_material(tinyxml2::XMLElement *child)
     {
         int id;
         child->QueryIntAttribute("id", &id);
@@ -314,7 +314,7 @@ namespace loaders
         if ((tmp = child->FirstChildElement("PhongExponent")))
             phongEx  = tmp->FloatText(1);
         
-        rtr::material mat{diffuse, ambient, specular, glm::vec3{0, 0, 0}, phongEx, 0};
+        rtr::materials::base mat{diffuse, ambient, specular, glm::vec3{0, 0, 0}, phongEx, 0};
         
         if ((tmp = child->FirstChildElement("Transparency"))) // then the material should be a glass (transparent)
         {
@@ -425,7 +425,7 @@ namespace loaders
             }
         }
 
-        std::map<int, rtr::material> materials;
+        std::map<int, rtr::materials::base> materials;
         if (auto elem = docscene->FirstChildElement("Materials")){
             for (auto child = elem->FirstChildElement("Material"); child != NULL; child = child->NextSiblingElement())
             {
@@ -515,7 +515,7 @@ namespace loaders
                 auto data = reinterpret_cast<PolySetIO*>(obj->data);
                 assert(data->type == PolySetType::POLYSET_TRI_MESH);
                 
-                std::vector<material> materials;
+                std::vector<rtr::materials::base> materials;
                 materials.reserve(obj->numMaterials);
                 for (int i = 0; i < obj->numMaterials; ++i)
                 {
