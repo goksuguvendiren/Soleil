@@ -12,7 +12,7 @@
 #include <chrono>
 #include <functional>
 #include <iostream>
-#include <material.hpp>
+#include <materials/base.hpp>
 #include <optional>
 #include <string>
 #include <vector>
@@ -81,7 +81,7 @@ public:
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
     }
 
-    std::vector<rtr::material> materials;
+    std::vector<rtr::materials::base> materials;
     std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
     int id;
