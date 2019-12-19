@@ -6,13 +6,13 @@
 #include "photon_integrator.hpp"
 #include "mc_integrator.hpp"
 
-int main(int argc, const char** argv)
+int main(int argc, const char **argv)
 {
     auto begin = std::chrono::system_clock::now();
 
-//    std::string scene_path = "../../Scenes/obj/dragon/dragon.obj";
+    //    std::string scene_path = "../../Scenes/obj/dragon/dragon.obj";
     std::string scene_path = "../../Scenes/xml/cornellbox_ldr.xml";
-//    std::string scene_path = "../../Scenes/obj/CornellBox/CornellBox-Original.obj";
+    //    std::string scene_path = "../../Scenes/obj/CornellBox/CornellBox-Original.obj";
     bool pinhole_camera = true;
     float image_plane_distance = 1.f;
     float lens_width = 1.f;
@@ -34,7 +34,7 @@ int main(int argc, const char** argv)
             focal_length = std::stof(std::string(argv[4]));
         }
     }
-    
+
     rtr::scene scene = rtr::loaders::load(scene_path);
     // scene.information.camera.pinhole = pinhole_camera;
     // scene.information.camera.image_plane_dist = image_plane_distance;
@@ -50,27 +50,27 @@ int main(int argc, const char** argv)
     std::vector<glm::vec3> accum_buffer;
     std::vector<glm::vec3> result_buffer;
     std::vector<glm::vec3> output_buffer;
-    
+
     accum_buffer.resize(width * height);
     result_buffer.resize(width * height);
-    
+
     int n_frames = 0;
-    
+
     int key = 0;
-    while(key != 27)
+    while (key != 27)
     {
         begin = std::chrono::system_clock::now();
         output_buffer = r.render(scene);
         end = std::chrono::system_clock::now();
-        
+
         std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
-        
-        for(int i = 0; i < output_buffer.size(); ++i)
+
+        for (int i = 0; i < output_buffer.size(); ++i)
             accum_buffer[i] += output_buffer[i];
         n_frames++;
-        for(int i = 0; i < accum_buffer.size(); ++i)
+        for (int i = 0; i < accum_buffer.size(); ++i)
             result_buffer[i] = accum_buffer[i] / float(n_frames);
-        
+
         cv::Mat image(width, height, CV_32FC3, result_buffer.data());
         cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
         if (!pinhole_camera)

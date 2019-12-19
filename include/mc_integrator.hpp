@@ -17,17 +17,17 @@ public:
     {
         frame_buffer.resize(width * height);
     }
-    std::vector<glm::vec3> render(const rtr::scene& scene);
-//
+    std::vector<glm::vec3> render(const rtr::scene &scene);
+    //
 private:
     int sq_samples;
     unsigned int width;
     unsigned int height;
 
     std::vector<glm::vec3> frame_buffer;
-    void sub_render(const rtr::scene& scene);
-    void render_line(const rtr::scene &scene, const glm::vec3& row_begin, int i);
-    glm::vec3 render_pixel(const rtr::scene& scene, const rtr::camera& camera, const glm::vec3& pix_center,
-                           const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
+    void sub_render(const rtr::scene &scene);
+    void render_line(const rtr::scene &scene, const glm::vec3 &row_begin, int i);
+    glm::vec3 render_pixel(const rtr::scene &scene, const rtr::camera &camera, const glm::vec3 &pix_center,
+                           const rtr::image_plane &plane, const glm::vec3 &right, const glm::vec3 &below);
 };
-}
+} // namespace rtr

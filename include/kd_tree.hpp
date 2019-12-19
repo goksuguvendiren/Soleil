@@ -7,30 +7,30 @@
 
 namespace rtr
 {
-    namespace primitives
-    {
-        class mesh;
-        class face;
-    }
-    
-    class ray;
-    struct payload;
+namespace primitives
+{
+class mesh;
+class face;
+} // namespace primitives
 
-    class kd_tree
-    {
-        std::unique_ptr<kd_tree> left;
-        std::unique_ptr<kd_tree> right;
-        
-        aabb box;
-        
-    public:
-        kd_tree() : left(nullptr), right(nullptr) {}
-        kd_tree(const std::vector<rtr::primitives::face*>& faces);
-        
-        std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+class ray;
+struct payload;
 
-        const aabb& bounding_box() const { return box; }
-        
-        rtr::primitives::face* object;
-    };
-}
+class kd_tree
+{
+    std::unique_ptr<kd_tree> left;
+    std::unique_ptr<kd_tree> right;
+
+    aabb box;
+
+public:
+    kd_tree() : left(nullptr), right(nullptr) {}
+    kd_tree(const std::vector<rtr::primitives::face *> &faces);
+
+    std::optional<rtr::payload> hit(const rtr::ray &ray) const;
+
+    const aabb &bounding_box() const { return box; }
+
+    rtr::primitives::face *object;
+};
+} // namespace rtr
