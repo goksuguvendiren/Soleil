@@ -8,10 +8,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(OpenCV REQUIRED)
 find_package(ZLIB REQUIRED)
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
-include_directories(/usr/local/include)
-
-add_executable(PathTracer main.cpp src/scene_io.cpp include/scene.hpp src/scene.cpp 
+add_library(PathTracerLib src/scene_io.cpp include/scene.hpp src/scene.cpp 
     include/renderer.hpp src/renderer.cpp include/camera.hpp include/light.hpp 
         include/primitives/sphere.hpp include/materials/base.hpp include/primitives/mesh.hpp 
         include/vertex.hpp src/sphere.cpp include/aabb.hpp include/kd_tree.hpp 
@@ -21,4 +18,12 @@ add_executable(PathTracer main.cpp src/scene_io.cpp include/scene.hpp src/scene.
 		include/photon_map.hpp src/photon_map.cpp include/photon.hpp src/photon_integrator.cpp 
 		include/photon_integrator.hpp include/KDTree.hpp src/KDTree.cpp include/mc_integrator.hpp
 	    include/integrator.hpp	src/mc_integrator.cpp src/scene_loaders/tungsten_loader.cpp)
-target_link_libraries(PathTracer ${OpenCV_LIBS})
+target_link_libraries(PathTracerLib PUBLIC ${OpenCV_LIBS})
+target_include_directories(PathTracerLib PUBLIC include)
+target_include_directories(PathTracerLib PUBLIC /usr/local/include)
+
+add_executable(PathTracer main.cpp)
+target_link_libraries(PathTracer PUBLIC PathTracerLib)
+
+enable_testing()
+add_subdirectory(tests)

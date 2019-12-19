@@ -4,6 +4,7 @@
 compile_commands.json
 cmake-build-debug
 cmake-xcode
+debug
 cmake-build-release
 docs
 build
