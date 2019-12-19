@@ -5,7 +5,7 @@
 
 glm::vec3 rtr::materials::base::shade(const rtr::scene& scene, const rtr::payload& pld) const
 {
-    auto amb = (1 - trans) * ambient * diffuse;
+    auto amb = (1 - trans) * diffuse;
     glm::vec3 color = amb;
 
     scene.for_each_light([&pld, &color, this, &scene](auto light)

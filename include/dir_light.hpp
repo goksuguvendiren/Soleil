@@ -32,6 +32,7 @@ namespace rtr
 
         std::vector<rtr::photon> distribute_photons(int num_photons)
         {
+            assert(false && "Doesn't return any photons");
             std::vector<photon> photons;
 
             return photons;

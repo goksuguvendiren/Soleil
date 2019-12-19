@@ -26,7 +26,7 @@ namespace materials
 class base
 {
 public:
-    base() : diffuse({0.1f, 0.1f, 0.1f}), ambient({0.1f, 0.1f, 0.1f}), specular({0.f, 0.f, 0.f}), emissive(0), exp(0), trans(0), refr_index(1.f)
+    base() : diffuse({0.0f, 0.0f, 0.0f}), ambient({0.0f, 0.0f, 0.0f}), specular({0.f, 0.f, 0.f}), emissive(0), exp(0), trans(0), refr_index(1.f)
     {}
 
     base(const glm::vec3& diff, const glm::vec3& amb, const glm::vec3& spec, const glm::vec3& ems, float p, float t)

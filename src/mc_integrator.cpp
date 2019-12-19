@@ -27,32 +27,46 @@ inline void UpdateProgress(float progress)
 
 glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray) const
 {
-    auto color = glm::vec3{0.f, 0.f, 0.f};
     auto pld = scene.hit(ray);
 
     if (!pld) 
     {
+//        return color;
         // miss: then hit the bounding box.
         auto pld = scene.environment_sphere().hit(ray);
         if (pld)
         {
-            auto res_color = pld->material->shade(scene, *pld);
+            const auto &material = scene.get_material(pld->material_idx);
+            auto res_color = material->shade(scene, *pld);
             return res_color;
         }
-        // assert(pld && "Should always hit the bounding sphere");
-        return color;
+        // assert(false && "Should always hit the bounding sphere");
+        return glm::vec3(0,0,0);
     }
 
-    if (pld->ray.rec_depth >= scene.recursion_depth()) return pld->material->shade(scene, *pld); // replace with russian roulette
-    
-//    return glm::vec3(1.0f);
-//    return (pld->material->diffuse);
-    
-//    auto sample_direction = sample_hemisphere(pld->hit_normal);
-    auto sample_direction = pld->material->sample(pld->hit_normal, *pld);
+    const auto &material = scene.get_material(pld->material_idx);
+    if (material->is_emissive())
+    {
+        // std::cerr << "EMISSIVE MATERIAAAAL \n";
+        return material->shade(scene, *pld);
+    }
+    if (pld->ray.rec_depth >= 8)
+        return material->shade(scene, *pld); // replace with russian roulette
+
+    // return glm::vec3(1.0f);
+    // return ((pld->hit_normal + 1.0f) / 2.f);
+    // return material->diffuse;
+
+    //    auto sample_direction = sample_hemisphere(pld->hit_normal);
+    auto sample_direction = material->sample(pld->hit_normal, *pld);
     auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
 
-    return pld->material->shade(scene, *pld) * shade(scene, reflection_ray);
+    auto material_color = material->shade(scene, *pld);
+    auto irradiance = shade(scene, reflection_ray);
+
+    // std::cout << material_color << " * " << irradiance << '\n';
+
+    return material_color * irradiance;
 
     //
     //    color = pld->material->shade(*this, *pld);
@@ -99,7 +113,9 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
 
             // color += scene.trace(ray);
 
-            color += shade(scene, ray);
+            auto pix_color = shade(scene, ray);
+            //dstc::rer< pix_color << '\n';
+            color += pix_color;
         }
     }
 
@@ -151,7 +167,7 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
                 auto row_begin = pix_center + below * float(j);
                 render_line(scene, row_begin, j);
                 n++;
-                // UpdateProgress(n / (float)height);
+                UpdateProgress(n / (float)height);
             }
         }));
     }
