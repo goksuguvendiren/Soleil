@@ -12,7 +12,7 @@
 #include <chrono>
 #include <functional>
 #include <iostream>
-#include <material.hpp>
+#include <materials/base.hpp>
 #include <optional>
 #include <string>
 #include <vector>
@@ -81,7 +81,7 @@ public:
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
     }
 
-    std::vector<rtr::material> materials;
+    std::vector<int> material_idx;
     std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
     int id;
@@ -97,11 +97,11 @@ public:
         {
             for (auto& vertex : face.vertices)
             {
-                if (!vertex.mat)
-                    vertex.mat = &materials[0];
+                if (vertex.mat == -1) vertex.mat = material_idx[0];
             }
         }
     }
+    const rtr::aabb& bounding_box() const { return tree.bounding_box(); }
 
 private:
     rtr::kd_tree tree;

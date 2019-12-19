@@ -1,10 +1,13 @@
-#include "material.hpp"
+#include "materials/base.hpp"
+#include "photon.hpp"
 
 #include <glm/glm.hpp>
 
 namespace rtr
 {
-class emissive : public material
+namespace materials
+{
+class emissive : public base
 {
 public:
     emissive(float p)
@@ -15,18 +18,19 @@ public:
         : power(p)
     {}
 
-    bool is_emissive() const
+    virtual bool is_emissive() const
     {
         return true;
     }
 
     glm::vec3 shade(const scene& scene, const payload& pld) const
     {
-        std::cerr << "hit the light jack" << '\n';
+        // std::cerr << "hit the light jack" << '\n';
         return power;
     }
 
 private:
     glm::vec3 power;
 };
+} // namespace materials
 } // namespace rtr

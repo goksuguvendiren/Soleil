@@ -35,7 +35,7 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
 {
     std::optional<rtr::payload> min_hit = std::nullopt;
 
-    for (auto& sphere : spheres)
+    for (auto& sphere : information.spheres)
     {
         auto hit = sphere.hit(ray);
         if (!hit)
@@ -46,7 +46,7 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
         }
     }
 
-    for (auto& mesh : meshes)
+    for (auto& mesh : information.meshes)
     {
         auto hit = mesh.hit(ray);
         if (!hit)
@@ -68,56 +68,6 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
     return min_hit;
 }
 
-glm::vec3 rtr::scene::trace(const rtr::ray& ray) const
-{
-    auto color = glm::vec3{0.f, 0.f, 0.f};
-    std::optional<rtr::payload> pld = hit(ray);
-
-    if (!pld)
-        return color;
-    if (pld->ray.rec_depth >= max_recursion_depth)
-        return pld->material->shade(*this, *pld);
-    // std::cerr << "hit\n";
-    //    return glm::vec3(1.0f);
-    // if (pld->material)
-    // return pld->material->diffuse;
-    // return ((pld->hit_normal + 1.f) / 2.f);
-
-    //    auto sample_direction = sample_hemisphere(pld->hit_normal);
-    auto sample_direction = pld->material->sample(pld->hit_normal, *pld);
-    auto reflection_ray =
-        rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
-
-    return pld->material->shade(*this, *pld) * trace(reflection_ray);
-
-    //
-    //    color = pld->material->shade(*this, *pld);
-    //
-    //    // Reflection :
-    //    if (pld->material->specular.x > 0.f || pld->material->specular.y > 0.f || pld->material->specular.z > 0.f)
-    //    {
-    //        auto reflection_direction = reflect(ray.direction(), pld->hit_normal);
-    //        rtr::ray reflected_ray(pld->hit_pos + (reflection_direction * 1e-3f), reflection_direction,
-    //        pld->ray.rec_depth + 1, false); color += pld->material->specular * trace(reflected_ray);
-    //    }
-    //
-    //    // Refraction
-    //    if (pld->material->trans > 0.f)
-    //    {
-    //        auto eta_1 = 1.f;
-    //        auto eta_2 = 1.5f;
-    //
-    //        auto refraction_direction = refract(ray.direction(), pld->hit_normal, eta_2 / eta_1);
-    //        if (glm::length(refraction_direction) > 0.1)
-    //        {
-    //            rtr::ray refracted_ray(pld->hit_pos + (refraction_direction * 1e-3f), refraction_direction,
-    //            pld->ray.rec_depth + 1, false); color += pld->material->trans * trace(refracted_ray);
-    //        }
-    //    }
-
-    return color;
-}
-
 // Do it recursively
 glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) const
 {
@@ -128,9 +78,11 @@ glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) co
         return shadow;
     if (pld && (pld->param < light_distance)) // some base case checks to terminate
     {
-        auto& diffuse = pld->material->diffuse;
-        auto normalized_diffuse = diffuse; // diffuse / std::max(std::max(diffuse.x, diffuse.y), diffuse.z);
-        return shadow * normalized_diffuse * pld->material->trans;
+        assert(pld->material_idx >= 0 && " negative material index found!");
+        auto &material = information.materials[pld->material_idx];
+        auto &diffuse = material->diffuse;
+        auto normalized_diffuse = material->diffuse; // diffuse / std::max(std::max(diffuse.x, diffuse.y), diffuse.z);
+        return shadow * normalized_diffuse * material->trans;
     }
 
     auto hit_position = pld->hit_pos + ray.direction() * 1e-4f;
@@ -139,22 +91,24 @@ glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) co
     return shadow * shadow_trace(shadow_ray, light_distance - glm::length(pld->hit_pos - ray.origin()));
 }
 
-glm::vec3 rtr::scene::photon_trace(const rtr::ray& photon_ray) const
-{}
+// glm::vec3 rtr::scene::photon_trace(const rtr::ray &photon_ray) const
+// {
+// }
 
 void rtr::scene::print() const
 {
     std::cerr << "Camera : \n";
-    std::cerr << "\t Pos : " << camera.center() << '\n';
+    std::cerr << "\t Pos : " << information.camera.center() << '\n';
     std::cerr << "Meshes : \n";
     int i = 0;
-    for (auto& m : meshes)
+    for (auto& m : information.meshes)
     {
-        std::cerr << "\t\t Mesh " << i++ << " : \n";
-        std::cerr << "\t\t Material " << m.materials[0].diffuse << " : \n";
-        std::cerr << "\t\t " << m.materials[0].ambient << " : \n";
-        std::cerr << "\t\t " << m.materials[0].specular << " : \n";
-        for (auto& face : m.faces)
+        std::cerr << "\t\t Mesh " << i++ << " Name : " << m.name  << " : \n";
+        std::cerr << "\t\t Material " << information.materials[m.material_idx[0]]->diffuse << " : \n";
+        std::cerr << "\t\t " << information.materials[m.material_idx[0]]->ambient << " : \n";
+        std::cerr << "\t\t " << information.materials[m.material_idx[0]]->specular << " : \n";
+        std::cerr << "\t\t " << information.materials[m.material_idx[0]]->is_emissive() << " : \n";
+        for (auto &face : m.faces)
         {
             std::cerr << "\t\t\t Position_a : " << face.vertices[0].position() << '\n';
             std::cerr << "\t\t\t Position_b : " << face.vertices[1].position() << '\n';
@@ -163,16 +117,21 @@ void rtr::scene::print() const
     }
     std::cerr << "Spheres : \n";
     i = 0;
-    for (auto& s : spheres)
+    for (auto &s : information.spheres)
     {
         std::cerr << "\t\t Sphere " << i++ << " : \n";
-        std::cerr << "\t\t Material " << s.materials[0].diffuse << " : \n";
-        std::cerr << "\t\t " << s.materials[0].ambient << " : \n";
-        std::cerr << "\t\t " << s.materials[0].specular << " : \n";
+        std::cerr << "\t\t Material " << information.materials[s.material_idx[0]]->diffuse << " : \n";
+        std::cerr << "\t\t " << information.materials[s.material_idx[0]]->ambient << " : \n";
+        std::cerr << "\t\t " << information.materials[s.material_idx[0]]->specular << " : \n";
         //        for (auto& face : m.faces)
         {
             std::cerr << "\t\t\t Center : " << s.origin << '\n';
             std::cerr << "\t\t\t Radius : " << s.radius << '\n';
         }
     }
+
+    for_each_light([](auto light) {
+        std::cerr << "\t\t Light source: \n";
+        // std::cerr <<
+    });
 }

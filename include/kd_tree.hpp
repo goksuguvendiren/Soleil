@@ -28,6 +28,8 @@ namespace rtr
         kd_tree(const std::vector<rtr::primitives::face*>& faces);
         
         std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+
+        const aabb& bounding_box() const { return box; }
         
         rtr::primitives::face* object;
     };

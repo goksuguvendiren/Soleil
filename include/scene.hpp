@@ -14,6 +14,7 @@
 #include "payload.hpp"
 #include "primitives/sphere.hpp"
 #include "primitives/mesh.hpp"
+#include "primitives/emissive_mesh.hpp"
 #include "dir_light.hpp"
 
 namespace rtr
@@ -26,32 +27,10 @@ namespace rtr
     //     class mesh;
     // }
 
-    class scene
+    struct scene_information
     {
-    public:
-        scene() = default;
-        const rtr::camera& get_camera() const { return camera; }
+        scene_information() = default;
 
-        std::optional<rtr::payload> hit(const rtr::ray& ray) const;
-
-        template <class FnT>
-        void for_each_light(FnT&& func) const
-        {
-            std::for_each(lghts.begin(), lghts.end(), func);
-            std::for_each(dir_lghts.begin(), dir_lghts.end(), func);
-        }
-
-        const std::vector<rtr::light>& lights() const { return lghts; }
-        const std::vector<rtr::dir_light>& dir_lights() const { return dir_lghts; }
-
-        rtr::camera camera;
-        glm::vec3 trace(const rtr::ray& ray) const;
-        glm::vec3 photon_trace(const rtr::ray& ray) const;
-        glm::vec3 shadow_trace(const rtr::ray& ray, float light_distance) const;
-        
-        void print() const;
-        
-//    private:
         glm::vec3 background_color;
         glm::vec3 ambient_light;
         float shadow_ray_epsilon          = 1e-3;
@@ -62,12 +41,76 @@ namespace rtr
         std::vector<rtr::primitives::mesh> meshes;
         std::vector<rtr::light> lghts;
         std::vector<rtr::dir_light> dir_lghts;
+        std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> mesh_lights;
+        std::vector<std::unique_ptr<rtr::materials::base>> materials;
 
-    // private:
+        bool progressive_render = false;
+        int samples_per_pixel;
+
         std::string output_file_name;
         std::string output_hdr_name;
-        int samples_per_pixel = 16;
-        bool scene_bvh = true;
-        bool progressive_render = true;
+        // info.scene_bvh = renderer_settings["scene_bvh"];
+        rtr::camera camera;
+    };
+
+    class scene
+    {
+    public:
+        scene(scene_information sc_info) : information(std::move(sc_info)) 
+        { 
+            rtr::aabb bounding_box;
+            for (auto& m : information.meshes)
+            {
+                std::cerr << m.bounding_box().min << ", " << m.bounding_box().max << '\n';
+                bounding_box = combine(bounding_box, m.bounding_box());
+            }
+
+            bounding_box = combine(bounding_box, information.camera.center());
+
+            auto center = (bounding_box.max + bounding_box.min) / 2.f;
+
+            information.materials.push_back(std::make_unique<rtr::materials::base>(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3{0.1, 0.1, 0.1}, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, 0, 0));
+
+            float constant = 3.f;
+            bounding_sphere = rtr::primitives::sphere("scene bounding box", center, glm::length(center - bounding_box.max) * constant, information.materials.size() - 1);
+        }
+
+        const rtr::camera& get_camera() const { return information.camera; }
+        void set_camera(rtr::camera& cam) { information.camera = std::move(cam); }
+
+        std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+
+        template <class FnT>
+        void for_each_light(FnT&& func) const
+        {
+            std::for_each(lights().begin(), lights().end(), func);
+            std::for_each(dir_lights().begin(), dir_lights().end(), func);
+            // std::for_each(mesh_lights().begin(), mesh_lights().end(), func);
+        }
+
+        const std::vector<rtr::light>& lights() const { return information.lghts; }
+        const std::vector<rtr::dir_light>& dir_lights() const { return information.dir_lghts; }
+        const std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> &mesh_lights() const { return information.mesh_lights; }
+
+        glm::vec3 trace(const rtr::ray& ray) const;
+        glm::vec3 photon_trace(const rtr::ray& ray) const;
+        glm::vec3 shadow_trace(const rtr::ray& ray, float light_distance) const;
+        
+        void print() const;
+
+        std::string output_file_name() const { return information.output_file_name; }
+
+        const rtr::primitives::sphere& environment_sphere() const { return bounding_sphere; }
+        int recursion_depth() const { return information.max_recursion_depth; }
+
+        const std::unique_ptr<rtr::materials::base> &get_material(int index) const
+        {
+            assert(index >= 0 && " material index is negative!");
+            return information.materials[index];
+        }
+        
+    private:
+        rtr::primitives::sphere bounding_sphere;
+        scene_information information;
     };
 }

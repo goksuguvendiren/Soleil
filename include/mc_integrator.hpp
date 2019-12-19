@@ -6,9 +6,11 @@
 
 #include <glm/vec3.hpp>
 #include "camera.hpp"
+#include "camera.hpp"
 
 namespace rtr
 {
+class ray;
 class scene;
 class mc_integrator
 {
@@ -29,5 +31,6 @@ private:
     void render_line(const rtr::scene &scene, const glm::vec3& row_begin, int i);
     glm::vec3 render_pixel(const rtr::scene& scene, const rtr::camera& camera, const glm::vec3& pix_center,
                            const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
+    glm::vec3 shade(const rtr::scene& scene, const rtr::ray& ray) const;
 };
 }

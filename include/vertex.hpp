@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "material.hpp"
+#include "materials/base.hpp"
 
 #include <glm/vec3.hpp>
 
@@ -17,11 +17,11 @@ public:
     vertex(const glm::vec3& pos)
         : poss(pos)
         , normal({0, 0, 0})
-        , mat(nullptr)
+        , mat(-1)
         , u(0)
         , v(0)
     {}
-    vertex(const glm::vec3& pos, const glm::vec3& n, material* m, float s, float t)
+    vertex(const glm::vec3 &pos, const glm::vec3 &n, int m, float s, float t)
         : poss(pos)
         , normal(n)
         , mat(m)
@@ -29,7 +29,7 @@ public:
         , v(t)
     {}
 
-    rtr::material* mat;
+    int mat;
     glm::vec3 normal;
 
     glm::vec3 poss;

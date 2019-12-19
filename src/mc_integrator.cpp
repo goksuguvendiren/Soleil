@@ -7,7 +7,7 @@
 #include "mc_integrator.hpp"
 #include "camera.hpp"
 #include "scene.hpp"
-#include "material.hpp"
+#include "materials/base.hpp"
 #include "integrator.hpp"
 
 inline void UpdateProgress(float progress)
@@ -24,6 +24,74 @@ inline void UpdateProgress(float progress)
     std::cout << "] " << int(progress * 100.0) << " %\r";
     std::cout.flush();
 };
+
+glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray) const
+{
+    auto pld = scene.hit(ray);
+
+    if (!pld) 
+    {
+//        return color;
+        // miss: then hit the bounding box.
+        auto pld = scene.environment_sphere().hit(ray);
+        if (pld)
+        {
+            const auto &material = scene.get_material(pld->material_idx);
+            auto res_color = material->shade(scene, *pld);
+            return res_color;
+        }
+        // assert(false && "Should always hit the bounding sphere");
+        return glm::vec3(0,0,0);
+    }
+
+    const auto &material = scene.get_material(pld->material_idx);
+    if (material->is_emissive())
+    {
+        return material->shade(scene, *pld);
+    }
+    if (pld->ray.rec_depth >= 8)
+        return material->shade(scene, *pld); // replace with russian roulette
+
+    // return glm::vec3(1.0f);
+    // return ((pld->hit_normal + 1.0f) / 2.f);
+    // return material->diffuse;
+
+    //    auto sample_direction = sample_hemisphere(pld->hit_normal);
+    auto sample_direction = material->sample(pld->hit_normal, *pld);
+    auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
+
+    auto material_color = material->shade(scene, *pld);
+    auto irradiance = shade(scene, reflection_ray);
+
+    // std::cout << material_color << " * " << irradiance << '\n';
+
+    return material_color * irradiance;
+
+    //
+    //    color = pld->material->shade(*this, *pld);
+    //
+    //    // Reflection :
+    //    if (pld->material->specular.x > 0.f || pld->material->specular.y > 0.f || pld->material->specular.z > 0.f)
+    //    {
+    //        auto reflection_direction = reflect(ray.direction(), pld->hit_normal);
+    //        rtr::ray reflected_ray(pld->hit_pos + (reflection_direction * 1e-3f), reflection_direction,
+    //        pld->ray.rec_depth + 1, false); color += pld->material->specular * trace(reflected_ray);
+    //    }
+    //
+    //    // Refraction
+    //    if (pld->material->trans > 0.f)
+    //    {
+    //        auto eta_1 = 1.f;
+    //        auto eta_2 = 1.5f;
+    //
+    //        auto refraction_direction = refract(ray.direction(), pld->hit_normal, eta_2 / eta_1);
+    //        if (glm::length(refraction_direction) > 0.1)
+    //        {
+    //            rtr::ray refracted_ray(pld->hit_pos + (refraction_direction * 1e-3f), refraction_direction,
+    //            pld->ray.rec_depth + 1, false); color += pld->material->trans * trace(refracted_ray);
+    //        }
+    //    }
+}
 
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera, const glm::vec3& pix_center,
                                            const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below)
@@ -42,7 +110,11 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
             auto sub_pix_position = get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
             auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
-            color += scene.trace(ray);
+            // color += scene.trace(ray);
+
+            auto pix_color = shade(scene, ray);
+            //dstc::rer< pix_color << '\n';
+            color += pix_color;
         }
     }
 
@@ -94,7 +166,7 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
                 auto row_begin = pix_center + below * float(j);
                 render_line(scene, row_begin, j);
                 n++;
-                // UpdateProgress(n / (float)height);
+                UpdateProgress(n / (float)height);
             }
         }));
     }

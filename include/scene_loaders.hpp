@@ -97,7 +97,7 @@ inline auto GetTransformations(std::istringstream& stream)
     return result;
 }
 
-inline std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices, const std::map<int, rtr::material>& materials)
+inline std::vector<rtr::primitives::sphere> load_spheres(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices)
 {
     std::vector<rtr::primitives::sphere> spheres;
     
@@ -111,7 +111,7 @@ inline std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *el
         
         glm::vec3 center = vertices[centerID - 1].position();
         
-        rtr::primitives::sphere sp("", center, radius, materials.at(matID));
+        rtr::primitives::sphere sp("", center, radius, matID);
         
         spheres.push_back(std::move(sp));
     }
@@ -119,7 +119,7 @@ inline std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *el
     return spheres;
 }
 
-inline std::vector<rtr::primitives::mesh> LoadMeshes(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices, const std::map<int, rtr::material>& materials)
+inline std::vector<rtr::primitives::mesh> load_meshes(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices)
 {
     std::vector<rtr::primitives::mesh> meshes;
     
@@ -155,7 +155,7 @@ inline std::vector<rtr::primitives::mesh> LoadMeshes(tinyxml2::XMLElement *elem,
         
         meshes.emplace_back(faces, "");
         auto& mesh = meshes.back();
-        mesh.materials.push_back(materials.at(matID));
+        mesh.material_idx.push_back(matID);
 //        mesh.configure_materials();
     }
     
@@ -238,7 +238,6 @@ namespace loaders
 //                 rtr::primitives::face face_new(face_vertices, rtr::primitives::face::normal_types::per_vertex, rtr::primitives::face::material_binding::per_object);
 //                 faces.push_back(face_new);
 //             }
-            
 //             scene.meshes.emplace_back(faces, "");
             
 //             auto& m = scene.meshes.back();
@@ -288,7 +287,18 @@ namespace loaders
         return color;
     }
     
-    inline std::pair<int, rtr::material> load_material(tinyxml2::XMLElement *child)
+    inline std::pair<int, int> GetIntPair(tinyxml2::XMLElement* element)
+    {
+        std::pair<int, int> resolution;
+        
+        std::istringstream ss {element->GetText()};
+        ss >> resolution.first;
+        ss >> resolution.second;
+        
+        return resolution;
+    }
+
+    inline std::unique_ptr<rtr::materials::base> load_material(tinyxml2::XMLElement *child)
     {
         int id;
         child->QueryIntAttribute("id", &id);
@@ -304,7 +314,7 @@ namespace loaders
         if ((tmp = child->FirstChildElement("PhongExponent")))
             phongEx  = tmp->FloatText(1);
         
-        rtr::material mat{diffuse, ambient, specular, glm::vec3{0, 0, 0}, phongEx, 0};
+        rtr::materials::base mat{diffuse, ambient, specular, glm::vec3{0, 0, 0}, phongEx, 0};
         
         if ((tmp = child->FirstChildElement("Transparency"))) // then the material should be a glass (transparent)
         {
@@ -320,7 +330,7 @@ namespace loaders
             mat.refr_index = refraction_index;
         }
 
-        return std::make_pair(id, mat);
+        return std::make_unique<rtr::materials::base>(mat);
     }
     
     inline rtr::light load_point_light(tinyxml2::XMLElement *child)
@@ -348,7 +358,7 @@ namespace loaders
     
     inline rtr::scene load_from_xml(const std::string& filename)
     {
-        rtr::scene scene;
+        rtr::scene_information info;
         
         tinyxml2::XMLDocument document;
         document.LoadFile(filename.c_str());
@@ -367,19 +377,19 @@ namespace loaders
         
         if (auto elem = docscene->FirstChildElement("BackgroundColor")){
             auto color = GetElem(elem);
-            scene.background_color = color;
+            info.background_color = color;
         }
         
         if (auto elem = docscene->FirstChildElement("ShadowRayEpsilon")){
-            scene.shadow_ray_epsilon = elem->FloatText();
+            info.shadow_ray_epsilon = elem->FloatText();
         }
         
         if (auto elem = docscene->FirstChildElement("MaxRecursionDepth")){
-            scene.max_recursion_depth = elem->IntText(1);
+            info.max_recursion_depth = elem->IntText(1);
         }
         
         if (auto elem = docscene->FirstChildElement("IntersectionTestEpsilon")){
-            scene.intersection_test_epsilon = elem->FloatText();
+            info.intersection_test_epsilon = elem->FloatText();
         }
         
         if (auto elem = docscene->FirstChildElement("Camera"))
@@ -396,7 +406,9 @@ namespace loaders
             }
             auto vertical_fov = 0.985398f;
             
-            scene.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, focal_distance, false );
+            auto res = GetIntPair(elem->FirstChildElement("ImageResolution"));
+
+            info.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, res.first, res.second, focal_distance, true);
         }
         else {
             std::cerr << "Could not read camera information\n";
@@ -408,18 +420,19 @@ namespace loaders
             for (auto child = elem->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
             {
                 if (child->Name() == std::string("PointLight"))
-                    scene.lghts.push_back(load_point_light(child));
-                else scene.dir_lghts.push_back(load_directional_light(child));
+                    info.lghts.push_back(load_point_light(child));
+                else info.dir_lghts.push_back(load_directional_light(child));
             }
         }
 
-        std::map<int, rtr::material> materials;
+        std::vector<std::unique_ptr<rtr::materials::base>> materials;
         if (auto elem = docscene->FirstChildElement("Materials")){
             for (auto child = elem->FirstChildElement("Material"); child != NULL; child = child->NextSiblingElement())
             {
-                materials.insert(load_material(child));
+                materials.push_back(load_material(child));
             }
         }
+        info.materials = std::move(materials);
         
         std::vector<rtr::vertex> vertices;
         if (auto elem = docscene->FirstChildElement("VertexData"))
@@ -438,41 +451,44 @@ namespace loaders
         
         if(auto objects = docscene->FirstChildElement("Objects"))
         {
-            scene.spheres = LoadSpheres(objects, vertices, materials);
-            scene.meshes = LoadMeshes(objects, vertices, materials);
+            info.spheres = load_spheres(objects, vertices);
+            info.meshes = load_meshes(objects, vertices);
         }
         
         // scene.print();
         
-        return scene;
+        std::cerr << "scene loader: " << info.camera.width << '\n';
+        return rtr::scene(std::move(info));
     }
     
     inline rtr::scene load_from_veach(const std::string& filename)
     {
-        rtr::scene scene;
+        rtr::scene_information info;
         
         auto io = readScene(filename.c_str());
         auto& cam = io->camera;
         int width = 400;
         int height = 400;
-        scene.camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, width, height);
-        //    camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, 12.f, false);
+        info.camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, width, height);
+        //   camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, 12.f, false);
         
         auto* light = io->lights;
         while(light != nullptr)
         {
             if (light->type == LightType::POINT_LIGHT)
             {
-                scene.lghts.emplace_back(to_vec3(light->position), to_vec3(light->color));
+                info.lghts.emplace_back(to_vec3(light->position), to_vec3(light->color));
             }
             else if (light->type == LightType::DIRECTIONAL_LIGHT)
             {
-                scene.dir_lghts.emplace_back(to_vec3(light->direction), to_vec3(light->color));
+                info.dir_lghts.emplace_back(to_vec3(light->direction), to_vec3(light->color));
             }
             light = light->next;
         }
         
         int id = 0;
+
+        std::vector<std::unique_ptr<rtr::materials::base>> all_materials;
         
         auto* obj = io->objects;
         while(obj != nullptr)  // iterate through the objects
@@ -481,34 +497,36 @@ namespace loaders
             {
                 auto data = reinterpret_cast<SphereIO*>(obj->data);
                 
-                scene.spheres.emplace_back(obj->name ? obj->name : "", to_vec3(data->origin), data->radius,
+                info.spheres.emplace_back(obj->name ? obj->name : "", to_vec3(data->origin), data->radius,
                                      to_vec3(data->xaxis), data->xlength,
                                      to_vec3(data->yaxis), data->ylength,
                                      to_vec3(data->zaxis), data->zlength);
                 
-                auto& sph = scene.spheres.back();
+                auto& sph = info.spheres.back();
                 
                 //            std::cerr << glm::length(sph.origin - to_vec3(cam->position)) << '\n';
                 sph.id = id++;
                 for (int i = 0; i < obj->numMaterials; ++i)
                 {
-                    sph.materials.emplace_back(to_vec3(obj->material->diffColor), to_vec3(obj->material->ambColor),
+                    all_materials.emplace_back(std::make_unique<rtr::materials::base>(to_vec3(obj->material->diffColor), to_vec3(obj->material->ambColor),
                                                to_vec3(obj->material->specColor), to_vec3(obj->material->emissColor),
-                                               obj->material->shininess, obj->material->ktran);
+                                               obj->material->shininess, obj->material->ktran));
+                    sph.material_idx.push_back(all_materials.size() - 1);
                 }
             }
             else
             {
                 auto data = reinterpret_cast<PolySetIO*>(obj->data);
                 assert(data->type == PolySetType::POLYSET_TRI_MESH);
+
+                std::vector<int> material_idx;
                 
-                std::vector<material> materials;
-                materials.reserve(obj->numMaterials);
                 for (int i = 0; i < obj->numMaterials; ++i)
                 {
-                    materials.emplace_back(to_vec3(obj->material[i].diffColor), to_vec3(obj->material[i].ambColor),
+                    all_materials.emplace_back(std::make_unique<rtr::materials::base>(to_vec3(obj->material[i].diffColor), to_vec3(obj->material[i].ambColor),
                                            to_vec3(obj->material[i].specColor), to_vec3(obj->material[i].emissColor),
-                                           obj->material[i].shininess, obj->material[i].ktran);
+                                           obj->material[i].shininess, obj->material[i].ktran));
+                    material_idx.emplace_back(all_materials.size() - 1);
                 }
                 
                 std::vector<rtr::primitives::face> faces;
@@ -521,22 +539,23 @@ namespace loaders
                     for (int j = 0; j < polygon.numVertices; ++j)
                     {
                         auto& poly = polygon.vert[j];
-                        vertices.at(j) = rtr::vertex(to_vec3(poly.pos), to_vec3(poly.norm), &materials.at(poly.materialIndex), poly.s, poly.t);
+                        vertices.at(j) = rtr::vertex(to_vec3(poly.pos), to_vec3(poly.norm), poly.materialIndex, poly.s, poly.t);
                     }
                     faces.emplace_back(vertices, to_rtr(data->normType), to_rtr(data->materialBinding));
                 }
                 
-                scene.meshes.emplace_back(faces, obj->name ? obj->name : "");
-                auto& mesh = scene.meshes.back();
+                info.meshes.emplace_back(faces, obj->name ? obj->name : "");
+                auto& mesh = info.meshes.back();
                 mesh.id = id++;
-                mesh.materials = std::move(materials);
+                mesh.material_idx = std::move(material_idx);
             }
             obj = obj->next;
         }
-        return scene;
+        info.materials = std::move(all_materials);
+        return rtr::scene(std::move(info));
     }
 
-    rtr::scene load_mitsuba(const std::string& filename);
+    rtr::scene load_tungsten(const std::string& filename);
     
     inline rtr::scene load(const std::string& filename)
     {
@@ -554,7 +573,7 @@ namespace loaders
         }        
         else if (hasEnding(filename, ".json"))
         {
-            return load_mitsuba(filename);
+            return load_tungsten(filename);
         }
         else
         {
