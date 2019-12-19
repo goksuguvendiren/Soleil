@@ -148,48 +148,56 @@ rtr::primitives::mesh load_quad(const glm::mat4x4& transform, const std::string&
 rtr::primitives::mesh load_cube(const glm::mat4x4 &transform, const std::string& name)
 {
     std::vector<rtr::vertex> vertices = {
+        // Top
         rtr::vertex({-0.5f, 0.5f, -0.5f}),
         rtr::vertex({0.5f, 0.5f, -0.5f}),
         rtr::vertex({0.5f, 0.5f, 0.5f}),
         rtr::vertex({-0.5f, 0.5f, 0.5f}),
 
+        // Bottom
         rtr::vertex({-0.5f, -0.5f, -0.5f}),
         rtr::vertex({0.5f, -0.5f, -0.5f}),
         rtr::vertex({0.5f, -0.5f, 0.5f}),
         rtr::vertex({-0.5f, -0.5f, 0.5f}),
 
+        // Right
         rtr::vertex({0.5f, 0.5f, 0.5f}),
         rtr::vertex({0.5f, 0.5f, -0.5f}),
-        rtr::vertex({0.5f, -0.5f, 0.5f}),
         rtr::vertex({0.5f, -0.5f, -0.5f}),
+        rtr::vertex({0.5f, -0.5f, 0.5f}),
 
+        // Left
         rtr::vertex({-0.5f, 0.5f, -0.5f}),
         rtr::vertex({-0.5f, 0.5f, 0.5f}),
-        rtr::vertex({-0.5f, -0.5f, -0.5f}),
         rtr::vertex({-0.5f, -0.5f, 0.5f}),
+        rtr::vertex({-0.5f, -0.5f, -0.5f}),
 
+        // Back
         rtr::vertex({0.5f, 0.5f, -0.5f}),
         rtr::vertex({-0.5f, 0.5f, -0.5f}),
-        rtr::vertex({0.5f, -0.5f, -0.5f}),
         rtr::vertex({-0.5f, -0.5f, -0.5f}),
+        rtr::vertex({0.5f, -0.5f, -0.5f}),
 
+        // Front
         rtr::vertex({-0.5f, 0.5f, 0.5f}),
         rtr::vertex({0.5f, 0.5f, 0.5f}),
-        rtr::vertex({-0.5f, -0.5f, 0.5f}),
         rtr::vertex({0.5f, -0.5f, 0.5f}),
+        rtr::vertex({-0.5f, -0.5f, 0.5f}),
     };
 
     for (auto &vertex : vertices)
         vertex.transform(transform);
 
     std::vector<rtr::primitives::face> faces;
-    for (int i = 0; i < 4; i += 4)
+    for (int i = 0; i < vertices.size() / 4; i++)
     {
-        faces.emplace_back(rtr::primitives::face({vertices[i], vertices[i + 1], vertices[i + 2]},
+        faces.emplace_back(rtr::primitives::face({vertices[4 * i], vertices[4 * i + 1], vertices[4 * i + 2]},
                                                  rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
-        faces.emplace_back(rtr::primitives::face({vertices[i], vertices[i + 2], vertices[i + 3]},
+        faces.emplace_back(rtr::primitives::face({vertices[4 * i], vertices[4 * i + 2], vertices[4 * i + 3]},
                                                  rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
     }
+
+    std::cerr << faces.size() << '\n';
 
     return rtr::primitives::mesh(faces, name);
 }
