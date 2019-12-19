@@ -69,7 +69,7 @@ namespace rtr
 
             auto center = (bounding_box.max + bounding_box.min) / 2.f;
 
-            information.materials.push_back(std::make_unique<rtr::materials::base>(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3{0.1, 0.1, 0.1}, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, 0, 0));
+            information.materials.push_back(std::make_unique<rtr::materials::base>(glm::vec3(0.f, 0.f, 0.f), glm::vec3{0.1, 0.1, 0.1}, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, 0, 0));
 
             float constant = 3.f;
             bounding_sphere = rtr::primitives::sphere("scene bounding box", center, glm::length(center - bounding_box.max) * constant, information.materials.size() - 1);

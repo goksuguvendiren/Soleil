@@ -97,7 +97,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
                                            const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 1;
+    constexpr int sq_sample_pp = 4;
     auto is_lens = std::bool_constant<true>();
 
     glm::vec3 color = {0, 0, 0};
