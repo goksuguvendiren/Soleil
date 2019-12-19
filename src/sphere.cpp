@@ -50,8 +50,10 @@ std::optional<rtr::payload> rtr::primitives::sphere::hit(const rtr::ray& ray) co
     }
     
     auto uv = get_lat_long(hit_point, origin);
+
+    assert(material_idx.size() > 0 && " sphere has no materials, hitting the default sphere probably.");
     
-    auto pld = rtr::payload{surface_normal, hit_point, ray, param, &materials.front(), uv, id};
+    auto pld = rtr::payload{surface_normal, hit_point, ray, param, material_idx.front(), uv, id};
 
     return pld;
 }

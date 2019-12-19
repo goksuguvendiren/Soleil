@@ -20,20 +20,29 @@ static glm::mat4x4 get_transform_matrix(const nlohmann::json& transform_json)
     if (transform_json.empty())
         return transform;
 
-    auto translate_json = transform_json["position"];
+    if (transform_json.contains("position"))
+    {
+        auto translate_json = transform_json["position"];
 
-    glm::vec3 translation = to_vec3(translate_json);
-    transform = glm::translate(transform, translation);
+        glm::vec3 translation = to_vec3(translate_json);
+        transform = glm::translate(transform, translation);
+    }
 
-    auto rotation_json = transform_json["rotation"];
-    glm::vec3 rotation = to_vec3(rotation_json);
-    transform = glm::rotate(transform, rotation.x, {1, 0, 0});
-    transform = glm::rotate(transform, rotation.y, {0, 1, 0});
-    transform = glm::rotate(transform, rotation.z, {0, 0, 1});
+    if (transform_json.contains("rotation"))
+    {
+        auto rotation_json = transform_json["rotation"];
+        glm::vec3 rotation = to_vec3(rotation_json);
+        transform = glm::rotate(transform, glm::radians(rotation.x), {1, 0, 0});
+        transform = glm::rotate(transform, glm::radians(rotation.y), {0, 1, 0});
+        transform = glm::rotate(transform, glm::radians(rotation.z), {0, 0, 1});
+    }
 
-    auto scale_json = transform_json["scale"];
-    glm::vec3 scale = to_vec3(scale_json);
-    transform = glm::scale(transform, scale);
+    if (transform_json.contains("scale"))
+    {
+        auto scale_json = transform_json["scale"];
+        glm::vec3 scale = to_vec3(scale_json);
+        transform = glm::scale(transform, scale);
+    }
 
     return transform;
 }
@@ -99,7 +108,7 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
     return mesh;
 }
 
-std::pair<std::string, rtr::materials::base> load_material(const nlohmann::json& material_json)
+std::pair<std::string, std::unique_ptr<rtr::materials::base>> load_material(const nlohmann::json& material_json)
 {
     std::string name = material_json["name"];
     auto albedo_json = material_json["albedo"];
@@ -115,10 +124,10 @@ std::pair<std::string, rtr::materials::base> load_material(const nlohmann::json&
         albedo.z = albedo_json[2];
     }
 
-    return std::make_pair(name, rtr::materials::base(albedo, {0.1, 0.1, 0.1}, {0, 0, 0}, {0, 0, 0}, 0, 0));
+    return std::make_pair(name, std::make_unique<rtr::materials::base>(rtr::materials::base(albedo, {0.0, 0.0, 0.0}, {0, 0, 0}, {0, 0, 0}, 0, 0)));
 }
 
-rtr::primitives::mesh load_quad(const glm::mat4x4& transform)
+rtr::primitives::mesh load_quad(const glm::mat4x4& transform, const std::string& name)
 {
     std::vector<rtr::vertex> vertices = {rtr::vertex({-0.5f, 0.0f, -0.5f}),
                                          rtr::vertex({0.5f, 0.0f, -0.5f}),
@@ -128,13 +137,64 @@ rtr::primitives::mesh load_quad(const glm::mat4x4& transform)
     for (auto& vertex : vertices) vertex.transform(transform);
 
     std::vector<rtr::primitives::face> faces;
-    faces.emplace_back(rtr::primitives::face({vertices[0], vertices[1], vertices[2]}));
-    faces.emplace_back(rtr::primitives::face({vertices[0], vertices[2], vertices[3]}));
+    faces.emplace_back(rtr::primitives::face({vertices[0], vertices[1], vertices[2]},
+                                             rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
+    faces.emplace_back(rtr::primitives::face({vertices[0], vertices[2], vertices[3]},
+                                             rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
 
-    return rtr::primitives::mesh(faces, "quad");
+    return rtr::primitives::mesh(faces, name);
 }
 
-rtr::scene load_tungsten(const std::string& filename)
+rtr::primitives::mesh load_cube(const glm::mat4x4 &transform, const std::string& name)
+{
+    std::vector<rtr::vertex> vertices = {
+        rtr::vertex({-0.5f, 0.5f, -0.5f}),
+        rtr::vertex({0.5f, 0.5f, -0.5f}),
+        rtr::vertex({0.5f, 0.5f, 0.5f}),
+        rtr::vertex({-0.5f, 0.5f, 0.5f}),
+
+        rtr::vertex({-0.5f, -0.5f, -0.5f}),
+        rtr::vertex({0.5f, -0.5f, -0.5f}),
+        rtr::vertex({0.5f, -0.5f, 0.5f}),
+        rtr::vertex({-0.5f, -0.5f, 0.5f}),
+
+        rtr::vertex({0.5f, 0.5f, 0.5f}),
+        rtr::vertex({0.5f, 0.5f, -0.5f}),
+        rtr::vertex({0.5f, -0.5f, 0.5f}),
+        rtr::vertex({0.5f, -0.5f, -0.5f}),
+
+        rtr::vertex({-0.5f, 0.5f, -0.5f}),
+        rtr::vertex({-0.5f, 0.5f, 0.5f}),
+        rtr::vertex({-0.5f, -0.5f, -0.5f}),
+        rtr::vertex({-0.5f, -0.5f, 0.5f}),
+
+        rtr::vertex({0.5f, 0.5f, -0.5f}),
+        rtr::vertex({-0.5f, 0.5f, -0.5f}),
+        rtr::vertex({0.5f, -0.5f, -0.5f}),
+        rtr::vertex({-0.5f, -0.5f, -0.5f}),
+
+        rtr::vertex({-0.5f, 0.5f, 0.5f}),
+        rtr::vertex({0.5f, 0.5f, 0.5f}),
+        rtr::vertex({-0.5f, -0.5f, 0.5f}),
+        rtr::vertex({0.5f, -0.5f, 0.5f}),
+    };
+
+    for (auto &vertex : vertices)
+        vertex.transform(transform);
+
+    std::vector<rtr::primitives::face> faces;
+    for (int i = 0; i < 4; i += 4)
+    {
+        faces.emplace_back(rtr::primitives::face({vertices[i], vertices[i + 1], vertices[i + 2]},
+                                                 rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
+        faces.emplace_back(rtr::primitives::face({vertices[i], vertices[i + 2], vertices[i + 3]},
+                                                 rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
+    }
+
+    return rtr::primitives::mesh(faces, name);
+}
+
+rtr::scene load_tungsten(const std::string &filename)
 {
     // rtr::scene scene;
     rtr::scene_information info;
@@ -171,8 +231,18 @@ rtr::scene load_tungsten(const std::string& filename)
     auto foc = 1.f;
     auto image_plane_distance = 1.f;
 
-    int width = camera_settings["resolution"];
-    int height = camera_settings["resolution"];
+    auto resolution = camera_settings["resolution"];
+
+    int width = 0, height = 0;
+    if (resolution.is_array())
+    {
+        width = resolution[0];
+        height = resolution[1];
+    }
+    else
+    {
+        width = height = (int)resolution;
+    }
 
     info.camera =
         rtr::camera(position, lookat_dir, up_dir, foc, fov, width, height, image_plane_distance, pinhole == "pinhole");
@@ -185,49 +255,89 @@ rtr::scene load_tungsten(const std::string& filename)
      * Load the materials
      */
     auto materials = scene_json["bsdfs"];
-    std::map<std::string, rtr::materials::base> all_materials;
-    for (auto& material : materials)
+    std::vector<std::unique_ptr<rtr::materials::base>> all_materials;
+    std::map<std::string, int> material_mappings;
+    for (auto &material : materials)
     {
         auto mat = load_material(material);
-        all_materials.insert(mat);
+        all_materials.push_back(std::move(mat.second)); // put the material to the list, get its index, and put it into the map
+        material_mappings.insert({mat.first, all_materials.size() - 1});
     }
 
-    info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{100, 100, 100});
+    // info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{100, 100, 100});
     info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
 
     /*
      * Load the primitives
      */
     auto primitives = scene_json["primitives"];
-    for (auto& primitive : primitives)
+    int id = 0;
+    for (auto &primitive : primitives)
     {
         //     std::cerr << std::setw(4) << primitive << '\n';
         auto transform = get_transform_matrix(primitive["transform"]);
         auto type = primitive["type"];
+        auto name = primitive["bsdf"];
         std::string material_id = primitive["bsdf"];
-        auto mesh_material = all_materials[material_id];
+        auto mesh_material_idx = material_mappings[material_id];
         if (type == "mesh")
         {
             // if (primitive["file"])
             auto mesh = load_mesh("../Scenes/Tungsten/veach-bidir/" + std::string(primitive["file"]));
-            mesh.materials.push_back(mesh_material);
+            // assert(false && "hard coded, correct it!");
+            mesh.material_idx.push_back(mesh_material_idx);
             info.meshes.emplace_back(std::move(mesh));
-        } else if (type == "quad")
+        }
+        else if (type == "quad")
         {
-            auto quad = load_quad(transform);
+            auto quad = load_quad(transform, name);
             std::cerr << "hi\n";
+            std::cerr << "primitive.find(\"power\") == primitive.end() && primitive.find(\"emission\") == primitive.end(): "
+                      << (primitive.find("power") == primitive.end() && primitive.find("emission") == primitive.end()) << '\n';
+            if (primitive.find("power") == primitive.end() && primitive.find("emission") == primitive.end())
+            {
+                quad.material_idx.push_back(mesh_material_idx);
+            }
             info.meshes.emplace_back(std::move(quad));
+        }
+        else if (type == "cube")
+        {
+            auto cube = load_cube(transform, name);
+            cube.material_idx.push_back(mesh_material_idx);
+            info.meshes.emplace_back(std::move(cube));
+        }
+
+        for (auto mat : info.meshes.back().material_idx)
+        {
+            std::cerr << "material idxxx: " << mat;
         }
 
         if (primitive.find("power") != primitive.end())
         {
             auto power_json = primitive["power"];
-            std::cerr << std::setw(4) << power_json << '\n';
-            auto light_material = power_json.is_array() ? materials::emissive(to_vec3(power_json)) : materials::emissive(float(power_json));
-            info.meshes.back().materials.push_back(light_material);
+
+            auto light_material = power_json.is_array() ? std::make_unique<materials::emissive>(materials::emissive(to_vec3(power_json))) : std::make_unique<materials::emissive>(materials::emissive(float(power_json)));
+            all_materials.push_back(std::move(light_material));
+            info.meshes.back().material_idx.push_back(all_materials.size() - 1);
+            // auto mesh_light = power_json.is_array() ? std::make_unique<materials::emissive>(materials::emissive(to_vec3(power_json))) : std::make_unique<materials::emissive>(materials::emissive(float(power_json)));
+            // info.mesh_lights.push_back(std::move(mesh_light));
         }
+        if (primitive.find("emission") != primitive.end())
+        {
+            auto emission_json = primitive["emission"];
+
+            auto light_material = emission_json.is_array() ? std::unique_ptr<materials::emissive>(new materials::emissive(to_vec3(emission_json))) : std::unique_ptr<materials::emissive>(new materials::emissive(float(emission_json)));
+            all_materials.push_back(std::move(light_material));
+            info.meshes.back().material_idx.push_back(all_materials.size() - 1);
+        }
+
+        std::cerr << "Mesh id: " << id++ << "\n";
+        std::cerr << "Material idx: " << info.meshes.back().material_idx[0] << "\n";
+        // for (auto& vert : info.meshes.back().faces.)
+        // std::cerr << "Normals: " << info.meshes.back().material_idx[0] << "\n";
     }
 
+    info.materials = std::move(all_materials);
     return rtr::scene(std::move(info));
 }
 } // namespace loaders

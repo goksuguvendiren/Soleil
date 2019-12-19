@@ -24,19 +24,19 @@ namespace rtr
                    name(nm), origin(pos), radius(r), x_axis(x_ax), x_len(x_l), y_axis(y_ax), y_len(y_l),
                    z_axis(z_ax), z_len(z_l) {}
 
-            sphere(const std::string& nm, const glm::vec3& pos, float r, const rtr::materials::base& m) :
+            sphere(const std::string& nm, const glm::vec3& pos, float r, int m_idx) :
             name(nm), origin(pos), radius(r)
             {
-                materials.push_back(m);
+                material_idx.push_back(m_idx);
             }
 
             sphere() :
             name("default sphere"), origin(glm::vec3(0, 0, 0)), radius(1.f)
             {
-                materials.push_back(rtr::materials::base());
+                // materials.push_back(rtr::materials::base());
             }
 
-            std::vector<materials::base> materials;
+            std::vector<int> material_idx;
             std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
         // private:

@@ -14,18 +14,19 @@
 void trace_photons(const rtr::scene& scene, const rtr::photon& photon, std::vector<rtr::photon>& hit_photons)
 {
     auto photon_ray = rtr::ray(photon.origin(), photon.direction(), 0, false);
-    auto hit = scene.hit(photon_ray);
-//    std::cerr << "Hit photon! \n";
+    auto payload = scene.hit(photon_ray);
+    //    std::cerr << "Hit photon! \n";
 
-    if (!hit) return;
+    if (!payload) return;
 
-    auto clr = hit->material->trans > 0 ? glm::vec3(1, 1, 1) : hit->material->diffuse;
+    const auto &material = scene.get_material(payload->material_idx);
+    auto clr = material->trans > 0 ? glm::vec3(1, 1, 1) : material->diffuse;
 
     // there's a hit, save the photon in the photon map
-    hit_photons.emplace_back(photon.power() * clr, hit->hit_pos, photon_ray.direction());
+    hit_photons.emplace_back(photon.power() * clr, payload->hit_pos, photon_ray.direction());
 
     // decide the photon's fate with russian roulette
-    rtr::PathType decision = hit->material->russian_roulette();
+    rtr::PathType decision = material->russian_roulette();
 
     if(decision == rtr::PathType::Absorbed)
     {
@@ -33,10 +34,10 @@ void trace_photons(const rtr::scene& scene, const rtr::photon& photon, std::vect
         return;
     }
 
-    auto direction = hit->material->sample(hit->hit_normal, *hit);
+    auto direction = material->sample(payload->hit_normal, *payload);
 
-////  TODO: update the power now!
-    rtr::photon new_photon(photon.power() * clr, hit->hit_pos + direction * 1e-4f, direction);
+    ////  TODO: update the power now!
+    rtr::photon new_photon(photon.power() * clr, payload->hit_pos + direction * 1e-4f, direction);
     trace_photons(scene, new_photon, hit_photons);
 }
 
@@ -56,25 +57,27 @@ inline void UpdateProgress(float progress)
 };
 
 glm::vec3
-rtr::photon_integrator::render_ray(const rtr::scene &scene, const rtr::ray &ray, const rtr::photon_map &p_map) {
+rtr::photon_integrator::render_ray(const rtr::scene &scene, const rtr::ray &ray, const rtr::photon_map &p_map)
+{
     glm::vec3 color{0, 0, 0};
     auto payload = scene.hit(ray);
     if (!payload) return color;
 
     // direct illumination :
 
-    if (payload->material->trans > 0)
+    const auto &material = scene.get_material(payload->material_idx);
+    if (material->trans > 0)
     {
-        auto dir = payload->material->sample(payload->hit_normal, *payload);
+        auto dir = material->sample(payload->hit_normal, *payload);
 
         rtr::ray ref_ray{payload->hit_pos + dir * 1e-4f, dir, ray.rec_depth + 1, false};
 
         auto ref_color = render_ray(scene, ref_ray, p_map);
 
-        color += ref_color * (payload->material->trans);
+        color += ref_color * (material->trans);
     }
 
-    color += payload->material->shade(scene, *payload);
+    color += material->shade(scene, *payload);
 
     // std::cerr << "color : " << color << " - ";
 
@@ -82,8 +85,7 @@ rtr::photon_integrator::render_ray(const rtr::scene &scene, const rtr::ray &ray,
     // std::cerr << near_photons.size() << '\n';
     // std::cerr << "direct : " << color << '\n';
 
-
-    auto indir_color = std::accumulate(near_photons.begin(), near_photons.end(), glm::vec3(0), [&](auto& a, auto& p) {
+    auto indir_color = std::accumulate(near_photons.begin(), near_photons.end(), glm::vec3(0), [&](auto &a, auto &p) {
         return a + p.power() / std::pow(std::max(1.f, glm::length(p.origin() - payload->hit_pos)), 2.f);
     });
     // std::cerr << " indirect : " << glm::vec3(indir_color / float(near_photons.size())) << " - " ;

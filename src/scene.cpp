@@ -78,9 +78,11 @@ glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) co
         return shadow;
     if (pld && (pld->param < light_distance)) // some base case checks to terminate
     {
-        auto& diffuse = pld->material->diffuse;
-        auto normalized_diffuse = diffuse; // diffuse / std::max(std::max(diffuse.x, diffuse.y), diffuse.z);
-        return shadow * normalized_diffuse * pld->material->trans;
+        assert(pld->material_idx >= 0 && " negative material index found!");
+        auto &material = information.materials[pld->material_idx];
+        auto &diffuse = material->diffuse;
+        auto normalized_diffuse = material->diffuse; // diffuse / std::max(std::max(diffuse.x, diffuse.y), diffuse.z);
+        return shadow * normalized_diffuse * material->trans;
     }
 
     auto hit_position = pld->hit_pos + ray.direction() * 1e-4f;
@@ -89,8 +91,9 @@ glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) co
     return shadow * shadow_trace(shadow_ray, light_distance - glm::length(pld->hit_pos - ray.origin()));
 }
 
-glm::vec3 rtr::scene::photon_trace(const rtr::ray& photon_ray) const
-{}
+// glm::vec3 rtr::scene::photon_trace(const rtr::ray &photon_ray) const
+// {
+// }
 
 void rtr::scene::print() const
 {
@@ -100,11 +103,12 @@ void rtr::scene::print() const
     int i = 0;
     for (auto& m : information.meshes)
     {
-        std::cerr << "\t\t Mesh " << i++ << " : \n";
-        std::cerr << "\t\t Material " << m.materials[0].diffuse << " : \n";
-        std::cerr << "\t\t " << m.materials[0].ambient << " : \n";
-        std::cerr << "\t\t " << m.materials[0].specular << " : \n";
-        for (auto& face : m.faces)
+        std::cerr << "\t\t Mesh " << i++ << " Name : " << m.name  << " : \n";
+        std::cerr << "\t\t Material " << information.materials[m.material_idx[0]]->diffuse << " : \n";
+        std::cerr << "\t\t " << information.materials[m.material_idx[0]]->ambient << " : \n";
+        std::cerr << "\t\t " << information.materials[m.material_idx[0]]->specular << " : \n";
+        std::cerr << "\t\t " << information.materials[m.material_idx[0]]->is_emissive() << " : \n";
+        for (auto &face : m.faces)
         {
             std::cerr << "\t\t\t Position_a : " << face.vertices[0].position() << '\n';
             std::cerr << "\t\t\t Position_b : " << face.vertices[1].position() << '\n';
@@ -113,16 +117,21 @@ void rtr::scene::print() const
     }
     std::cerr << "Spheres : \n";
     i = 0;
-    for (auto& s : information.spheres)
+    for (auto &s : information.spheres)
     {
         std::cerr << "\t\t Sphere " << i++ << " : \n";
-        std::cerr << "\t\t Material " << s.materials[0].diffuse << " : \n";
-        std::cerr << "\t\t " << s.materials[0].ambient << " : \n";
-        std::cerr << "\t\t " << s.materials[0].specular << " : \n";
+        std::cerr << "\t\t Material " << information.materials[s.material_idx[0]]->diffuse << " : \n";
+        std::cerr << "\t\t " << information.materials[s.material_idx[0]]->ambient << " : \n";
+        std::cerr << "\t\t " << information.materials[s.material_idx[0]]->specular << " : \n";
         //        for (auto& face : m.faces)
         {
             std::cerr << "\t\t\t Center : " << s.origin << '\n';
             std::cerr << "\t\t\t Radius : " << s.radius << '\n';
         }
     }
+
+    for_each_light([](auto light) {
+        std::cerr << "\t\t Light source: \n";
+        // std::cerr <<
+    });
 }

@@ -81,7 +81,7 @@ public:
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
     }
 
-    std::vector<rtr::materials::base> materials;
+    std::vector<int> material_idx;
     std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
     int id;
@@ -97,7 +97,7 @@ public:
         {
             for (auto& vertex : face.vertices)
             {
-                if (!vertex.mat) vertex.mat = &materials[0];
+                if (vertex.mat == -1) vertex.mat = material_idx[0];
             }
         }
     }

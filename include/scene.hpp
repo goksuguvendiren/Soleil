@@ -14,6 +14,7 @@
 #include "payload.hpp"
 #include "primitives/sphere.hpp"
 #include "primitives/mesh.hpp"
+#include "primitives/emissive_mesh.hpp"
 #include "dir_light.hpp"
 
 namespace rtr
@@ -40,6 +41,8 @@ namespace rtr
         std::vector<rtr::primitives::mesh> meshes;
         std::vector<rtr::light> lghts;
         std::vector<rtr::dir_light> dir_lghts;
+        std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> mesh_lights;
+        std::vector<std::unique_ptr<rtr::materials::base>> materials;
 
         bool progressive_render = false;
         int samples_per_pixel;
@@ -66,11 +69,10 @@ namespace rtr
 
             auto center = (bounding_box.max + bounding_box.min) / 2.f;
 
-            rtr::materials::base m;
-            m.diffuse = glm::vec3(2.f, 2.f, 2.f);
+            information.materials.push_back(std::make_unique<rtr::materials::base>(glm::vec3(0.2f, 0.2f, 0.2f), glm::vec3{0.1, 0.1, 0.1}, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, 0, 0));
 
             float constant = 3.f;
-            bounding_sphere = rtr::primitives::sphere("scene bounding box", center, glm::length(center - bounding_box.max) * constant, m);
+            bounding_sphere = rtr::primitives::sphere("scene bounding box", center, glm::length(center - bounding_box.max) * constant, information.materials.size() - 1);
         }
 
         const rtr::camera& get_camera() const { return information.camera; }
@@ -83,10 +85,12 @@ namespace rtr
         {
             std::for_each(lights().begin(), lights().end(), func);
             std::for_each(dir_lights().begin(), dir_lights().end(), func);
+            // std::for_each(mesh_lights().begin(), mesh_lights().end(), func);
         }
 
         const std::vector<rtr::light>& lights() const { return information.lghts; }
         const std::vector<rtr::dir_light>& dir_lights() const { return information.dir_lghts; }
+        const std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> &mesh_lights() const { return information.mesh_lights; }
 
         glm::vec3 trace(const rtr::ray& ray) const;
         glm::vec3 photon_trace(const rtr::ray& ray) const;
@@ -98,8 +102,14 @@ namespace rtr
 
         const rtr::primitives::sphere& environment_sphere() const { return bounding_sphere; }
         int recursion_depth() const { return information.max_recursion_depth; }
+
+        const std::unique_ptr<rtr::materials::base> &get_material(int index) const
+        {
+            assert(index >= 0 && " material index is negative!");
+            return information.materials[index];
+        }
         
-   private:
+    private:
         rtr::primitives::sphere bounding_sphere;
         scene_information information;
     };

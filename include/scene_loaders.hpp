@@ -97,7 +97,7 @@ inline auto GetTransformations(std::istringstream& stream)
     return result;
 }
 
-inline std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices, const std::map<int, rtr::materials::base>& materials)
+inline std::vector<rtr::primitives::sphere> load_spheres(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices)
 {
     std::vector<rtr::primitives::sphere> spheres;
     
@@ -111,7 +111,7 @@ inline std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *el
         
         glm::vec3 center = vertices[centerID - 1].position();
         
-        rtr::primitives::sphere sp("", center, radius, materials.at(matID));
+        rtr::primitives::sphere sp("", center, radius, matID);
         
         spheres.push_back(std::move(sp));
     }
@@ -119,7 +119,7 @@ inline std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *el
     return spheres;
 }
 
-inline std::vector<rtr::primitives::mesh> LoadMeshes(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices, const std::map<int, rtr::materials::base>& materials)
+inline std::vector<rtr::primitives::mesh> load_meshes(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices)
 {
     std::vector<rtr::primitives::mesh> meshes;
     
@@ -155,7 +155,7 @@ inline std::vector<rtr::primitives::mesh> LoadMeshes(tinyxml2::XMLElement *elem,
         
         meshes.emplace_back(faces, "");
         auto& mesh = meshes.back();
-        mesh.materials.push_back(materials.at(matID));
+        mesh.material_idx.push_back(matID);
 //        mesh.configure_materials();
     }
     
@@ -298,7 +298,7 @@ namespace loaders
         return resolution;
     }
 
-    inline std::pair<int, rtr::materials::base> load_material(tinyxml2::XMLElement *child)
+    inline std::unique_ptr<rtr::materials::base> load_material(tinyxml2::XMLElement *child)
     {
         int id;
         child->QueryIntAttribute("id", &id);
@@ -330,7 +330,7 @@ namespace loaders
             mat.refr_index = refraction_index;
         }
 
-        return std::make_pair(id, mat);
+        return std::make_unique<rtr::materials::base>(mat);
     }
     
     inline rtr::light load_point_light(tinyxml2::XMLElement *child)
@@ -425,13 +425,14 @@ namespace loaders
             }
         }
 
-        std::map<int, rtr::materials::base> materials;
+        std::vector<std::unique_ptr<rtr::materials::base>> materials;
         if (auto elem = docscene->FirstChildElement("Materials")){
             for (auto child = elem->FirstChildElement("Material"); child != NULL; child = child->NextSiblingElement())
             {
-                materials.insert(load_material(child));
+                materials.push_back(load_material(child));
             }
         }
+        info.materials = std::move(materials);
         
         std::vector<rtr::vertex> vertices;
         if (auto elem = docscene->FirstChildElement("VertexData"))
@@ -450,8 +451,8 @@ namespace loaders
         
         if(auto objects = docscene->FirstChildElement("Objects"))
         {
-            info.spheres = LoadSpheres(objects, vertices, materials);
-            info.meshes = LoadMeshes(objects, vertices, materials);
+            info.spheres = load_spheres(objects, vertices);
+            info.meshes = load_meshes(objects, vertices);
         }
         
         // scene.print();
@@ -486,6 +487,8 @@ namespace loaders
         }
         
         int id = 0;
+
+        std::vector<std::unique_ptr<rtr::materials::base>> all_materials;
         
         auto* obj = io->objects;
         while(obj != nullptr)  // iterate through the objects
@@ -505,23 +508,25 @@ namespace loaders
                 sph.id = id++;
                 for (int i = 0; i < obj->numMaterials; ++i)
                 {
-                    sph.materials.emplace_back(to_vec3(obj->material->diffColor), to_vec3(obj->material->ambColor),
+                    all_materials.emplace_back(std::make_unique<rtr::materials::base>(to_vec3(obj->material->diffColor), to_vec3(obj->material->ambColor),
                                                to_vec3(obj->material->specColor), to_vec3(obj->material->emissColor),
-                                               obj->material->shininess, obj->material->ktran);
+                                               obj->material->shininess, obj->material->ktran));
+                    sph.material_idx.push_back(all_materials.size() - 1);
                 }
             }
             else
             {
                 auto data = reinterpret_cast<PolySetIO*>(obj->data);
                 assert(data->type == PolySetType::POLYSET_TRI_MESH);
+
+                std::vector<int> material_idx;
                 
-                std::vector<rtr::materials::base> materials;
-                materials.reserve(obj->numMaterials);
                 for (int i = 0; i < obj->numMaterials; ++i)
                 {
-                    materials.emplace_back(to_vec3(obj->material[i].diffColor), to_vec3(obj->material[i].ambColor),
+                    all_materials.emplace_back(std::make_unique<rtr::materials::base>(to_vec3(obj->material[i].diffColor), to_vec3(obj->material[i].ambColor),
                                            to_vec3(obj->material[i].specColor), to_vec3(obj->material[i].emissColor),
-                                           obj->material[i].shininess, obj->material[i].ktran);
+                                           obj->material[i].shininess, obj->material[i].ktran));
+                    material_idx.emplace_back(all_materials.size() - 1);
                 }
                 
                 std::vector<rtr::primitives::face> faces;
@@ -534,7 +539,7 @@ namespace loaders
                     for (int j = 0; j < polygon.numVertices; ++j)
                     {
                         auto& poly = polygon.vert[j];
-                        vertices.at(j) = rtr::vertex(to_vec3(poly.pos), to_vec3(poly.norm), &materials.at(poly.materialIndex), poly.s, poly.t);
+                        vertices.at(j) = rtr::vertex(to_vec3(poly.pos), to_vec3(poly.norm), poly.materialIndex, poly.s, poly.t);
                     }
                     faces.emplace_back(vertices, to_rtr(data->normType), to_rtr(data->materialBinding));
                 }
@@ -542,10 +547,11 @@ namespace loaders
                 info.meshes.emplace_back(faces, obj->name ? obj->name : "");
                 auto& mesh = info.meshes.back();
                 mesh.id = id++;
-                mesh.materials = std::move(materials);
+                mesh.material_idx = std::move(material_idx);
             }
             obj = obj->next;
         }
+        info.materials = std::move(all_materials);
         return rtr::scene(std::move(info));
     }
 
