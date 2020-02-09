@@ -4,29 +4,34 @@
 
 #pragma once
 
-#include <glm/vec3.hpp>
 #include "photon.hpp"
+
+#include <glm/vec3.hpp>
 
 namespace rtr
 {
 class light
 {
 public:
-    light(const glm::vec3 &pos, const glm::vec3 &col) : position(pos), color(col), power(20) {}
+    light(const glm::vec3& pos, const glm::vec3& col)
+        : position(pos)
+        , color(col)
+        , power(20)
+    {}
     glm::vec3 position;
     glm::vec3 color;
 
-    glm::vec3 direction(const glm::vec3 &hit_pos) const
+    glm::vec3 direction(const glm::vec3& hit_pos) const
     {
         return glm::normalize(position - hit_pos);
     }
 
-    float distance(const glm::vec3 &hit_pos) const
+    float distance(const glm::vec3& hit_pos) const
     {
         return glm::length(position - hit_pos);
     }
 
-    float attenuate(const glm::vec3 &hit_pos) const
+    float attenuate(const glm::vec3& hit_pos) const
     {
         auto distance = glm::length(position - hit_pos);
         float c_1 = 0.25;

@@ -11,11 +11,24 @@ namespace rtr
 class photon
 {
 public:
-    photon(const glm::vec3 &p, const glm::vec3 &o, const glm::vec3 &d) : pw(p), org(o), dir(d) {}
+    photon(const glm::vec3& p, const glm::vec3& o, const glm::vec3& d)
+        : pw(p)
+        , org(o)
+        , dir(d)
+    {}
 
-    glm::vec3 power() const { return pw; }
-    glm::vec3 origin() const { return org; }
-    glm::vec3 direction() const { return dir; }
+    glm::vec3 power() const
+    {
+        return pw;
+    }
+    glm::vec3 origin() const
+    {
+        return org;
+    }
+    glm::vec3 direction() const
+    {
+        return dir;
+    }
 
 private:
     glm::vec3 pw;

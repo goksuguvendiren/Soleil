@@ -2,22 +2,22 @@
 // Created by Göksu Güvendiren on 2019-05-10.
 //
 
-#include <optional>
-#include <iostream>
+#include "utils.hpp"
+
 #include <exception>
+#include <iostream>
+#include <optional>
 #include <payload.hpp>
 #include <primitives/mesh.hpp>
 #include <ray.hpp>
-#include "utils.hpp"
 
-inline float determinant(const glm::vec3 &col1, const glm::vec3 &col2, const glm::vec3 &col3)
+inline float determinant(const glm::vec3& col1, const glm::vec3& col2, const glm::vec3& col3)
 {
-    return col1.x * (col2.y * col3.z - col2.z * col3.y) -
-           col2.x * (col1.y * col3.z - col1.z * col3.y) +
+    return col1.x * (col2.y * col3.z - col2.z * col3.y) - col2.x * (col1.y * col3.z - col1.z * col3.y) +
            col3.x * (col1.y * col2.z - col1.z * col2.y);
 }
 
-inline bool is_back_face(const glm::vec3 &surface_normal, const glm::vec3 &direction)
+inline bool is_back_face(const glm::vec3& surface_normal, const glm::vec3& direction)
 {
     return glm::dot(surface_normal, direction) < 0;
 }
@@ -25,7 +25,8 @@ inline bool is_back_face(const glm::vec3 &surface_normal, const glm::vec3 &direc
 thread_local std::array<rtr::material, 4096> interpolated_material;
 thread_local int idx = 0;
 
-inline rtr::material interpolate_materials(rtr::material *a, float alpha, rtr::material *b, float beta, rtr::material *c, float gamma)
+inline rtr::material interpolate_materials(rtr::material* a, float alpha, rtr::material* b, float beta,
+                                           rtr::material* c, float gamma)
 {
     rtr::material mat;
 
@@ -45,12 +46,12 @@ inline rtr::material interpolate_materials(rtr::material *a, float alpha, rtr::m
     return mat;
 }
 
-std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray &ray) const
+std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray& ray) const
 {
-    const auto &a = vertices[0];
-    const auto &b = vertices[1];
-    const auto &c = vertices[2];
-    const auto &surface_normal = vertices[0].normal;
+    const auto& a = vertices[0];
+    const auto& b = vertices[1];
+    const auto& c = vertices[2];
+    const auto& surface_normal = vertices[0].normal;
 
     glm::vec3 col1 = a.position() - b.position();
     glm::vec3 col2 = a.position() - c.position();
@@ -80,13 +81,12 @@ std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray &ray) cons
     if (normal_type == normal_types::per_vertex)
     {
         normal = glm::normalize(alpha * a.normal + beta * b.normal + gamma * c.normal);
-    }
-    else
+    } else
     {
         normal = glm::normalize(surface_normal);
     }
 
-    material *mtrl_ptr = nullptr;
+    material* mtrl_ptr = nullptr;
     if (material_type == material_binding::per_vertex)
     {
         auto ind = idx;
@@ -103,14 +103,13 @@ std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray &ray) cons
 
 void rtr::primitives::face::set_normal()
 {
-    auto normal = glm::normalize(glm::cross(vertices[1].position() - vertices[0].position(),
-                                            vertices[2].position() - vertices[0].position()));
+    auto normal = glm::normalize(
+        glm::cross(vertices[1].position() - vertices[0].position(), vertices[2].position() - vertices[0].position()));
 
-    for (auto &vert : vertices)
-        vert.normal = normal;
+    for (auto& vert : vertices) vert.normal = normal;
 }
 
-std::optional<rtr::payload> rtr::primitives::mesh::hit(const rtr::ray &ray) const
+std::optional<rtr::payload> rtr::primitives::mesh::hit(const rtr::ray& ray) const
 {
     auto hit = tree.hit(ray);
 

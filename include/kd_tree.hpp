@@ -1,9 +1,9 @@
 #pragma once
 
-#include <optional>
-#include <memory>
 #include "aabb.hpp"
+
 #include <memory>
+#include <optional>
 
 namespace rtr
 {
@@ -24,13 +24,19 @@ class kd_tree
     aabb box;
 
 public:
-    kd_tree() : left(nullptr), right(nullptr) {}
-    kd_tree(const std::vector<rtr::primitives::face *> &faces);
+    kd_tree()
+        : left(nullptr)
+        , right(nullptr)
+    {}
+    kd_tree(const std::vector<rtr::primitives::face*>& faces);
 
-    std::optional<rtr::payload> hit(const rtr::ray &ray) const;
+    std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
-    const aabb &bounding_box() const { return box; }
+    const aabb& bounding_box() const
+    {
+        return box;
+    }
 
-    rtr::primitives::face *object;
+    rtr::primitives::face* object;
 };
 } // namespace rtr

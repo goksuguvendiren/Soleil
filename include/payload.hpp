@@ -3,11 +3,12 @@
 //
 #pragma once
 
+#include "ray.hpp"
+
 #include <glm/vec3.hpp>
-#include <variant>
 #include <primitives/mesh.hpp>
 #include <primitives/sphere.hpp>
-#include "ray.hpp"
+#include <variant>
 
 namespace rtr
 {
@@ -17,7 +18,7 @@ struct payload
     glm::vec3 hit_pos;
     rtr::ray ray;
     float param = std::numeric_limits<float>::infinity();
-    const rtr::material *material;
+    const rtr::material* material;
     glm::vec2 texture_coords;
     int obj_id;
 };

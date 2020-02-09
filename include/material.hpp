@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include "utils.hpp"
+
 #include <glm/vec3.hpp>
 #include <vector>
-#include "utils.hpp"
 
 namespace rtr
 {
@@ -23,17 +24,30 @@ enum class PathType
 class material
 {
 public:
-    material() : diffuse({0.1f, 0.1f, 0.1f}), ambient({0.1f, 0.1f, 0.1f}), specular({0.f, 0.f, 0.f}), emissive(0), exp(0), trans(0), refr_index(1.f)
-    {
-    }
+    material()
+        : diffuse({0.1f, 0.1f, 0.1f})
+        , ambient({0.1f, 0.1f, 0.1f})
+        , specular({0.f, 0.f, 0.f})
+        , emissive(0)
+        , exp(0)
+        , trans(0)
+        , refr_index(1.f)
+    {}
 
-    material(const glm::vec3 &diff, const glm::vec3 &amb, const glm::vec3 &spec, const glm::vec3 &ems, float p, float t) : diffuse(diff), ambient(amb), specular(spec), emissive(ems), exp(p), trans(t), refr_index(1.0f)
+    material(const glm::vec3& diff, const glm::vec3& amb, const glm::vec3& spec, const glm::vec3& ems, float p, float t)
+        : diffuse(diff)
+        , ambient(amb)
+        , specular(spec)
+        , emissive(ems)
+        , exp(p)
+        , trans(t)
+        , refr_index(1.0f)
     {
         if (trans > 0.f)
             refr_index = 1.5f;
     }
 
-    glm::vec3 shade(const scene &scene, const payload &pld) const;
+    glm::vec3 shade(const scene& scene, const payload& pld) const;
 
     rtr::PathType russian_roulette() const
     {
@@ -47,7 +61,7 @@ public:
         return PathType::Absorbed;
     }
 
-    glm::vec3 sample(const glm::vec3 &hit_normal, const payload &pld) const;
+    glm::vec3 sample(const glm::vec3& hit_normal, const payload& pld) const;
 
     glm::vec3 diffuse;
     glm::vec3 ambient;

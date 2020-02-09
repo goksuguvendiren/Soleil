@@ -1,12 +1,13 @@
-#include <iostream>
-#include <scene_io.h>
+#include "mc_integrator.hpp"
+#include "photon_integrator.hpp"
 #include "renderer.hpp"
 #include "scene.hpp"
 #include "scene_loaders.hpp"
-#include "photon_integrator.hpp"
-#include "mc_integrator.hpp"
 
-int main(int argc, const char **argv)
+#include <iostream>
+#include <scene_io.h>
+
+int main(int argc, const char** argv)
 {
     auto begin = std::chrono::system_clock::now();
 
@@ -25,8 +26,7 @@ int main(int argc, const char **argv)
             pinhole_camera = false;
             image_plane_distance = std::stof(std::string(argv[2]));
             lens_width = std::stof(std::string(argv[3]));
-        }
-        else if (argc == 5)
+        } else if (argc == 5)
         {
             pinhole_camera = false;
             image_plane_distance = std::stof(std::string(argv[2]));
@@ -42,7 +42,8 @@ int main(int argc, const char **argv)
     // scene.information.camera.focal_dist = focal_length;
 
     auto end = std::chrono::system_clock::now();
-    std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
+    std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+              << " millisecs.";
 
     auto width = 400;
     auto height = 400;
@@ -63,13 +64,12 @@ int main(int argc, const char **argv)
         output_buffer = r.render(scene);
         end = std::chrono::system_clock::now();
 
-        std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.";
+        std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+                  << " millisecs.";
 
-        for (int i = 0; i < output_buffer.size(); ++i)
-            accum_buffer[i] += output_buffer[i];
+        for (int i = 0; i < output_buffer.size(); ++i) accum_buffer[i] += output_buffer[i];
         n_frames++;
-        for (int i = 0; i < accum_buffer.size(); ++i)
-            result_buffer[i] = accum_buffer[i] / float(n_frames);
+        for (int i = 0; i < accum_buffer.size(); ++i) result_buffer[i] = accum_buffer[i] / float(n_frames);
 
         cv::Mat image(width, height, CV_32FC3, result_buffer.data());
         cv::cvtColor(image, image, cv::COLOR_BGR2RGB);

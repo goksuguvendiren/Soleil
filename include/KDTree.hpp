@@ -31,13 +31,12 @@ public:
 
     // initializer
     KDNode();
-    KDNode(const point_t &, const size_t &, const KDNodePtr &,
-           const KDNodePtr &);
-    KDNode(const pointIndex &, const KDNodePtr &, const KDNodePtr &);
+    KDNode(const point_t&, const size_t&, const KDNodePtr&, const KDNodePtr&);
+    KDNode(const pointIndex&, const KDNodePtr&, const KDNodePtr&);
     ~KDNode();
 
     // getter
-    double coord(const size_t &);
+    double coord(const size_t&);
 
     // conversions
     explicit operator bool();
@@ -50,8 +49,8 @@ using KDNodePtr = std::shared_ptr<KDNode>;
 
 KDNodePtr NewKDNodePtr();
 
-inline double dist(const point_t &, const point_t &);
-inline double dist(const KDNodePtr &, const KDNodePtr &);
+inline double dist(const point_t&, const point_t&);
+inline double dist(const KDNodePtr&, const KDNodePtr&);
 
 // Need for sorting
 class comparer
@@ -59,16 +58,15 @@ class comparer
 public:
     size_t idx;
     explicit comparer(size_t idx_);
-    inline bool compare_idx(
-        const std::pair<std::vector<double>, size_t> &, //
-        const std::pair<std::vector<double>, size_t> &  //
+    inline bool compare_idx(const std::pair<std::vector<double>, size_t>&, //
+                            const std::pair<std::vector<double>, size_t>&  //
     );
 };
 
 using pointIndexArr = typename std::vector<pointIndex>;
 
-inline void sort_on_idx(const pointIndexArr::iterator &, //
-                        const pointIndexArr::iterator &, //
+inline void sort_on_idx(const pointIndexArr::iterator&, //
+                        const pointIndexArr::iterator&, //
                         size_t idx);
 
 using pointVec = std::vector<point_t>;
@@ -78,10 +76,10 @@ class KDTree
     KDNodePtr root;
     KDNodePtr leaf;
 
-    KDNodePtr make_tree(const pointIndexArr::iterator &begin, //
-                        const pointIndexArr::iterator &end,   //
-                        const size_t &length,                 //
-                        const size_t &level                   //
+    KDNodePtr make_tree(const pointIndexArr::iterator& begin, //
+                        const pointIndexArr::iterator& end,   //
+                        const size_t& length,                 //
+                        const size_t& level                   //
     );
 
 public:
@@ -90,39 +88,39 @@ public:
 
 private:
     KDNodePtr nearest_(          //
-        const KDNodePtr &branch, //
-        const point_t &pt,       //
-        const size_t &level,     //
-        const KDNodePtr &best,   //
-        const double &best_dist  //
+        const KDNodePtr& branch, //
+        const point_t& pt,       //
+        const size_t& level,     //
+        const KDNodePtr& best,   //
+        const double& best_dist  //
     );
 
     // default caller
-    KDNodePtr nearest_(const point_t &pt);
+    KDNodePtr nearest_(const point_t& pt);
 
 public:
-    point_t nearest_point(const point_t &pt);
-    size_t nearest_index(const point_t &pt);
-    pointIndex nearest_pointIndex(const point_t &pt);
+    point_t nearest_point(const point_t& pt);
+    size_t nearest_index(const point_t& pt);
+    pointIndex nearest_pointIndex(const point_t& pt);
 
 private:
     pointIndexArr neighborhood_( //
-        const KDNodePtr &branch, //
-        const point_t &pt,       //
-        const double &rad,       //
-        const size_t &level      //
+        const KDNodePtr& branch, //
+        const point_t& pt,       //
+        const double& rad,       //
+        const size_t& level      //
     );
 
 public:
     pointIndexArr neighborhood( //
-        const point_t &pt,      //
-        const double &rad);
+        const point_t& pt,      //
+        const double& rad);
 
     pointVec neighborhood_points( //
-        const point_t &pt,        //
-        const double &rad);
+        const point_t& pt,        //
+        const double& rad);
 
     indexArr neighborhood_indices( //
-        const point_t &pt,         //
-        const double &rad);
+        const point_t& pt,         //
+        const double& rad);
 };

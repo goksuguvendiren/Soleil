@@ -2,7 +2,6 @@
 #include <map>
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tinyobjloader.hpp"
-
 #include "tinyxml/tinyxml2.h"
 
 inline rtr::primitives::face::normal_types to_rtr(NormType normal)
@@ -29,7 +28,7 @@ inline rtr::primitives::face::material_binding to_rtr(MaterialBinding material)
     }
 }
 
-inline rtr::vertex get_vertex(std::istringstream &stream, int id)
+inline rtr::vertex get_vertex(std::istringstream& stream, int id)
 {
     rtr::vertex vert;
 
@@ -44,7 +43,7 @@ inline rtr::vertex get_vertex(std::istringstream &stream, int id)
     return rtr::vertex{glm::vec3{datax, datay, dataz}};
 }
 
-std::vector<rtr::vertex> LoadVertexData(tinyxml2::XMLElement *elem)
+std::vector<rtr::vertex> LoadVertexData(tinyxml2::XMLElement* elem)
 {
     std::istringstream stream{elem->GetText()};
 
@@ -59,7 +58,8 @@ std::vector<rtr::vertex> LoadVertexData(tinyxml2::XMLElement *elem)
     return verts;
 }
 
-inline std::optional<rtr::primitives::face> get_face(std::istringstream &stream, const std::vector<rtr::vertex> &vertices, int vertexOffset, int texCoordsOffset)
+inline std::optional<rtr::primitives::face>
+get_face(std::istringstream& stream, const std::vector<rtr::vertex>& vertices, int vertexOffset, int texCoordsOffset)
 {
     int x, y, z;
     if (!(stream >> x))
@@ -82,10 +82,11 @@ inline std::optional<rtr::primitives::face> get_face(std::istringstream &stream,
     face_vertices[1] = pos_b;
     face_vertices[2] = pos_c;
 
-    return rtr::primitives::face{face_vertices, rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object};
+    return rtr::primitives::face{face_vertices, rtr::primitives::face::normal_types::per_face,
+                                 rtr::primitives::face::material_binding::per_object};
 }
 
-inline auto GetTransformations(std::istringstream &stream)
+inline auto GetTransformations(std::istringstream& stream)
 {
     std::vector<std::string> result;
 
@@ -99,7 +100,8 @@ inline auto GetTransformations(std::istringstream &stream)
     return result;
 }
 
-std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex> &vertices, const std::map<int, rtr::material> &materials)
+std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement* elem, const std::vector<rtr::vertex>& vertices,
+                                                 const std::map<int, rtr::material>& materials)
 {
     std::vector<rtr::primitives::sphere> spheres;
 
@@ -121,7 +123,8 @@ std::vector<rtr::primitives::sphere> LoadSpheres(tinyxml2::XMLElement *elem, con
     return spheres;
 }
 
-std::vector<rtr::primitives::mesh> LoadMeshes(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex> &vertices, const std::map<int, rtr::material> &materials)
+std::vector<rtr::primitives::mesh> LoadMeshes(tinyxml2::XMLElement* elem, const std::vector<rtr::vertex>& vertices,
+                                              const std::map<int, rtr::material>& materials)
 {
     std::vector<rtr::primitives::mesh> meshes;
 
@@ -159,7 +162,7 @@ std::vector<rtr::primitives::mesh> LoadMeshes(tinyxml2::XMLElement *elem, const 
         }
 
         meshes.emplace_back(faces, "");
-        auto &mesh = meshes.back();
+        auto& mesh = meshes.back();
         mesh.materials.push_back(materials.at(matID));
         //        mesh.configure_materials();
     }
@@ -171,14 +174,14 @@ namespace rtr
 {
 namespace loaders
 {
-inline std::string GetBaseDir(const std::string &filepath)
+inline std::string GetBaseDir(const std::string& filepath)
 {
     if (filepath.find_last_of("/\\") != std::string::npos)
         return filepath.substr(0, filepath.find_last_of("/\\"));
     return "";
 }
 
-inline rtr::scene load_from_tinyobj(const std::string &filename)
+inline rtr::scene load_from_tinyobj(const std::string& filename)
 {
     //        objl::Loader loader;
     //        loader.LoadFile(filename);
@@ -210,16 +213,20 @@ inline rtr::scene load_from_tinyobj(const std::string &filename)
     auto focal_distance = 12.2118f;
     auto vertical_fov = 0.785398f;
 
-    info.camera = rtr::camera(glm::vec3{278, 273, -800}, glm::vec3{0, 0, 1}, glm::vec3{0, 1, 0}, focal_distance, vertical_fov, focal_distance, false); // focal dist = image plane dist
-                                                                                                                                                       //        //    camera = rtr::camera(glm::vec3{-1, 3, 10}, glm::vec3{0, 0, -1}, glm::vec3{0, 1, 0}, focal_distance, vertical_fov, focal_distance, false ); // focal dist = image plane dist
-                                                                                                                                                       //        //    camera = rtr::camera(glm::vec3{-1, 3, 10}, glm::vec3{0, 0, -1}, glm::vec3{0, 1, 0}, focal_distance, vertical_fov);
+    info.camera = rtr::camera(
+        glm::vec3{278, 273, -800}, glm::vec3{0, 0, 1}, glm::vec3{0, 1, 0}, focal_distance, vertical_fov, focal_distance,
+        false); // focal dist = image plane dist
+                //        //    camera = rtr::camera(glm::vec3{-1, 3, 10}, glm::vec3{0, 0, -1}, glm::vec3{0, 1, 0},
+                //        focal_distance, vertical_fov, focal_distance, false ); // focal dist = image plane dist
+                //        //    camera = rtr::camera(glm::vec3{-1, 3, 10}, glm::vec3{0, 0, -1}, glm::vec3{0, 1, 0},
+                //        focal_distance, vertical_fov);
 
     // create default light sources
     info.lghts.emplace_back(glm::vec3{-1.84647, 0.778452, 2.67544}, glm::vec3{1, 1, 1});
     info.lghts.emplace_back(glm::vec3{2.09856, 1.43311, 0.977627}, glm::vec3{1, 1, 1});
 
     int id = 0;
-    for (auto &shape : shapes)
+    for (auto& shape : shapes)
     {
         std::cerr << "Loading mesh : " << id << "\n";
         std::cerr << shape.mesh.indices.size() << '\n';
@@ -242,13 +249,14 @@ inline rtr::scene load_from_tinyobj(const std::string &filename)
 
                 face_vertices[i] = rtr::vertex(glm::vec3{vx, vy, vz}); //, glm::vec3{0, ny, nz}, nullptr, tx, ty);
             }
-            rtr::primitives::face face_new(face_vertices, rtr::primitives::face::normal_types::per_vertex, rtr::primitives::face::material_binding::per_object);
+            rtr::primitives::face face_new(face_vertices, rtr::primitives::face::normal_types::per_vertex,
+                                           rtr::primitives::face::material_binding::per_object);
             faces.push_back(face_new);
         }
 
         info.meshes.emplace_back(faces, "");
 
-        auto &m = info.meshes.back();
+        auto& m = info.meshes.back();
         m.id = id++;
 
         //            for(int i = 0; i < mesh.Vertices.size(); i += 3)
@@ -256,12 +264,14 @@ inline rtr::scene load_from_tinyobj(const std::string &filename)
         //                std::array<rtr::vertex, 3> face_vertices;
         //                for(int j = 0; j < 3; j++)
         //                {
-        //                    face_vertices[j] = rtr::vertex(to_vec3(mesh.Vertices[i+j].Position), to_vec3(mesh.Vertices[i+j].Normal), nullptr,
-        //                                                   mesh.Vertices[i+j].TextureCoordinate.X, mesh.Vertices[i+j].TextureCoordinate.Y);
+        //                    face_vertices[j] = rtr::vertex(to_vec3(mesh.Vertices[i+j].Position),
+        //                    to_vec3(mesh.Vertices[i+j].Normal), nullptr,
+        //                                                   mesh.Vertices[i+j].TextureCoordinate.X,
+        //                                                   mesh.Vertices[i+j].TextureCoordinate.Y);
         //                }
         //
-        //                rtr::primitives::face face_new(face_vertices, rtr::primitives::face::normal_types::per_vertex, rtr::primitives::face::material_binding::per_object);
-        //                faces.push_back(face_new);
+        //                rtr::primitives::face face_new(face_vertices, rtr::primitives::face::normal_types::per_vertex,
+        //                rtr::primitives::face::material_binding::per_object); faces.push_back(face_new);
         //            }
         //
         //            meshes.emplace_back(faces, "");
@@ -272,17 +282,19 @@ inline rtr::scene load_from_tinyobj(const std::string &filename)
         //
         //            auto& material = mesh.MeshMaterial;
         //            if (material)
-        //                m.materials.emplace_back(to_vec3(material->Kd), to_vec3(material->Ka), to_vec3(material->Ks), glm::vec3{0, 0, 0}, material->Ns, 0);
+        //                m.materials.emplace_back(to_vec3(material->Kd), to_vec3(material->Ka), to_vec3(material->Ks),
+        //                glm::vec3{0, 0, 0}, material->Ns, 0);
         //            else
         //            {
-        //                m.materials.emplace_back(glm::vec3{0.5, 0.5, 0.5}, glm::vec3{0.2, 0.2, 0.2}, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, 0, 0);
-        //                std::cerr << "This obj doesn't have any materials, default diffuse material will be used!" << '\n';
+        //                m.materials.emplace_back(glm::vec3{0.5, 0.5, 0.5}, glm::vec3{0.2, 0.2, 0.2}, glm::vec3{0, 0,
+        //                0}, glm::vec3{0, 0, 0}, 0, 0); std::cerr << "This obj doesn't have any materials, default
+        //                diffuse material will be used!" << '\n';
         //            }
     }
     return rtr::scene(std::move(info));
 }
 
-inline glm::vec3 GetElem(tinyxml2::XMLElement *element)
+inline glm::vec3 GetElem(tinyxml2::XMLElement* element)
 {
     glm::vec3 color;
 
@@ -294,7 +306,7 @@ inline glm::vec3 GetElem(tinyxml2::XMLElement *element)
     return color;
 }
 
-std::pair<int, rtr::material> load_material(tinyxml2::XMLElement *child)
+std::pair<int, rtr::material> load_material(tinyxml2::XMLElement* child)
 {
     int id;
     child->QueryIntAttribute("id", &id);
@@ -306,7 +318,7 @@ std::pair<int, rtr::material> load_material(tinyxml2::XMLElement *child)
     glm::vec3 mirror = {0, 0, 0}, transparency = {0, 0, 0}, glass = {0, 0, 0};
     float phongEx = 0;
 
-    tinyxml2::XMLElement *tmp;
+    tinyxml2::XMLElement* tmp;
     if ((tmp = child->FirstChildElement("PhongExponent")))
         phongEx = tmp->FloatText(1);
 
@@ -314,7 +326,7 @@ std::pair<int, rtr::material> load_material(tinyxml2::XMLElement *child)
 
     if ((tmp = child->FirstChildElement("Transparency"))) // then the material should be a glass (transparent)
     {
-        tinyxml2::XMLElement *tmp_m;
+        tinyxml2::XMLElement* tmp_m;
         auto transp = GetElem(tmp);
         mat.trans = transp[0];
         float refraction_index = 1.f;
@@ -330,7 +342,7 @@ std::pair<int, rtr::material> load_material(tinyxml2::XMLElement *child)
     return std::make_pair(id, mat);
 }
 
-rtr::light load_point_light(tinyxml2::XMLElement *child)
+rtr::light load_point_light(tinyxml2::XMLElement* child)
 {
     assert(child->Name() == std::string("PointLight"));
     int id;
@@ -342,7 +354,7 @@ rtr::light load_point_light(tinyxml2::XMLElement *child)
     return rtr::light(position, intensity);
 }
 
-rtr::dir_light load_directional_light(tinyxml2::XMLElement *child)
+rtr::dir_light load_directional_light(tinyxml2::XMLElement* child)
 {
     int id;
     child->QueryIntAttribute("id", &id);
@@ -353,7 +365,7 @@ rtr::dir_light load_directional_light(tinyxml2::XMLElement *child)
     return rtr::dir_light(direction, radiance);
 }
 
-inline rtr::scene load_from_xml(const std::string &filename)
+inline rtr::scene load_from_xml(const std::string& filename)
 {
     rtr::scene_information info;
 
@@ -402,7 +414,7 @@ inline rtr::scene load_from_xml(const std::string &filename)
         auto up = GetElem(elem->FirstChildElement("Up"));
 
         int focal_distance = 12;
-        tinyxml2::XMLElement *foc;
+        tinyxml2::XMLElement* foc;
         if ((foc = elem->FirstChildElement("FocusDistance")))
         {
             focal_distance = foc->IntText(1);
@@ -410,8 +422,7 @@ inline rtr::scene load_from_xml(const std::string &filename)
         auto vertical_fov = 0.985398f;
 
         info.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, focal_distance, true);
-    }
-    else
+    } else
     {
         std::cerr << "Could not read camera information\n";
         std::abort();
@@ -463,23 +474,24 @@ inline rtr::scene load_from_xml(const std::string &filename)
     return rtr::scene(std::move(info));
 }
 
-inline rtr::scene load_from_veach(const std::string &filename)
+inline rtr::scene load_from_veach(const std::string& filename)
 {
     rtr::scene_information info;
 
     auto io = readScene(filename.c_str());
-    auto &cam = io->camera;
-    info.camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV);
-    //    camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp), cam->focalDistance, cam->verticalFOV, 12.f, false);
+    auto& cam = io->camera;
+    info.camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp),
+                              cam->focalDistance, cam->verticalFOV);
+    //    camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp),
+    //    cam->focalDistance, cam->verticalFOV, 12.f, false);
 
-    auto *light = io->lights;
+    auto* light = io->lights;
     while (light != nullptr)
     {
         if (light->type == LightType::POINT_LIGHT)
         {
             info.lghts.emplace_back(to_vec3(light->position), to_vec3(light->color));
-        }
-        else if (light->type == LightType::DIRECTIONAL_LIGHT)
+        } else if (light->type == LightType::DIRECTIONAL_LIGHT)
         {
             info.dir_lghts.emplace_back(to_vec3(light->direction), to_vec3(light->color));
         }
@@ -488,19 +500,18 @@ inline rtr::scene load_from_veach(const std::string &filename)
 
     int id = 0;
 
-    auto *obj = io->objects;
+    auto* obj = io->objects;
     while (obj != nullptr) // iterate through the objects
     {
         if (obj->type == ObjType::SPHERE_OBJ)
         {
-            auto data = reinterpret_cast<SphereIO *>(obj->data);
+            auto data = reinterpret_cast<SphereIO*>(obj->data);
 
             info.spheres.emplace_back(obj->name ? obj->name : "", to_vec3(data->origin), data->radius,
-                                      to_vec3(data->xaxis), data->xlength,
-                                      to_vec3(data->yaxis), data->ylength,
+                                      to_vec3(data->xaxis), data->xlength, to_vec3(data->yaxis), data->ylength,
                                       to_vec3(data->zaxis), data->zlength);
 
-            auto &sph = info.spheres.back();
+            auto& sph = info.spheres.back();
 
             //            std::cerr << glm::length(sph.origin - to_vec3(cam->position)) << '\n';
             sph.id = id++;
@@ -510,10 +521,9 @@ inline rtr::scene load_from_veach(const std::string &filename)
                                            to_vec3(obj->material->specColor), to_vec3(obj->material->emissColor),
                                            obj->material->shininess, obj->material->ktran);
             }
-        }
-        else
+        } else
         {
-            auto data = reinterpret_cast<PolySetIO *>(obj->data);
+            auto data = reinterpret_cast<PolySetIO*>(obj->data);
             assert(data->type == PolySetType::POLYSET_TRI_MESH);
 
             std::vector<material> materials;
@@ -534,14 +544,15 @@ inline rtr::scene load_from_veach(const std::string &filename)
                 std::array<rtr::vertex, 3> vertices;
                 for (int j = 0; j < polygon.numVertices; ++j)
                 {
-                    auto &poly = polygon.vert[j];
-                    vertices.at(j) = rtr::vertex(to_vec3(poly.pos), to_vec3(poly.norm), &materials.at(poly.materialIndex), poly.s, poly.t);
+                    auto& poly = polygon.vert[j];
+                    vertices.at(j) = rtr::vertex(to_vec3(poly.pos), to_vec3(poly.norm),
+                                                 &materials.at(poly.materialIndex), poly.s, poly.t);
                 }
                 faces.emplace_back(vertices, to_rtr(data->normType), to_rtr(data->materialBinding));
             }
 
             info.meshes.emplace_back(faces, obj->name ? obj->name : "");
-            auto &mesh = info.meshes.back();
+            auto& mesh = info.meshes.back();
             mesh.id = id++;
             mesh.materials = std::move(materials);
         }
@@ -550,21 +561,18 @@ inline rtr::scene load_from_veach(const std::string &filename)
     return rtr::scene(std::move(info));
 }
 
-inline rtr::scene load(const std::string &filename)
+inline rtr::scene load(const std::string& filename)
 {
     if (hasEnding(filename, ".obj"))
     {
         return load_from_tinyobj(filename);
-    }
-    else if (hasEnding(filename, ".ascii"))
+    } else if (hasEnding(filename, ".ascii"))
     {
         return load_from_veach(filename);
-    }
-    else if (hasEnding(filename, ".xml"))
+    } else if (hasEnding(filename, ".xml"))
     {
         return load_from_xml(filename);
-    }
-    else
+    } else
     {
         throw std::runtime_error("unknown file type!");
     }

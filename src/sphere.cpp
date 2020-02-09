@@ -2,13 +2,15 @@
 // Created by Göksu Güvendiren on 2019-05-10.
 //
 
-#include <iostream>
-#include "payload.hpp"
 #include "primitives/sphere.hpp"
+
+#include "payload.hpp"
+
+#include <iostream>
 
 constexpr double pi = 3.14159265359;
 
-static glm::vec2 get_lat_long(const glm::vec3 &point, const glm::vec3 &center)
+static glm::vec2 get_lat_long(const glm::vec3& point, const glm::vec3& center)
 {
     auto N = glm::normalize(point - center);
     auto u = std::atan2(N.x, N.z) / (2 * pi) + 0.5;
@@ -17,7 +19,7 @@ static glm::vec2 get_lat_long(const glm::vec3 &point, const glm::vec3 &center)
     return {u, v};
 }
 
-std::optional<rtr::payload> rtr::primitives::sphere::hit(const rtr::ray &ray) const
+std::optional<rtr::payload> rtr::primitives::sphere::hit(const rtr::ray& ray) const
 {
     auto eminc = ray.origin() - origin;
 

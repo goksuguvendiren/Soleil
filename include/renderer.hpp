@@ -3,43 +3,50 @@
 //
 
 #pragma once
-#include <vector>
-#include <random>
-#include <thread>
-#include <glm/glm.hpp>
-#include <stack>
 #include "camera.hpp"
-#include "utils.hpp"
-#include "scene.hpp"
 #include "ray.hpp"
+#include "scene.hpp"
+#include "utils.hpp"
+
+#include <glm/glm.hpp>
+#include <random>
+#include <stack>
+#include <thread>
+#include <vector>
 
 namespace rtr
 {
 // class scene;
 // class ray;
 
-template <typename Integrator>
+template<typename Integrator>
 class renderer
 {
 public:
-    renderer(unsigned int w, unsigned int h) : width(w), height(h), integrator(width, height)
+    renderer(unsigned int w, unsigned int h)
+        : width(w)
+        , height(h)
+        , integrator(width, height)
     {
         frame_buffer.resize(width * height);
         refr_indices.push(1.f);
     }
 
-    std::vector<glm::vec3> render(const rtr::scene &scene) { return integrator.render(scene); }
-    void render_line(const rtr::scene &scene, const glm::vec3 &row_begin, int i);
-    glm::vec3 render_pixel(const rtr::scene &scene, const camera &camera, const glm::vec3 &pix_center,
-                           const rtr::image_plane &plane, const glm::vec3 &right, const glm::vec3 &below);
+    std::vector<glm::vec3> render(const rtr::scene& scene)
+    {
+        return integrator.render(scene);
+    }
+    void render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i);
+    glm::vec3 render_pixel(const rtr::scene& scene, const camera& camera, const glm::vec3& pix_center,
+                           const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
 
-    template <int sq_sample_pp>
-    glm::vec3 get_pixel_pos(const glm::vec3 &top_left, const rtr::image_plane &plane, const rtr::camera &camera,
-                            const glm::vec3 &right, const glm::vec3 &below, int u, int v, std::bool_constant<true>);
+    template<int sq_sample_pp>
+    glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
+                            const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<true>);
 
-    template <int sq_sample_pp>
-    glm::vec3 get_pixel_pos(const glm::vec3 &top_left, const rtr::image_plane &plane, const rtr::camera &camera,
-                            const glm::vec3 &right, const glm::vec3 &below, int u, int v, std::bool_constant<false>);
+    template<int sq_sample_pp>
+    glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
+                            const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<false>);
 
 private:
     std::vector<glm::vec3> frame_buffer;
@@ -51,10 +58,11 @@ private:
     std::stack<float> refr_indices;
 };
 
-template <typename Integrator>
-template <int sq_sample_pp>
-glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3 &top_left, const rtr::image_plane &plane, const rtr::camera &camera,
-                                              const glm::vec3 &right, const glm::vec3 &below, int u, int v, std::bool_constant<true>)
+template<typename Integrator>
+template<int sq_sample_pp>
+glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane,
+                                              const rtr::camera& camera, const glm::vec3& right, const glm::vec3& below,
+                                              int u, int v, std::bool_constant<true>)
 {
     auto random_u = get_random_float();
     auto random_v = get_random_float();
@@ -65,7 +73,8 @@ glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3 &top_left, const r
     // stratified sampling of the pixel. -> random p location on the film plane
     auto sample = top_left + right * x_offset + below * y_offset;
 
-    auto line_through_lens_center = glm::normalize(camera.center() - sample); // direction of the ray from sample through the center of the lens
+    auto line_through_lens_center =
+        glm::normalize(camera.center() - sample); // direction of the ray from sample through the center of the lens
     auto point_on_plane = camera.center() + camera.focal_distance() * camera.view();
 
     auto plane_normal = camera.view();
@@ -77,10 +86,11 @@ glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3 &top_left, const r
     return sample + t * line_through_lens_center; // returns the q
 }
 
-template <typename Integrator>
-template <int sq_sample_pp>
-glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3 &top_left, const rtr::image_plane &plane, const rtr::camera &camera,
-                                              const glm::vec3 &right, const glm::vec3 &below, int u, int v, std::bool_constant<false>)
+template<typename Integrator>
+template<int sq_sample_pp>
+glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane,
+                                              const rtr::camera& camera, const glm::vec3& right, const glm::vec3& below,
+                                              int u, int v, std::bool_constant<false>)
 {
     if constexpr (sq_sample_pp == 1)
     {
@@ -97,7 +107,7 @@ glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3 &top_left, const r
     return sample;
 }
 
-inline void CallBackFunc(int event, int x, int y, int flags, void *userdata)
+inline void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 {
     if (event == cv::EVENT_LBUTTONDOWN)
     {
@@ -124,9 +134,10 @@ inline void UpdateProgress(float progress)
     std::cout.flush();
 };
 
-template <typename Integrator>
-glm::vec3 renderer<Integrator>::render_pixel(const rtr::scene &scene, const rtr::camera &camera, const glm::vec3 &pix_center,
-                                             const rtr::image_plane &plane, const glm::vec3 &right, const glm::vec3 &below)
+template<typename Integrator>
+glm::vec3 renderer<Integrator>::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
+                                             const glm::vec3& pix_center, const rtr::image_plane& plane,
+                                             const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
     constexpr int sq_sample_pp = 2;
@@ -138,9 +149,10 @@ glm::vec3 renderer<Integrator>::render_pixel(const rtr::scene &scene, const rtr:
     {
         for (int m = 0; m < sq_sample_pp; ++m)
         {
-            auto camera_pos = camera.position();                                                                         // random sample on the lens if not pinhole
-                                                                                                                         //            std::cout << camera_pos << '\n';
-            auto sub_pix_position = get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
+            auto camera_pos = camera.position(); // random sample on the lens if not pinhole
+                                                 //            std::cout << camera_pos << '\n';
+            auto sub_pix_position =
+                get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
             auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
             color += scene.trace(ray);
@@ -152,10 +164,10 @@ glm::vec3 renderer<Integrator>::render_pixel(const rtr::scene &scene, const rtr:
     return color / float(sq_sample_pp * sq_sample_pp);
 }
 
-template <typename Integrator>
-void renderer<Integrator>::render_line(const rtr::scene &scene, const glm::vec3 &row_begin, int i)
+template<typename Integrator>
+void renderer<Integrator>::render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i)
 {
-    const auto &camera = scene.get_camera();
+    const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
     auto right = (1 / float(width)) * plane.right;

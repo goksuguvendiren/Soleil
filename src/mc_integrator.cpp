@@ -2,13 +2,15 @@
 // Created by goksu on 6/7/19.
 //
 
-#include <vector>
-#include <thread>
 #include "mc_integrator.hpp"
+
 #include "camera.hpp"
-#include "scene.hpp"
-#include "material.hpp"
 #include "integrator.hpp"
+#include "material.hpp"
+#include "scene.hpp"
+
+#include <thread>
+#include <vector>
 
 inline void UpdateProgress(float progress)
 {
@@ -29,8 +31,9 @@ inline void UpdateProgress(float progress)
     std::cout.flush();
 };
 
-glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene &scene, const rtr::camera &camera, const glm::vec3 &pix_center,
-                                           const rtr::image_plane &plane, const glm::vec3 &right, const glm::vec3 &below)
+glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
+                                           const glm::vec3& pix_center, const rtr::image_plane& plane,
+                                           const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
     constexpr int sq_sample_pp = 1;
@@ -42,8 +45,9 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene &scene, const rtr::c
     {
         for (int m = 0; m < sq_sample_pp; ++m)
         {
-            auto camera_pos = camera.position();                                                                         // random sample on the lens if not pinhole
-            auto sub_pix_position = get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
+            auto camera_pos = camera.position(); // random sample on the lens if not pinhole
+            auto sub_pix_position =
+                get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
             auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
             color += scene.trace(ray);
@@ -53,9 +57,9 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene &scene, const rtr::c
     return color / float(sq_sample_pp * sq_sample_pp);
 }
 
-void rtr::mc_integrator::render_line(const rtr::scene &scene, const glm::vec3 &row_begin, int i)
+void rtr::mc_integrator::render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i)
 {
-    const auto &camera = scene.get_camera();
+    const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
     auto right = (1 / float(width)) * plane.right;
@@ -71,9 +75,9 @@ void rtr::mc_integrator::render_line(const rtr::scene &scene, const glm::vec3 &r
     }
 }
 
-void rtr::mc_integrator::sub_render(const rtr::scene &scene)
+void rtr::mc_integrator::sub_render(const rtr::scene& scene)
 {
-    const auto &camera = scene.get_camera();
+    const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
     auto right = (1 / float(width)) * plane.right;
@@ -102,13 +106,13 @@ void rtr::mc_integrator::sub_render(const rtr::scene &scene)
         }));
     }
 
-    for (auto &thread : threads)
+    for (auto& thread : threads)
     {
         thread.join();
     }
 }
 
-std::vector<glm::vec3> rtr::mc_integrator::render(const rtr::scene &scene)
+std::vector<glm::vec3> rtr::mc_integrator::render(const rtr::scene& scene)
 {
     sub_render(scene);
     return frame_buffer;
