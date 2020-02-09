@@ -1,0 +1,240 @@
+{
+    "media": [],
+    "bsdfs": [
+        {
+            "name": "Diffuse",
+            "albedo": 0.5,
+            "type": "lambert"
+        },
+        {
+            "name": "Glass",
+            "albedo": 1,
+            "type": "dielectric",
+            "ior": 1.5,
+            "enable_refraction": true
+        },
+        {
+            "name": "Lamp",
+            "albedo": 1,
+            "type": "rough_conductor",
+            "material": "VN",
+            "distribution": "beckmann",
+            "roughness": 0.25
+        },
+        {
+            "name": "Wood",
+            "albedo": [
+                0.32963,
+                0.257976,
+                0.150292
+            ],
+            "type": "lambert"
+        }
+    ],
+    "primitives": [
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh007.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Lamp"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh004.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {
+                "position": [
+                    -2.48161,
+                    6,
+                    2.5894
+                ],
+                "scale": [
+                    0.551508,
+                    0.304162,
+                    0.551509
+                ],
+                "rotation": [
+                    0,
+                    90,
+                    0
+                ]
+            },
+            "power": 500,
+            "type": "quad",
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {
+                "position": [
+                    -2.69082,
+                    5.10417,
+                    -3.77057
+                ],
+                "scale": [
+                    0.135992,
+                    0.0392682,
+                    0.135992
+                ],
+                "rotation": [
+                    -5.99321,
+                    82.6454,
+                    -115.569
+                ]
+            },
+            "power": [
+                700,
+                500,
+                360
+            ],
+            "type": "quad",
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh001.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Lamp"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh005.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Lamp"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh008.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh002.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh011.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh003.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh009.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh006.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh000.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Wood"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh010.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        }
+    ],
+    "camera": {
+        "tonemap": "filmic",
+        "resolution": 1024,
+        "reconstruction_filter": "tent",
+        "transform": {
+            "position": [
+                16.2155,
+                4.05167,
+                0.0114864
+            ],
+            "look_at": [
+                -0.843684,
+                3.972,
+                -0.0742318
+            ],
+            "up": [
+                0,
+                1,
+                0
+            ]
+        },
+        "type": "pinhole",
+        "fov": 35
+    },
+    "integrator": {
+        "min_bounces": 0,
+        "max_bounces": 6,
+        "enable_consistency_checks": false,
+        "enable_two_sided_shading": true,
+        "type": "bidirectional_path_tracer",
+        "enable_light_sampling": true,
+        "enable_mis": true,
+        "image_pyramid": true
+    },
+    "renderer": {
+        "output_file": "veach-bidir.png",
+        "resume_render_file": "TungstenRenderState.dat",
+        "overwrite_output_files": true,
+        "adaptive_sampling": false,
+        "enable_resume_render": false,
+        "stratified_sampler": false,
+        "scene_bvh": true,
+        "spp": 64,
+        "spp_step": 16,
+        "checkpoint_interval": "0",
+        "timeout": "0",
+        "hdr_output_file": "veach-bidir.exr"
+    }
+}
