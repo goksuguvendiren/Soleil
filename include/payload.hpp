@@ -3,11 +3,12 @@
 //
 #pragma once
 
+#include "ray.hpp"
+
 #include <glm/vec3.hpp>
-#include <variant>
 #include <primitives/mesh.hpp>
 #include <primitives/sphere.hpp>
-#include "ray.hpp"
+#include <variant>
 
 namespace rtr
 {

@@ -7,7 +7,7 @@
 #include <iostream>
 #include <scene_io.h>
 
-int main(int argc, const char **argv)
+int main(int argc, const char** argv)
 {
     auto begin = std::chrono::system_clock::now();
 
@@ -36,6 +36,7 @@ int main(int argc, const char **argv)
             focal_length = std::stof(std::string(argv[4]));
         }
     }
+
     rtr::scene scene = rtr::loaders::load(scene_path);
 
     // scene.print();
@@ -65,21 +66,18 @@ int main(int argc, const char **argv)
         end = std::chrono::system_clock::now();
 
         std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
-                  << " millisecs.\n";
+                  << " millisecs.";
 
-        for (int i = 0; i < output_buffer.size(); ++i)
-            accum_buffer[i] += output_buffer[i];
+        for (int i = 0; i < output_buffer.size(); ++i) accum_buffer[i] += output_buffer[i];
         n_frames++;
-        for (int i = 0; i < accum_buffer.size(); ++i)
-            result_buffer[i] = accum_buffer[i] / float(n_frames);
+        for (int i = 0; i < accum_buffer.size(); ++i) result_buffer[i] = accum_buffer[i] / float(n_frames);
 
         cv::Mat image(height, width, CV_32FC3, result_buffer.data());
         cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-        // if (!pinhole_camera)
-        //     cv::flip(image, image, -1);
+//        if (!pinhole_camera)
+//            cv::flip(image, image, -1);
         cv::imshow(scene.output_file_name(), image);
-
-        key = cv::waitKey(1000);
+        key = cv::waitKey(10);
         cv::imwrite(scene.output_file_name() + "random.png", image * 255);
         // std::cin.ignore();
 

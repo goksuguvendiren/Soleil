@@ -5,7 +5,7 @@
 
 glm::vec3 rtr::materials::base::shade(const rtr::scene& scene, const rtr::payload& pld) const
 {
-    auto amb = (1 - trans) * diffuse;
+    auto amb = (1 - trans) * ambient * diffuse;
     glm::vec3 color = amb;
 
     scene.for_each_light([&pld, &color, this, &scene](auto light)
@@ -30,6 +30,7 @@ glm::vec3 rtr::materials::base::shade(const rtr::scene& scene, const rtr::payloa
 
         color += (diffuse + specular) * light.color * attenuation * shadow;
     });
+
     return color;
 }
 
@@ -57,7 +58,8 @@ glm::vec3 rtr::materials::base::sample(const glm::vec3& hit_normal, const payloa
     if (trans > 0)
     {
         sample_direction = refract(pld.ray.direction(), hit_normal, refr_index);
-    } else
+    }
+    else
     {
         sample_direction = sample_hemisphere(hit_normal);
     }
