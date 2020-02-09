@@ -5,6 +5,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <stdexcept>
 
 namespace rtr
 {

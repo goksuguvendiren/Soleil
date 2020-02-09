@@ -5,3 +5,6 @@ cmake-xcode
 cmake-build-release
 docs
 build
+.clangd
+Scenes/.DS_Store
+compile_commands.json
