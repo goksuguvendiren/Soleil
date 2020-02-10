@@ -436,7 +436,7 @@ inline rtr::scene load_from_xml(const std::string& filename)
 
         auto res = GetIntPair(elem->FirstChildElement("ImageResolution"));
 
-        info.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, focal_distance, true);
+        info.camera = rtr::camera(position, view, up, focal_distance, vertical_fov, 400, 400);
     }
     else
     {

@@ -11,8 +11,8 @@ int main(int argc, const char** argv)
 {
     auto begin = std::chrono::system_clock::now();
 
-    //    std::string scene_path = "../../Scenes/obj/dragon/dragon.obj";
-    std::string scene_path = "../../Scenes/xml/cornellbox_ldr.xml";
+//        std::string scene_path = "../Scenes/obj/bunny/bunny.obj";
+    std::string scene_path = "../Scenes/Tungsten/cornell-box/scene.json";
     //    std::string scene_path = "../../Scenes/obj/CornellBox/CornellBox-Original.obj";
     std::cerr << scene_path << '\n';
     bool pinhole_camera = true;

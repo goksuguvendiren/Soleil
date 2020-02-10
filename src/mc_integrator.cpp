@@ -59,8 +59,8 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
         return material->shade(scene, *pld); // replace with russian roulette
 
     // return glm::vec3(1.0f);
-    // return ((pld->hit_normal + 1.0f) / 2.f);
-    // return material->diffuse;
+//     return ((pld->hit_normal + 1.0f) / 2.f);
+     return material->diffuse;
 
     //    auto sample_direction = sample_hemisphere(pld->hit_normal);
     auto sample_direction = material->sample(pld->hit_normal, *pld);
@@ -104,8 +104,8 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
                                            const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 4;
-    auto is_lens = std::bool_constant<true>();
+    constexpr int sq_sample_pp = 1;
+    auto is_lens = std::bool_constant<false>();
 
     glm::vec3 color = {0, 0, 0};
 
