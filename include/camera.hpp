@@ -17,14 +17,14 @@ public:
     camera(const glm::vec3& pos, const glm::vec3& view, const glm::vec3& up, float foc, float fov, int w, int h, float ipd = 1.0f,
            bool pin = true)
         : eye_pos(pos)
-        , view_dir(glm::normalize(view))
+        , view_dir(view)
         , up_dir(glm::normalize(up))
         , focal_dist(foc)
         , vert_fov(fov)
-        , width(w)
-        , height(h)
         , pinhole(pin)
         , image_plane_dist(ipd)
+        , width(w)
+        , height(h)
     {
         if (pin)
         {
