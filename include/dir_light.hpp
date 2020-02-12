@@ -5,7 +5,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <photon.hpp>
+#include "photon.hpp"
 
 namespace rtr
 {
