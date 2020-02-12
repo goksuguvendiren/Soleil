@@ -190,26 +190,26 @@ void rtr::photon_integrator::sub_render(const rtr::scene& scene, const rtr::phot
 
 std::vector<glm::vec3> rtr::photon_integrator::render(const rtr::scene& scene)
 {
-    // Phase 1 for photon mapping:
-    // Iterate through all the lights, and shoot photons in random directions.
-    std::vector<rtr::photon> emitted_photons;
-    scene.for_each_light([this, &emitted_photons](auto light) {
-        auto new_photons = light.distribute_photons(num_photons);
-        emitted_photons.insert(emitted_photons.end(), std::make_move_iterator(new_photons.begin()),
-                               std::make_move_iterator(new_photons.end()));
-    });
-
-    // actual photon mapping. Trace all the photons through their paths and
-    // save their positions and directions.
-    std::vector<rtr::photon> hit_photons;
-    for (auto& photon : emitted_photons)
-    {
-        trace_photons(scene, photon, hit_photons);
-    }
-    // std::cout << hit_photons.size() << '\n';
-
-    rtr::photon_map p_map(hit_photons);
-    sub_render(scene, p_map);
-
-    return frame_buffer;
+//    // Phase 1 for photon mapping:
+//    // Iterate through all the lights, and shoot photons in random directions.
+//    std::vector<rtr::photon> emitted_photons;
+//    scene.for_each_light([this, &emitted_photons](auto light) {
+//        auto new_photons = light.distribute_photons(num_photons);
+//        emitted_photons.insert(emitted_photons.end(), std::make_move_iterator(new_photons.begin()),
+//                               std::make_move_iterator(new_photons.end()));
+//    });
+//
+//    // actual photon mapping. Trace all the photons through their paths and
+//    // save their positions and directions.
+//    std::vector<rtr::photon> hit_photons;
+//    for (auto& photon : emitted_photons)
+//    {
+//        trace_photons(scene, photon, hit_photons);
+//    }
+//    // std::cout << hit_photons.size() << '\n';
+//
+//    rtr::photon_map p_map(hit_photons);
+//    sub_render(scene, p_map);
+//
+//    return frame_buffer;
 }

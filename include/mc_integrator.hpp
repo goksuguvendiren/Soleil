@@ -24,7 +24,8 @@ public:
         frame_buffer.resize(width * height);
     }
     std::vector<glm::vec3> render(const rtr::scene& scene);
-    //
+    glm::vec3 render_pixel(const rtr::scene& scene, int i, int j);
+
 private:
     int sq_samples;
     unsigned int width;

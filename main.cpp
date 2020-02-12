@@ -48,7 +48,8 @@ int main(int argc, const char** argv)
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";
 
-    rtr::renderer<rtr::mc_integrator> r(width, height);
+//    rtr::renderer<rtr::mc_integrator> r(width, height);
+    rtr::mc_integrator r(width, height);
     std::vector<glm::vec3> accum_buffer;
     std::vector<glm::vec3> result_buffer;
     std::vector<glm::vec3> output_buffer;
@@ -63,6 +64,8 @@ int main(int argc, const char** argv)
     {
         begin = std::chrono::system_clock::now();
         output_buffer = r.render(scene);
+
+        auto out_color = r.render_pixel(scene, 100, 100);
         end = std::chrono::system_clock::now();
 
         std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()

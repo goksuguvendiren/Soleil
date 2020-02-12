@@ -42,7 +42,8 @@ struct scene_information
     std::vector<rtr::primitives::sphere> spheres;
     std::vector<rtr::primitives::mesh> meshes;
     std::vector<rtr::light> lghts;
-    std::vector<rtr::dir_light> dir_lghts;
+  std::vector<rtr::dir_light> dir_lghts;
+//  std::vector<rtr::primitives::emissive_mesh> mesh_lights;
 
     std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> mesh_lights;
     std::vector<std::unique_ptr<rtr::materials::base>> materials;
@@ -94,8 +95,18 @@ public:
     template<class FnT>
     void for_each_light(FnT&& func) const
     {
-        std::for_each(lights().begin(), lights().end(), func);
-        std::for_each(dir_lights().begin(), dir_lights().end(), func);
+//        std::for_each(lights().begin(), lights().end(), func);
+//        std::for_each(dir_lights().begin(), dir_lights().end(), func);
+        std::for_each(mesh_lights().begin(), mesh_lights().end(), [&func](auto&& light)
+        {
+            func(light.get());
+        });
+    }
+
+    template<class FnT>
+    void for_each_mesh_light(FnT&& func) const
+    {
+        std::for_each(mesh_lights().begin(), mesh_lights().end(), func);
     }
 
     const std::vector<rtr::light>& lights() const
@@ -106,10 +117,10 @@ public:
     {
         return information.dir_lghts;
     }
-    const std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> &mesh_lights() const 
-    { 
-    	return information.mesh_lights; 
-	}
+    const std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>>& mesh_lights() const
+    {
+    	return information.mesh_lights;
+    }
 
     glm::vec3 trace(const rtr::ray& ray) const;
     glm::vec3 photon_trace(const rtr::ray& ray) const;

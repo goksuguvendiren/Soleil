@@ -37,66 +37,44 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
 
     if (!pld)
     {
+//        auto color = glm::vec3{0.5f, 0.5f, 0.5f};
 //        return color;
         // miss: then hit the bounding box.
-        auto pld = scene.environment_sphere().hit(ray);
-        if (pld)
-        {
-            const auto &material = scene.get_material(pld->material_idx);
-            auto res_color = material->shade(scene, *pld);
-            return res_color;
-        }
-        // assert(false && "Should always hit the bounding sphere");
+//        auto pld = scene.environment_sphere().hit(ray);
+//        if (pld)
+//        {
+//            const auto &material = scene.get_material(pld->material_idx);
+//            auto res_color = material->shade(scene, *pld);
+//            return res_color;
+//        }
+//
+//        assert(false && "Should always hit the bounding sphere");
         return glm::vec3(0,0,0);
     }
+
+    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
+        pld->hit_normal *= -1;
 
     const auto &material = scene.get_material(pld->material_idx);
     if (material->is_emissive())
     {
         return material->shade(scene, *pld);
     }
-    if (pld->ray.rec_depth >= 8)
+
+    if (pld->ray.rec_depth >= 4)
         return material->shade(scene, *pld); // replace with russian roulette
 
-    // return glm::vec3(1.0f);
-//     return ((pld->hit_normal + 1.0f) / 2.f);
-     return material->diffuse;
-
-    //    auto sample_direction = sample_hemisphere(pld->hit_normal);
     auto sample_direction = material->sample(pld->hit_normal, *pld);
     auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
 
     auto material_color = material->shade(scene, *pld);
     auto irradiance = shade(scene, reflection_ray);
 
-    // std::cout << material_color << " * " << irradiance << '\n';
+//    std::cerr << material_color * irradiance << '\n';
+
+//    assert(glm::dot(ray.direction(), pld->hit_normal) > 0);
 
     return material_color * irradiance;
-
-    //
-    //    color = pld->material->shade(*this, *pld);
-    //
-    //    // Reflection :
-    //    if (pld->material->specular.x > 0.f || pld->material->specular.y > 0.f || pld->material->specular.z > 0.f)
-    //    {
-    //        auto reflection_direction = reflect(ray.direction(), pld->hit_normal);
-    //        rtr::ray reflected_ray(pld->hit_pos + (reflection_direction * 1e-3f), reflection_direction,
-    //        pld->ray.rec_depth + 1, false); color += pld->material->specular * trace(reflected_ray);
-    //    }
-    //
-    //    // Refraction
-    //    if (pld->material->trans > 0.f)
-    //    {
-    //        auto eta_1 = 1.f;
-    //        auto eta_2 = 1.5f;
-    //
-    //        auto refraction_direction = refract(ray.direction(), pld->hit_normal, eta_2 / eta_1);
-    //        if (glm::length(refraction_direction) > 0.1)
-    //        {
-    //            rtr::ray refracted_ray(pld->hit_pos + (refraction_direction * 1e-3f), refraction_direction,
-    //            pld->ray.rec_depth + 1, false); color += pld->material->trans * trace(refracted_ray);
-    //        }
-    //    }
 }
 
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
@@ -160,7 +138,7 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
     // cv::namedWindow("window");
     // cv::setMouseCallback("window", CallBackFunc, NULL);
 
-    int number_of_threads = std::thread::hardware_concurrency();
+    auto number_of_threads = std::thread::hardware_concurrency();
     std::cerr << "Threads enabled! Running " << number_of_threads << " threads!\n";
     std::vector<std::thread> threads;
     int n = 0;
@@ -182,6 +160,27 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
     {
         thread.join();
     }
+}
+
+glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, int i, int j)
+{
+    const auto& camera = scene.get_camera();
+    rtr::image_plane plane(camera, width, height);
+
+    auto right = (1 / float(width)) * plane.right;
+    auto below = -(1 / float(height)) * plane.up;
+
+    auto pix_center = plane.top_left_position();
+
+    auto row_begin = pix_center + below * float(j);
+    pix_center += float(j) * right;
+    //    render_line(scene, row_begin, j);
+    pix_center += right;
+    auto color = render_pixel(scene, camera, pix_center, plane, right, below);
+
+    frame_buffer[i * width + j] = color;
+
+    return color;
 }
 
 std::vector<glm::vec3> rtr::mc_integrator::render(const rtr::scene& scene)

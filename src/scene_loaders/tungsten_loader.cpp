@@ -326,9 +326,11 @@ rtr::scene load_tungsten(const std::string &filename)
 
             auto light_material = power_json.is_array() ? std::make_unique<materials::emissive>(materials::emissive(to_vec3(power_json))) : std::make_unique<materials::emissive>(materials::emissive(float(power_json)));
             all_materials.push_back(std::move(light_material));
-            info.meshes.back().material_idx.push_back(all_materials.size() - 1);
-            // auto mesh_light = power_json.is_array() ? std::make_unique<materials::emissive>(materials::emissive(to_vec3(power_json))) : std::make_unique<materials::emissive>(materials::emissive(float(power_json)));
-            // info.mesh_lights.push_back(std::move(mesh_light));
+            auto mat_idx = int(all_materials.size() - 1);
+            info.meshes.back().material_idx.push_back(mat_idx);
+
+            auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
+            info.mesh_lights.push_back(std::move(mesh_light));
         }
         if (primitive.find("emission") != primitive.end())
         {
@@ -336,7 +338,11 @@ rtr::scene load_tungsten(const std::string &filename)
 
             auto light_material = emission_json.is_array() ? std::unique_ptr<materials::emissive>(new materials::emissive(to_vec3(emission_json))) : std::unique_ptr<materials::emissive>(new materials::emissive(float(emission_json)));
             all_materials.push_back(std::move(light_material));
-            info.meshes.back().material_idx.push_back(all_materials.size() - 1);
+            auto mat_idx = int(all_materials.size() - 1);
+            info.meshes.back().material_idx.push_back(mat_idx);
+
+            auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
+            info.mesh_lights.push_back(std::move(mesh_light));
         }
 
         std::cerr << "Mesh id: " << id++ << "\n";

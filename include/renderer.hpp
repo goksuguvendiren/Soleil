@@ -39,6 +39,7 @@ public:
     void render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i);
     glm::vec3 render_pixel(const rtr::scene& scene, const camera& camera, const glm::vec3& pix_center,
                            const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
+    glm::vec3 render_pixel(const rtr::scene& scene, int i, int j);
 
     template<int sq_sample_pp>
     glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,

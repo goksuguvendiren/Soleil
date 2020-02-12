@@ -82,14 +82,26 @@ public:
     }
 
     std::vector<int> material_idx;
-    std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+    [[nodiscard]] std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
     int id;
     std::string name;
 
     mesh(mesh&&) noexcept = default;
     mesh(const mesh&) = delete;
+
     std::vector<rtr::primitives::face> faces;
+
+    mesh copy() const
+    {
+        auto fcs = faces;
+        auto nm = name;
+
+        auto m = mesh(fcs, nm);
+        m.material_idx = material_idx;
+
+        return m;
+    }
 
     void configure_materials()
     {
@@ -101,7 +113,7 @@ public:
             }
         }
     }
-    const rtr::aabb& bounding_box() const { return tree.bounding_box(); }
+    [[nodiscard]] const rtr::aabb& bounding_box() const { return tree.bounding_box(); }
 
 private:
     rtr::kd_tree tree;
