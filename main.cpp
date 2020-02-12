@@ -12,7 +12,7 @@ int main(int argc, const char** argv)
     auto begin = std::chrono::system_clock::now();
 
 //        std::string scene_path = "../Scenes/obj/bunny/bunny.obj";
-    std::string scene_path = "../Scenes/Tungsten/cornell-box/scene.json";
+    std::string scene_path = "../Scenes/Tungsten/cornell-box/scene_without_cubes.json";
     //    std::string scene_path = "../../Scenes/obj/CornellBox/CornellBox-Original.obj";
     std::cerr << scene_path << '\n';
     bool pinhole_camera = true;
@@ -81,7 +81,7 @@ int main(int argc, const char** argv)
 //            cv::flip(image, image, -1);
         cv::imshow(scene.output_file_name(), image);
         key = cv::waitKey(10);
-        cv::imwrite(scene.output_file_name() + "random.png", image * 255);
+        cv::imwrite(scene.output_file_name() + "_output.exr", image);
         // std::cin.ignore();
 
         // using namespace std::chrono_literals;
