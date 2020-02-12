@@ -183,8 +183,8 @@ inline std::string GetBaseDir(const std::string& filepath)
     return "";
 }
 
-//inline rtr::scene load_from_tinyobj(const std::string& filename)
-//{
+inline rtr::scene load_from_tinyobj(const std::string& filename)
+{
 //    //        objl::Loader loader;
 //    //        loader.LoadFile(filename);
 //    tinyobj::attrib_t attrib;
@@ -209,7 +209,7 @@ inline std::string GetBaseDir(const std::string& filepath)
 //        std::cerr << err << std::endl;
 //    }
 //
-//    rtr::scene_information info;
+    rtr::scene_information info;
 //
 //    // create a default camera located at the origin, looking at the -z direction.
 //    auto focal_distance = 12.2118f;
@@ -293,8 +293,8 @@ inline std::string GetBaseDir(const std::string& filepath)
 //        //                diffuse material will be used!" << '\n';
 //        //            }
 //    }
-//    return rtr::scene(std::move(info));
-//}
+    return rtr::scene(std::move(info));
+}
 
 inline std::pair<int, int> GetIntPair(tinyxml2::XMLElement* element)
 {
@@ -589,7 +589,7 @@ inline rtr::scene load(const std::string& filename)
 {
     if (hasEnding(filename, ".obj"))
     {
-//        return load_from_tinyobj(filename);
+        return load_from_tinyobj(filename);
     }
     else if (hasEnding(filename, ".ascii"))
     {

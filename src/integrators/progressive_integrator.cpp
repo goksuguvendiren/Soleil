@@ -2,7 +2,7 @@
 // Created by goksu on 6/7/19.
 //
 
-#include "mc_integrator.hpp"
+#include "integrators/progressive_integrator.hpp"
 
 #include "camera.hpp"
 #include "integrator.hpp"
@@ -31,7 +31,7 @@ inline void UpdateProgress(float progress)
     std::cout.flush();
 };
 
-glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray) const
+glm::vec3 rtr::progressive_integrator::shade(const rtr::scene& scene, const rtr::ray& ray) const
 {
     auto pld = scene.hit(ray);
 
@@ -77,7 +77,7 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     return material_color * irradiance;
 }
 
-glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
+glm::vec3 rtr::progressive_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
                                            const glm::vec3& pix_center, const rtr::image_plane& plane,
                                            const glm::vec3& right, const glm::vec3& below)
 {
@@ -99,7 +99,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
             // color += scene.trace(ray);
 
             auto pix_color = shade(scene, ray);
-            //dstc::rer< pix_color << '\n';
+//            std::cerr << pix_color << '\n';
             color += pix_color;
         }
     }
@@ -107,7 +107,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
     return color / float(sq_sample_pp * sq_sample_pp);
 }
 
-void rtr::mc_integrator::render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i)
+void rtr::progressive_integrator::render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i)
 {
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
@@ -125,7 +125,7 @@ void rtr::mc_integrator::render_line(const rtr::scene& scene, const glm::vec3& r
     }
 }
 
-void rtr::mc_integrator::sub_render(const rtr::scene& scene)
+void rtr::progressive_integrator::sub_render(const rtr::scene& scene)
 {
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
@@ -162,7 +162,7 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
     }
 }
 
-glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, int i, int j)
+glm::vec3 rtr::progressive_integrator::render_pixel(const rtr::scene& scene, int i, int j)
 {
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
@@ -183,8 +183,30 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, int i, int j
     return color;
 }
 
-std::vector<glm::vec3> rtr::mc_integrator::render(const rtr::scene& scene)
+std::vector<glm::vec3> rtr::progressive_integrator::render(const rtr::scene& scene)
 {
-    sub_render(scene);
-    return frame_buffer;
+    std::vector<glm::vec3> accum_buffer;
+    std::vector<glm::vec3> result_buffer;
+
+    accum_buffer.resize(width * height);
+    result_buffer.resize(width * height);
+    int key = 0;
+    int n_frames = 0;
+
+    while (key != 27)
+    {
+        sub_render(scene);
+
+        for (int i = 0; i < accum_buffer.size(); ++i) accum_buffer[i] += frame_buffer[i];
+        n_frames++;
+        for (int i = 0; i < accum_buffer.size(); ++i) result_buffer[i] = accum_buffer[i] / float(n_frames);
+
+        cv::Mat image(height, width, CV_32FC3, result_buffer.data());
+        cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
+        cv::imshow(scene.output_file_name(), image);
+
+        key = cv::waitKey(100);
+    }
+
+    return result_buffer;
 }

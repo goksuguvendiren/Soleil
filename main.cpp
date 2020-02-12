@@ -1,4 +1,4 @@
-#include "mc_integrator.hpp"
+#include "integrators/progressive_integrator.hpp"
 #include "photon_integrator.hpp"
 #include "renderer.hpp"
 #include "scene.hpp"
@@ -49,44 +49,21 @@ int main(int argc, const char** argv)
               << " millisecs.";
 
 //    rtr::renderer<rtr::mc_integrator> r(width, height);
-    rtr::mc_integrator r(width, height);
-    std::vector<glm::vec3> accum_buffer;
-    std::vector<glm::vec3> result_buffer;
-    std::vector<glm::vec3> output_buffer;
+    rtr::progressive_integrator r(width, height);
 
-    accum_buffer.resize(width * height);
-    result_buffer.resize(width * height);
+    begin = std::chrono::system_clock::now();
+    auto output_buffer = r.render(scene);
+    end = std::chrono::system_clock::now();
 
-    int n_frames = 0;
+    auto debug_color = r.render_pixel(scene, 100, 100);
 
-    int key = 0;
-    while (key != 27)
-    {
-        begin = std::chrono::system_clock::now();
-        output_buffer = r.render(scene);
+    std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+              << " millisecs.";
 
-        auto out_color = r.render_pixel(scene, 100, 100);
-        end = std::chrono::system_clock::now();
-
-        std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
-                  << " millisecs.";
-
-        for (int i = 0; i < output_buffer.size(); ++i) accum_buffer[i] += output_buffer[i];
-        n_frames++;
-        for (int i = 0; i < accum_buffer.size(); ++i) result_buffer[i] = accum_buffer[i] / float(n_frames);
-
-        cv::Mat image(height, width, CV_32FC3, result_buffer.data());
-        cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-//        if (!pinhole_camera)
-//            cv::flip(image, image, -1);
-        cv::imshow(scene.output_file_name(), image);
-        key = cv::waitKey(10);
-        cv::imwrite(scene.output_file_name() + "_output.exr", image);
-        // std::cin.ignore();
-
-        // using namespace std::chrono_literals;
-        // std::this_thread::sleep_for(1s);
-    }
+    cv::Mat image(height, width, CV_32FC3, output_buffer.data());
+    cv::imshow(scene.output_file_name(), image);
+    cv::waitKey(0);
+    cv::imwrite(scene.output_file_name() + "_output.exr", image);
 
     return 0;
 }

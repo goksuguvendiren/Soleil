@@ -13,10 +13,10 @@ namespace rtr
 {
 class ray;
 class scene;
-class mc_integrator
+class progressive_integrator
 {
 public:
-    mc_integrator(unsigned int w, unsigned int h, int sq = 1)
+    progressive_integrator(unsigned int w, unsigned int h, int sq = 1)
         : width(w)
         , height(h)
         , sq_samples(sq)
