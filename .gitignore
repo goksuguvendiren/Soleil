@@ -5,3 +5,6 @@ cmake-xcode
 cmake-build-release
 docs
 build
+.clangd
+debug
+compile_commands.json
