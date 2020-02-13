@@ -84,7 +84,7 @@ glm::vec3 rtr::photon_integrator::render_ray(const rtr::scene& scene, const rtr:
         color += ref_color * (material->trans);
     }
 
-    color += material->shade(scene, *payload);
+    color += material->f(scene, *payload);
 
     // std::cerr << "color : " << color << " - ";
 
@@ -211,5 +211,5 @@ std::vector<glm::vec3> rtr::photon_integrator::render(const rtr::scene& scene)
 //    rtr::photon_map p_map(hit_photons);
 //    sub_render(scene, p_map);
 //
-//    return frame_buffer;
+    return frame_buffer;
 }

@@ -1,8 +1,9 @@
 //
-// Created by goksu on 6/7/19.
+// Created by Göksu Güvendiren on 12.02.2020.
 //
 
 #pragma once
+
 
 #include "camera.hpp"
 
@@ -12,10 +13,10 @@ namespace rtr
 {
 class ray;
 class scene;
-class progressive_integrator
+class mc_integrator
 {
 public:
-    progressive_integrator(unsigned int w, unsigned int h, int sq = 1)
+    mc_integrator(unsigned int w, unsigned int h, int sq = 1)
         : width(w)
         , height(h)
         , sq_samples(sq)

@@ -42,13 +42,12 @@ struct scene_information
     std::vector<rtr::primitives::sphere> spheres;
     std::vector<rtr::primitives::mesh> meshes;
     std::vector<rtr::light> lghts;
-  std::vector<rtr::dir_light> dir_lghts;
-//  std::vector<rtr::primitives::emissive_mesh> mesh_lights;
+    std::vector<rtr::dir_light> dir_lghts;
 
     std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> mesh_lights;
     std::vector<std::unique_ptr<rtr::materials::base>> materials;
 
-	bool progressive_render = false;
+    bool progressive_render = false;
     int samples_per_pixel;
 
     std::string output_file_name;
@@ -81,13 +80,24 @@ public:
             rtr::primitives::sphere("scene bounding box", center, glm::length(center - bounding_box.max) * constant, information.materials.size() - 1);
     }
 
+    int samples_per_pixel() const
+    {
+        return information.samples_per_pixel;
+    }
+
     const rtr::camera& get_camera() const
     {
         return information.camera;
     }
+
     void set_camera(rtr::camera& cam)
     {
         information.camera = std::move(cam);
+    }
+
+    rtr::primitives::emissive_mesh* sample_light() const
+    {
+        return mesh_lights()[0].get();
     }
 
     std::optional<rtr::payload> hit(const rtr::ray& ray) const;
@@ -113,10 +123,12 @@ public:
     {
         return information.lghts;
     }
+
     const std::vector<rtr::dir_light>& dir_lights() const
     {
         return information.dir_lghts;
     }
+
     const std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>>& mesh_lights() const
     {
     	return information.mesh_lights;
@@ -139,6 +151,8 @@ public:
         return information.materials[index];
     }
 private:
+    glm::vec3 shadow_trace(const rtr::ray& ray, float light_distance, int depth) const;
+
     rtr::primitives::sphere bounding_sphere;
     scene_information information;
 };

@@ -4,6 +4,7 @@
 #include "scene.hpp"
 #include "scene_loaders.hpp"
 
+#include <integrators/mc_integrator.hpp>
 #include <iostream>
 #include <scene_io.h>
 
@@ -61,6 +62,7 @@ int main(int argc, const char** argv)
               << " millisecs.";
 
     cv::Mat image(height, width, CV_32FC3, output_buffer.data());
+    cv::cvtColor(image, image, cv::COLOR_RGB2BGR);
     cv::imshow(scene.output_file_name(), image);
     cv::waitKey(0);
     cv::imwrite(scene.output_file_name() + "_output.exr", image);

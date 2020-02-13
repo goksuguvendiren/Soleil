@@ -2,6 +2,7 @@
 #include "photon.hpp"
 
 #include <glm/glm.hpp>
+#include <payload.hpp>
 
 namespace rtr
 {
@@ -23,7 +24,7 @@ public:
         return true;
     }
 
-    glm::vec3 shade(const scene& scene, const payload& pld) const
+    glm::vec3 f(const scene& scene, const payload& pld) const
     {
         // std::cerr << "hit the light jack" << '\n';
         return power;

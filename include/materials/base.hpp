@@ -42,7 +42,7 @@ public:
             refr_index = 1.5f;
     }
 
-    virtual glm::vec3 shade(const scene& scene, const payload& pld) const;
+    virtual glm::vec3 f(const scene& scene, const payload& pld) const;
 
     rtr::PathType russian_roulette() const
     {
