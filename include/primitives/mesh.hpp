@@ -49,6 +49,15 @@ struct face
             set_normal();
     }
 
+    void transform(const glm::mat4x4& transformer)
+    {
+        for (auto& vert : vertices)
+        {
+            vert.transform(transformer);
+        }
+        box = aabb(vertices);
+    }
+
     std::array<rtr::vertex, 3> vertices;
     std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
@@ -79,6 +88,42 @@ public:
         auto end = std::chrono::system_clock::now();
         std::cout << "BVH construction took : "
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
+
+        std::cerr << "tree.bounding_box().min: " << tree.bounding_box().min << '\n';
+        std::cerr << "tree.bounding_box().max: " << tree.bounding_box().max << '\n';
+    }
+
+    void transform(const glm::mat4x4& transformer)
+    {
+        for (auto& face : faces)
+            face.transform(transformer);
+
+        std::vector<rtr::primitives::face*> face_ptrs;
+        face_ptrs.reserve(faces.size());
+        for (auto& f : faces)
+        {
+            face_ptrs.push_back(&f);
+        }
+        tree = rtr::kd_tree(face_ptrs);
+    }
+
+    void update_tree()
+    {
+        std::cerr << "tree.bounding_box().min before: " << tree.bounding_box().min << '\n';
+        std::cerr << "tree.bounding_box().max before: " << tree.bounding_box().max << '\n';
+
+        std::vector<rtr::primitives::face*> face_ptrs;
+        face_ptrs.reserve(faces.size());
+        for (auto& f : faces)
+        {
+            face_ptrs.push_back(&f);
+        }
+
+        tree = rtr::kd_tree(face_ptrs);
+
+        std::cerr << "tree.bounding_box().min after: " << tree.bounding_box().min << '\n';
+        std::cerr << "tree.bounding_box().max after: " << tree.bounding_box().max << '\n';
+
     }
 
     std::vector<int> material_idx;

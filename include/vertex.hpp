@@ -21,6 +21,15 @@ public:
         , u(0)
         , v(0)
     {}
+
+    vertex(const glm::vec3& pos, const glm::vec3& n)
+        : poss(pos)
+        , normal(n)
+        , mat(-1)
+        , u(0)
+        , v(0)
+    {}
+
     vertex(const glm::vec3& pos, const glm::vec3& n, int m, float s, float t)
         : poss(pos)
         , normal(n)
@@ -35,7 +44,12 @@ public:
     glm::vec3 poss;
     float u, v;
 
-    glm::vec3 position() const
+    glm::vec3& position()
+    {
+        return poss;
+    }
+
+    const glm::vec3& position() const
     {
         return poss;
     }
@@ -43,7 +57,9 @@ public:
     void transform(const glm::mat4x4& transform)
     {
         poss = glm::vec3(transform * glm::vec4(poss, 1.0f));
+
+        auto inv_tr_transform = glm::transpose(glm::inverse(transform));
+        normal = glm::vec3(inv_tr_transform * glm::vec4(normal, 0.0f));
     }
-    //        glm::vec3 normal() const { return norm; }
 };
 } // namespace rtr

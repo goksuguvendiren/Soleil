@@ -5,6 +5,7 @@
 #pragma once
 
 #include "ray.hpp"
+#include "utils.hpp"
 
 #include <functional>
 #include <glm/vec3.hpp>

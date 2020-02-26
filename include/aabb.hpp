@@ -26,12 +26,18 @@ public:
                         -std::numeric_limits<float>::infinity());
     }
 
-    aabb(const std::array<rtr::vertex, 3>& faces)
+    aabb(const std::array<rtr::vertex, 3>& face) : aabb()
     {
-        min = glm::min(glm::min(std::get<0>(faces).position(), std::get<1>(faces).position()),
-                       std::get<2>(faces).position());
-        max = glm::max(glm::max(std::get<0>(faces).position(), std::get<1>(faces).position()),
-                       std::get<2>(faces).position());
+        for (auto& vert : face)
+        {
+            min.x = std::min(min.x, vert.position().x);
+            min.y = std::min(min.y, vert.position().y);
+            min.z = std::min(min.z, vert.position().z);
+
+            max.x = std::max(max.x, vert.position().x);
+            max.y = std::max(max.y, vert.position().y);
+            max.z = std::max(max.z, vert.position().z);
+        }
     }
 
     glm::vec3 min;

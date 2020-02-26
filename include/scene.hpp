@@ -119,7 +119,7 @@ public:
         std::for_each(mesh_lights().begin(), mesh_lights().end(), func);
     }
 
-    const std::vector<rtr::light>& lights() const
+    [[nodiscard]] const std::vector<rtr::light>& lights() const
     {
         return information.lghts;
     }

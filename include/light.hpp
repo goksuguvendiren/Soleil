@@ -31,9 +31,9 @@ public:
         return glm::length(position - hit_pos);
     }
 
-    float attenuate(const glm::vec3& hit_pos) const
+    float attenuate(const glm::vec3& light_pos, const glm::vec3& hit_pos) const
     {
-        auto distance = glm::length(position - hit_pos);
+        auto distance = glm::length(light_pos - hit_pos);
         float c_1 = 0.25;
         float c_2 = 0.1;
         float c_3 = 0.01;

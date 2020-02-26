@@ -93,11 +93,6 @@ inline glm::vec3 sample_hemisphere(const glm::vec3& hit_normal, int ms_id = 0, i
     return glm::vec3{base_sample.x * basis.x.x + base_sample.y * basis.y.x + base_sample.z * basis.z.x,
                      base_sample.x * basis.x.y + base_sample.y * basis.y.y + base_sample.z * basis.z.y,
                      base_sample.x * basis.x.z + base_sample.y * basis.y.z + base_sample.z * basis.z.z};
-//    auto axis = glm::cross(glm::vec3(0, 0, 1), towards);
-//    auto angle = std::acos(glm::dot(towards, glm::vec3(0, 0, 1)));
-//
-//    auto rotate = glm::angleAxis(angle, axis);
-//    return rotate * base_sample;
 }
 
 inline bool hasEnding(std::string const& fullString, std::string const& ending)

@@ -138,8 +138,8 @@ void rtr::photon_integrator::render_line(const rtr::scene& scene, const glm::vec
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
-    auto right = (1 / float(width)) * plane.right;
-    auto below = -(1 / float(height)) * plane.up;
+    auto right = (1 / float(width)) * plane.right();
+    auto below = -(1 / float(height)) * plane.up();
 
     glm::vec3 pix_center = row_begin;
     for (int j = 0; j < width; ++j)
@@ -156,8 +156,8 @@ void rtr::photon_integrator::sub_render(const rtr::scene& scene, const rtr::phot
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
-    auto right = (1 / float(width)) * plane.right;
-    auto below = -(1 / float(height)) * plane.up;
+    auto right = (1 / float(width)) * plane.right();
+    auto below = -(1 / float(height)) * plane.up();
 
     auto pix_center = plane.top_left_position();
 

@@ -12,9 +12,9 @@ int main(int argc, const char** argv)
 {
     auto begin = std::chrono::system_clock::now();
 
-//        std::string scene_path = "../Scenes/obj/bunny/bunny.obj";
-    std::string scene_path = "../Scenes/Tungsten/cornell-box/scene_without_cubes.json";
-    //    std::string scene_path = "../../Scenes/obj/CornellBox/CornellBox-Original.obj";
+    std::string folder_name = "obj";
+    std::string scene_name = "spot";
+    std::string scene_path = "../Scenes/" + folder_name + "/" + scene_name + "/spot_triangulated_good.obj";
     std::cerr << scene_path << '\n';
     bool pinhole_camera = true;
     float image_plane_distance = 1.f;
@@ -40,8 +40,6 @@ int main(int argc, const char** argv)
 
     rtr::scene scene = rtr::loaders::load(scene_path);
 
-    // scene.print();
-
     auto width = scene.get_camera().width;
     auto height = scene.get_camera().height;
 
@@ -50,13 +48,11 @@ int main(int argc, const char** argv)
               << " millisecs.";
 
 //    rtr::renderer<rtr::mc_integrator> r(width, height);
-    rtr::progressive_integrator r(width, height);
+    rtr::mc_integrator r(width, height);
 
     begin = std::chrono::system_clock::now();
     auto output_buffer = r.render(scene);
     end = std::chrono::system_clock::now();
-
-    auto debug_color = r.render_pixel(scene, 100, 100);
 
     std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";

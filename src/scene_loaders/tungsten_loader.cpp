@@ -236,9 +236,6 @@ rtr::scene load_tungsten(const std::string &filename)
     float fov = camera_settings["fov"];
     std::string pinhole = camera_settings["type"];
 
-    auto foc = 1.f;
-    auto image_plane_distance = 1.f;
-
     auto resolution = camera_settings["resolution"];
 
     int width = 0, height = 0;
@@ -253,7 +250,7 @@ rtr::scene load_tungsten(const std::string &filename)
     }
 
     info.camera =
-        rtr::camera(position, lookat_dir, up_dir, foc, fov, width, height, image_plane_distance, pinhole == "pinhole");
+        rtr::camera(position, lookat_dir, up_dir, rtr::radians{glm::radians(fov)}, width, height, pinhole == "pinhole");
 
     // std::cerr << width << '\n';
     // std::cerr << scene.camera.height << '\n';

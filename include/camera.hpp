@@ -10,19 +10,27 @@
 
 namespace rtr
 {
+struct degrees
+{
+    float degree;
+};
+
+struct radians
+{
+    float radian;
+};
+
 class camera
 {
 public:
     camera() = default;
-    camera(const glm::vec3& pos, const glm::vec3& view, const glm::vec3& up, float foc, float fov, int w, int h, float ipd = 1.0f,
+    camera(const glm::vec3& pos, const glm::vec3& view, const glm::vec3& up, rtr::radians fov, int w, int h,
            bool pin = true)
         : eye_pos(pos)
         , view_dir(view)
         , up_dir(glm::normalize(up))
-        , focal_dist(foc)
-        , vert_fov(fov)
+        , vert_fov(fov.radian)
         , pinhole(pin)
-        , image_plane_dist(ipd)
         , width(w)
         , height(h)
     {
@@ -30,7 +38,7 @@ public:
         {
             // if the camera model is a pinhole camera, then the distance to the image plane is
             // the focal distance
-            image_plane_dist = focal_dist;
+//            image_plane_dist = focal_dist;
         } else
         {
             // TODO : make this variable
@@ -63,14 +71,11 @@ public:
         return pinhole ? eye_pos : point_sample_lens();
     }
 
-    auto focal_distance() const
+    float focal_distance() const
     {
-        return focal_dist;
+        auto focal_distance = (height / 2.f) / glm::tan(vert_fov / 2.f);
     }
-    auto image_plane_distance() const
-    {
-        return image_plane_dist;
-    }
+
     auto fov() const
     {
         return vert_fov;
@@ -82,9 +87,7 @@ public:
     }
 
     bool pinhole;
-    float image_plane_dist;
     float lens_width;
-    float focal_dist;
 
     int width;
     int height;
@@ -111,36 +114,45 @@ class image_plane
 public:
     image_plane(const camera& cam, unsigned int w, unsigned int h)
     {
-        float scale = cam.image_plane_distance();
-        up = scale * std::tan(cam.fov() / 2.f) * cam.up();
+        m_up = (h / 2.f) * cam.up();
+        m_right = (w / 2.f) * cam.right();
 
-        float aspect_ratio = w / float(h);
-        auto horizontal_fov = cam.fov() * aspect_ratio;
-        right = scale * std::tan(horizontal_fov / 2.f) * cam.right();
+        auto focal_dist = cam.focal_distance();
 
         glm::vec3 center;
         if (cam.is_pinhole())
         {
-            center = cam.center() + scale * cam.view();
+            center = cam.center() + focal_dist * cam.view();
         } else
         {
             // The camera has a lens, in this case the image plane is behind the camera
-            center = cam.center() - scale * cam.view();
+            center = cam.center() - focal_dist * cam.view();
         }
-        top_left = center + up - right; // CAN BE DIFFERENT! Check!
+        m_top_left = center + m_up - m_right; // CAN BE DIFFERENT! Check!
 
-        up *= 2;
-        right *= 2;
+        m_up *= 2;
+        m_right *= 2;
     }
 
-    glm::vec3 right;
-    glm::vec3 up;
-    glm::vec3 top_left_position() const
+    [[nodiscard]] glm::vec3 top_left_position() const
     {
-        return top_left;
+        return m_top_left;
+    }
+
+    [[nodiscard]] glm::vec3 right() const
+    {
+        return m_right;
+    }
+
+    [[nodiscard]] glm::vec3 up() const
+    {
+        return m_up;
     }
 
 private:
-    glm::vec3 top_left;
+    glm::vec3 m_top_left;
+    glm::vec3 m_right;
+    glm::vec3 m_up;
+
 };
 } // namespace rtr

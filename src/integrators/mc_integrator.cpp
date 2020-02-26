@@ -19,23 +19,14 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
 
     if (!pld)
     {
-//        auto color = glm::vec3{0.5f, 0.5f, 0.5f};
-//        return color;
-        // miss: then hit the bounding box.
-//        auto pld = scene.environment_sphere().hit(ray);
-//        if (pld)
-//        {
-//            const auto &material = scene.get_material(pld->material_idx);
-//            auto res_color = material->shade(scene, *pld);
-//            return res_color;
-//        }
-//
-//        assert(false && "Should always hit the bounding sphere");
         return glm::vec3(0,0,0);
     }
 
-    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
-        pld->hit_normal *= -1;
+    // FIXME: quad loading bug, to be fixed
+//    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
+//    {
+//        pld->hit_normal *= -1;
+//    }
 
     const auto &material = scene.get_material(pld->material_idx);
     if (material->is_emissive())
@@ -98,8 +89,8 @@ void rtr::mc_integrator::render_line(const rtr::scene& scene, const glm::vec3& r
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
-    auto right = (1 / float(width)) * plane.right;
-    auto below = -(1 / float(height)) * plane.up;
+    auto right = (1 / float(width)) * plane.right();
+    auto below = -(1 / float(height)) * plane.up();
 
     glm::vec3 pix_center = row_begin;
     for (int j = 0; j < width; ++j)
@@ -120,8 +111,8 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
-    auto right = (1 / float(width)) * plane.right;
-    auto below = -(1 / float(height)) * plane.up;
+    auto right = (1 / float(width)) * plane.right();
+    auto below = -(1 / float(height)) * plane.up();
 
     auto pix_center = plane.top_left_position();
 
@@ -154,8 +145,8 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, int i, int j
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
-    auto right = (1 / float(width)) * plane.right;
-    auto below = -(1 / float(height)) * plane.up;
+    auto right = (1 / float(width)) * plane.right();
+    auto below = -(1 / float(height)) * plane.up();
 
     auto pix_center = plane.top_left_position();
 

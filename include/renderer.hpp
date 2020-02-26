@@ -173,8 +173,8 @@ void renderer<Integrator>::render_line(const rtr::scene& scene, const glm::vec3&
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
-    auto right = (1 / float(width)) * plane.right;
-    auto below = -(1 / float(height)) * plane.up;
+    auto right = (1 / float(width)) * plane.right();
+    auto below = -(1 / float(height)) * plane.up();
 
     glm::vec3 pix_center = row_begin;
     for (int j = 0; j < width; ++j)
