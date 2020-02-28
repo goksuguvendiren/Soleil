@@ -5,7 +5,7 @@
 
 glm::vec3 rtr::materials::base::f(const rtr::scene& scene, const rtr::payload& pld) const
 {
-    return diffuse / glm::pi<float>();
+    return diffuse / glm::pi<float>(); // lambertian model
 }
 
 static glm::vec3 refract(const glm::vec3& I, const glm::vec3& N, const float& ior)
@@ -28,14 +28,5 @@ static glm::vec3 refract(const glm::vec3& I, const glm::vec3& N, const float& io
 
 glm::vec3 rtr::materials::base::sample(const glm::vec3& hit_normal, const payload& pld) const
 {
-    glm::vec3 sample_direction;
-//    if (trans > 0)
-//    {
-//        sample_direction = refract(pld.ray.direction(), hit_normal, refr_index);
-//    }
-//    else
-//    {
-        sample_direction = sample_hemisphere(hit_normal);
-//    }
-    return sample_direction;
+    return sample_hemisphere(hit_normal);
 }

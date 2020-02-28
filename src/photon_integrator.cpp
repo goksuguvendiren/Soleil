@@ -17,7 +17,6 @@ void trace_photons(const rtr::scene& scene, const rtr::photon& photon, std::vect
 {
     auto photon_ray = rtr::ray(photon.origin(), photon.direction(), 0, false);
     auto payload = scene.hit(photon_ray);
-    //    std::cerr << "Hit photon! \n";
 
     if (!payload)
         return;
@@ -33,7 +32,6 @@ void trace_photons(const rtr::scene& scene, const rtr::photon& photon, std::vect
 
     if (decision == rtr::PathType::Absorbed)
     {
-        //        std::cerr << "Photon absorbed\n";
         return;
     }
 
@@ -86,16 +84,11 @@ glm::vec3 rtr::photon_integrator::render_ray(const rtr::scene& scene, const rtr:
 
     color += material->f(scene, *payload);
 
-    // std::cerr << "color : " << color << " - ";
-
     auto near_photons = p_map.search(payload->hit_pos, 5);
-    // std::cerr << near_photons.size() << '\n';
-    // std::cerr << "direct : " << color << '\n';
 
     auto indir_color = std::accumulate(near_photons.begin(), near_photons.end(), glm::vec3(0), [&](auto& a, auto& p) {
         return a + p.power() / std::pow(std::max(1.f, glm::length(p.origin() - payload->hit_pos)), 2.f);
     });
-    // std::cerr << " indirect : " << glm::vec3(indir_color / float(near_photons.size())) << " - " ;
 
     if (!near_photons.empty())
     {

@@ -59,9 +59,9 @@ int main(int argc, const char** argv)
 
     cv::Mat image(height, width, CV_32FC3, output_buffer.data());
     cv::cvtColor(image, image, cv::COLOR_RGB2BGR);
-    cv::imshow(scene.output_file_name(), image);
-    cv::waitKey(0);
-    cv::imwrite(scene.output_file_name() + "_output.exr", image);
+    // cv::imshow(scene.output_file_name(), image);
+    // cv::waitKey(0);
+    cv::imwrite(scene.output_file_name() + "new_output.png", image * 255);
 
     return 0;
 }

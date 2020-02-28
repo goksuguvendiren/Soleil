@@ -80,8 +80,6 @@ rtr::scene load_obj(const std::string& filename)
                 auto ny = attrib.normals[3 * idx.normal_index + 1];
                 auto nz = attrib.normals[3 * idx.normal_index + 2];
 
-                std::cerr << glm::vec3{vx, vy, vz} << '\n';
-
                 face_vertices[j] = rtr::vertex(glm::vec3{vx, vy, vz}, glm::vec3{nx, ny, nz});
             }
             rtr::primitives::face face_new(face_vertices, rtr::primitives::face::normal_types::per_vertex,

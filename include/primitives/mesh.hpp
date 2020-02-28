@@ -89,8 +89,6 @@ public:
         std::cout << "BVH construction took : "
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
 
-        std::cerr << "tree.bounding_box().min: " << tree.bounding_box().min << '\n';
-        std::cerr << "tree.bounding_box().max: " << tree.bounding_box().max << '\n';
     }
 
     void transform(const glm::mat4x4& transformer)
@@ -109,9 +107,6 @@ public:
 
     void update_tree()
     {
-        std::cerr << "tree.bounding_box().min before: " << tree.bounding_box().min << '\n';
-        std::cerr << "tree.bounding_box().max before: " << tree.bounding_box().max << '\n';
-
         std::vector<rtr::primitives::face*> face_ptrs;
         face_ptrs.reserve(faces.size());
         for (auto& f : faces)
@@ -120,10 +115,6 @@ public:
         }
 
         tree = rtr::kd_tree(face_ptrs);
-
-        std::cerr << "tree.bounding_box().min after: " << tree.bounding_box().min << '\n';
-        std::cerr << "tree.bounding_box().max after: " << tree.bounding_box().max << '\n';
-
     }
 
     std::vector<int> material_idx;

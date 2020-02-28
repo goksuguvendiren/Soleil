@@ -82,10 +82,7 @@ glm::vec3 rtr::progressive_integrator::render_pixel(const rtr::scene& scene, con
                 get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
             auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
-            // color += scene.trace(ray);
-
             auto pix_color = shade(scene, ray);
-//            std::cerr << pix_color << '\n';
             color += pix_color;
         }
     }
@@ -131,7 +128,6 @@ void rtr::progressive_integrator::sub_render(const rtr::scene& scene)
     for (int i = 0; i < number_of_threads; ++i)
     {
         threads.push_back(std::thread([i, &scene, pix_center, this, &below, &n, number_of_threads] {
-            //            std::cerr << "thread " << i << " started!\n";
             for (int j = i; j < height; j += number_of_threads)
             {
                 auto row_begin = pix_center + below * float(j);

@@ -65,7 +65,6 @@ public:
         rtr::aabb bounding_box;
         for (auto& m : information.meshes)
         {
-            std::cerr << m.bounding_box().min << ", " << m.bounding_box().max << '\n';
             bounding_box = combine(bounding_box, m.bounding_box());
         }
 
