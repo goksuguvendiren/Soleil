@@ -32,7 +32,20 @@ public:
 
     glm::vec3 direction(const glm::vec3& hit_pos) const
     {
-      return glm::normalize(geometry.faces[0].vertices[0].poss - hit_pos);
+        return glm::normalize(geometry.faces[0].vertices[0].poss - hit_pos);
+    }
+
+    glm::vec3 position()
+    {
+        auto u = get_random_float();
+        auto v = get_random_float();
+
+        auto corner = geometry.faces[0].vertices[0].poss;
+
+        auto right_dir = geometry.faces[0].vertices[1].poss - corner;
+        auto below_dir = geometry.faces[0].vertices[2].poss - corner;
+
+        return corner + u * right_dir + v * below_dir;
     }
 
     float distance(const glm::vec3& hit_pos) const
@@ -40,9 +53,9 @@ public:
       return glm::length(geometry.faces[0].vertices[0].poss - hit_pos);
     }
 
-    float attenuate(const glm::vec3& hit_pos) const
+    float attenuate(const glm::vec3& light_pos, const glm::vec3& hit_pos) const
     {
-        auto distance = glm::length(geometry.faces[0].vertices[0].poss - hit_pos);
+        auto distance = glm::length(light_pos - hit_pos);
         float c_1 = 0.25;
         float c_2 = 0.1;
         float c_3 = 0.01;
