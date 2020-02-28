@@ -22,8 +22,11 @@ glm::vec3 rtr::progressive_integrator::shade(const rtr::scene& scene, const rtr:
         return glm::vec3(0,0,0);
     }
 
+    // FIXME: quad loading bug, to be fixed
     if (glm::dot(ray.direction(), pld->hit_normal) > 0)
+    {
         pld->hit_normal *= -1;
+    }
 
     const auto &material = scene.get_material(pld->material_idx);
     if (material->is_emissive())
@@ -31,26 +34,33 @@ glm::vec3 rtr::progressive_integrator::shade(const rtr::scene& scene, const rtr:
         return material->f(scene, *pld);
     }
 
-    if (pld->ray.rec_depth >= 16)
+    if (pld->ray.rec_depth >= 4)
         return material->f(scene, *pld); // replace with russian roulette
 
     // BRDF sampling:
     auto sample_direction = material->sample(pld->hit_normal, *pld);
 
-    auto dot_product = glm::dot(pld->hit_normal, ray.direction());
-    if (dot_product < 0) dot_product *= -1.f;
-    assert(dot_product >= 0 && "Wrong direction?");
-
+    // incoming light from the random ray.
     auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
-    auto irradiance = shade(scene, reflection_ray);
+    auto L_in = shade(scene, reflection_ray);
 
-    auto material_color = material->f(scene, *pld);
+    auto cos_theta = glm::dot(pld->hit_normal, sample_direction);
+    auto L_out = L_in * material->f(scene, *pld) * 2.f * glm::pi<float>();
 
-//    std::cerr << material_color * irradiance << '\n';
+    // direct lighting.
+    auto sample_light = scene.sample_light();
+    auto light_position = sample_light->position();
+    auto light_dir = glm::normalize(light_position - pld->hit_pos);
 
-//    assert(glm::dot(ray.direction(), pld->hit_normal) > 0);
+    // check for visibility
+    auto shadow_ray = rtr::ray(pld->hit_pos + (light_dir * 1e-3f), light_dir, pld->ray.rec_depth + 1, false);
+    auto shadow_pld = scene.hit(shadow_ray);
+    if (shadow_pld && glm::distance(shadow_pld->hit_pos, pld->hit_pos) < glm::distance(light_position, pld->hit_pos)) return L_out;
 
-    return material->diffuse * irradiance * glm::dot(pld->hit_normal, sample_direction) * 2.f;
+    L_out /= 2.f;
+    L_out += glm::dot(light_dir, pld->hit_normal) * sample_light->attenuate(light_position, pld->hit_pos) * material->f(scene, *pld) * 0.5f;
+
+    return L_out;
 }
 
 glm::vec3 rtr::progressive_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
@@ -88,8 +98,8 @@ void rtr::progressive_integrator::render_line(const rtr::scene& scene, const glm
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
-    auto right = (1 / float(width)) * plane.right;
-    auto below = -(1 / float(height)) * plane.up;
+    auto right = (1 / float(width)) * plane.right();
+    auto below = -(1 / float(height)) * plane.up();
 
     glm::vec3 pix_center = row_begin;
     for (int j = 0; j < width; ++j)
@@ -106,8 +116,8 @@ void rtr::progressive_integrator::sub_render(const rtr::scene& scene)
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
-    auto right = (1 / float(width)) * plane.right;
-    auto below = -(1 / float(height)) * plane.up;
+    auto right = (1 / float(width)) * plane.right();
+    auto below = -(1 / float(height)) * plane.up();
 
     auto pix_center = plane.top_left_position();
 
@@ -143,8 +153,8 @@ glm::vec3 rtr::progressive_integrator::render_pixel(const rtr::scene& scene, int
     const auto& camera = scene.get_camera();
     rtr::image_plane plane(camera, width, height);
 
-    auto right = (1 / float(width)) * plane.right;
-    auto below = -(1 / float(height)) * plane.up;
+    auto right = (1 / float(width)) * plane.right();
+    auto below = -(1 / float(height)) * plane.up();
 
     auto pix_center = plane.top_left_position();
 
