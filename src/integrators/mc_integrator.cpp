@@ -40,20 +40,27 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     // BRDF sampling:
     auto sample_direction = material->sample(pld->hit_normal, *pld);
 
-    auto dot_product = glm::dot(pld->hit_normal, ray.direction());
-    if (dot_product < 0) dot_product *= -1.f;
-    assert(dot_product >= 0 && "Wrong direction?");
-
+    // incoming light from the random ray.
     auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
-    auto irradiance = shade(scene, reflection_ray);
+    auto L_in = shade(scene, reflection_ray);
 
-//    auto material_color = material->shade(scene, *pld);
+    auto cos_theta = glm::dot(pld->hit_normal, sample_direction);
+    auto L_out = L_in * material->f(scene, *pld) * 2.f * glm::pi<float>();
 
-//    std::cerr << material_color * irradiance << '\n';
+    // direct lighting.
+    auto sample_light = scene.lights()[0];// scene.sample_light();
+    auto light_position = sample_light.position;
+    auto light_dir = glm::normalize(light_position - pld->hit_pos);
 
-//    assert(glm::dot(ray.direction(), pld->hit_normal) > 0);
+    // check for visibility
+    auto shadow_ray = rtr::ray(pld->hit_pos + (light_dir * 1e-3f), light_dir, pld->ray.rec_depth + 1, false);
+    auto shadow_pld = scene.hit(shadow_ray);
+    if (shadow_pld && glm::distance(shadow_pld->hit_pos, pld->hit_pos) < glm::distance(light_position, pld->hit_pos)) return L_out;
 
-    return material->diffuse * irradiance * glm::dot(pld->hit_normal, sample_direction) * 2.f;
+    // L_out /= 2.f;
+    // L_out += glm::dot(light_dir, pld->hit_normal) * sample_light.attenuate(light_position, pld->hit_pos) * material->f(scene, *pld) * 0.5f;
+
+    return L_out;
 }
 
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
@@ -76,7 +83,6 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
             auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
             auto pix_color = shade(scene, ray);
-//            std::cerr << pix_color << '\n';
             color += pix_color;
         }
     }

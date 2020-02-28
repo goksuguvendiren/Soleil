@@ -117,7 +117,14 @@ std::pair<std::string, std::unique_ptr<rtr::materials::base>> load_material(cons
     if (albedo_json.is_number())
     {
         albedo.x = albedo.y = albedo.z = float(albedo_json);
-    } else
+    }
+    else if  (albedo_json.is_string())
+    {
+        // FIXME : Load the textures here
+        auto random_color = get_random_float();
+        albedo.x = albedo.y = albedo.z = float(random_color);
+    }
+    else
     {
         albedo.x = albedo_json[0];
         albedo.y = albedo_json[1];
@@ -283,12 +290,25 @@ rtr::scene load_tungsten(const std::string &filename)
         auto transform = get_transform_matrix(primitive["transform"]);
         auto type = primitive["type"];
         auto name = primitive["bsdf"];
-        std::string material_id = primitive["bsdf"];
-        auto mesh_material_idx = material_mappings[material_id];
+        std::cerr << "name is : " << name << '\n';
+        auto material_id = primitive["bsdf"];
+        int mesh_material_idx = 0;
+        if (material_id.is_string())
+        {
+            mesh_material_idx = material_mappings[material_id];
+        }
+        else if (material_id.is_object())
+        {
+            assert(false && "not implemented");
+        }
+        else
+        {
+            assert(false && "unknown material type");
+        }
         if (type == "mesh")
         {
             // if (primitive["file"])
-            auto mesh = load_mesh("../Scenes/Tungsten/veach-bidir/" + std::string(primitive["file"]));
+            auto mesh = load_mesh("../Scenes/Tungsten/dragon/" + std::string(primitive["file"]));
             // assert(false && "hard coded, correct it!");
             mesh.material_idx.push_back(mesh_material_idx);
             info.meshes.emplace_back(std::move(mesh));
