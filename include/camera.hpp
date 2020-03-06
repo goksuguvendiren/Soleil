@@ -53,10 +53,12 @@ public:
     {
         return up_dir;
     }
+
     auto right() const
     {
         return right_dir;
     }
+
     auto view() const
     {
         return view_dir;
@@ -66,6 +68,7 @@ public:
     {
         return eye_pos;
     }
+
     glm::vec3 position() const
     {
         return pinhole ? eye_pos : point_sample_lens();
@@ -74,6 +77,7 @@ public:
     float focal_distance() const
     {
         auto focal_distance = (height / 2.f) / glm::tan(vert_fov / 2.f);
+        return focal_distance;
     }
 
     auto fov() const
