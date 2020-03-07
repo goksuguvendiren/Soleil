@@ -94,10 +94,15 @@ public:
         information.camera = std::move(cam);
     }
 
-    rtr::primitives::emissive_mesh* sample_light() const
+    [[nodiscard]] const rtr::light* sample_light() const
     {
-        return mesh_lights()[0].get();
+        return &(information.lghts[0]);
     }
+//
+//    rtr::primitives::emissive_mesh* sample_light() const
+//    {
+//        return mesh_lights()[0].get();
+//    }
 
     std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 

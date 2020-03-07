@@ -13,22 +13,27 @@ namespace rtr
 class light
 {
 public:
-    light(const glm::vec3& pos, const glm::vec3& col)
-        : position(pos)
+    light(const glm::vec3& poss, const glm::vec3& col)
+        : pos(poss)
         , color(col)
-        , power(20)
+        , pow(1)
     {}
-    glm::vec3 position;
+    glm::vec3 pos;
     glm::vec3 color;
+
+    glm::vec3 position() const
+    {
+        return pos;
+    }
 
     glm::vec3 direction(const glm::vec3& hit_pos) const
     {
-        return glm::normalize(position - hit_pos);
+        return glm::normalize(pos - hit_pos);
     }
 
     float distance(const glm::vec3& hit_pos) const
     {
-        return glm::length(position - hit_pos);
+        return glm::length(pos - hit_pos);
     }
 
     float attenuate(const glm::vec3& light_pos, const glm::vec3& hit_pos) const
@@ -59,13 +64,18 @@ public:
                 found_photon = (x * x + y * y + z * z <= 1); // rejection sampling the sphere
             }
 
-            photons.emplace_back((power * color) / float(num_photons), position, glm::normalize(glm::vec3{x, y, z}));
+            photons.emplace_back((pow * color) / float(num_photons), pos, glm::normalize(glm::vec3{x, y, z}));
         }
 
         return photons;
     }
 
+    [[nodiscard]] glm::vec3 intensity() const
+    {
+        return pow * color;
+    }
+
 private:
-    float power;
+    float pow;
 };
 } // namespace rtr

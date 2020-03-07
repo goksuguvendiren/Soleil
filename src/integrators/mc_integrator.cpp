@@ -36,24 +36,35 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
 
     if (pld->ray.rec_depth >= 4)
         return material->f(scene, *pld); // replace with russian roulette
+//
+//    // BRDF sampling:
+//    auto sample_direction = material->sample(pld->hit_normal, *pld);
+//
+//    // incoming light from the random ray.
+//    auto reflection_ray = rtr::ray(pld->hit_pos + (pld->hit_normal * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
+//    auto L_in = shade(scene, reflection_ray);
+//
+//    auto cos_theta = glm::max(glm::dot(pld->hit_normal, sample_direction), 0.f);
+//    auto L_indirect = L_in * material->f(scene, *pld) * cos_theta * 2.f * glm::pi<float>();
 
-    // BRDF sampling:
-    auto sample_direction = material->sample(pld->hit_normal, *pld);
+    // direct lighting.
+    auto sample_light = scene.sample_light();
+    auto light_position = sample_light->position();
+    auto light_dir = glm::normalize(light_position - pld->hit_pos);
 
-    auto dot_product = glm::dot(pld->hit_normal, ray.direction());
-    if (dot_product < 0) dot_product *= -1.f;
-    assert(dot_product >= 0 && "Wrong direction?");
+    // check for visibility
+    auto shadow_ray = rtr::ray(pld->hit_pos + (pld->hit_normal * 8e-2f), light_dir, pld->ray.rec_depth + 1, false);
+    auto shadow_pld = scene.hit(shadow_ray);
 
-    auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
-    auto irradiance = shade(scene, reflection_ray);
+    auto light_occluded = (glm::distance(shadow_pld->hit_pos, pld->hit_pos) < glm::distance(light_position, pld->hit_pos));
+    if (shadow_pld)
+//        return L_indirect;
+        return glm::vec3(0,0,0);
 
-//    auto material_color = material->shade(scene, *pld);
+    auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
+    auto L_direct = ldotn * sample_light->intensity() * sample_light->attenuate(light_position, pld->hit_pos) * material->f(scene, *pld);
 
-//    std::cerr << material_color * irradiance << '\n';
-
-//    assert(glm::dot(ray.direction(), pld->hit_normal) > 0);
-
-    return material->diffuse * irradiance * glm::dot(pld->hit_normal, sample_direction) * 2.f;
+    return L_direct;// (L_indirect + L_direct) / 2.f;
 }
 
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
