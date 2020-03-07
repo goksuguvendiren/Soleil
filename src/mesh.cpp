@@ -53,7 +53,6 @@ std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray& ray) cons
     const auto& a = vertices[0];
     const auto& b = vertices[1];
     const auto& c = vertices[2];
-    const auto& surface_normal = vertices[0].normal;
 
     glm::vec3 col1 = a.position() - b.position();
     glm::vec3 col2 = a.position() - c.position();
@@ -79,14 +78,17 @@ std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray& ray) cons
 
     auto point = ray.origin() + param * ray.direction();
     glm::vec3 normal;
+    glm::vec2 tex_coords;
 
     if (normal_type == normal_types::per_vertex)
     {
         normal = glm::normalize(alpha * a.normal + beta * b.normal + gamma * c.normal);
+        tex_coords = alpha * a.m_uv + beta * b.m_uv + gamma * c.m_uv;
     }
     else
     {
-        normal = glm::normalize(surface_normal);
+        normal = glm::normalize(vertices[0].normal);
+        tex_coords = vertices[0].m_uv;
     }
 
     // materials::base* mtrl_ptr = nullptr;
@@ -102,7 +104,7 @@ std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray& ray) cons
     if (std::isnan(param))
         throw std::runtime_error("param is nan in face::hit()!");
 
-    return rtr::payload{normal, point, ray, param, -1};
+    return rtr::payload{normal, point, ray, param, -1, tex_coords};
 }
 
 void rtr::primitives::face::set_normal()

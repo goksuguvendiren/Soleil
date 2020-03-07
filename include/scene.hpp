@@ -8,13 +8,13 @@
 #include "dir_light.hpp"
 #include "light.hpp"
 #include "payload.hpp"
-#include "primitives/mesh.hpp"
 #include "primitives/emissive_mesh.hpp"
-#include "dir_light.hpp"
+#include "primitives/mesh.hpp"
 #include "primitives/sphere.hpp"
 #include "scene_io.h"
 
 #include <glm/vec3.hpp>
+#include <materials/texture.hpp>
 #include <opencv2/opencv.hpp>
 #include <optional>
 #include <vector>
@@ -46,6 +46,7 @@ struct scene_information
 
     std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> mesh_lights;
     std::vector<std::unique_ptr<rtr::materials::base>> materials;
+    std::vector<std::unique_ptr<rtr::materials::texture>> textures;
 
     bool progressive_render = false;
     int samples_per_pixel;
@@ -96,7 +97,9 @@ public:
 
     [[nodiscard]] const rtr::light* sample_light() const
     {
-        return &(information.lghts[0]);
+        auto random = get_random_float();
+        auto index = 0;//int(random * information.lghts.size());
+        return &(information.lghts[index]);
     }
 //
 //    rtr::primitives::emissive_mesh* sample_light() const
@@ -154,6 +157,13 @@ public:
         assert(index >= 0 && " material index is negative!");
         return information.materials[index];
     }
+
+    const std::unique_ptr<rtr::materials::texture> &get_texture(int index) const
+    {
+        assert(index >= 0 && " texture index is negative!");
+        return information.textures[index];
+    }
+
 private:
     glm::vec3 shadow_trace(const rtr::ray& ray, float light_distance, int depth) const;
 

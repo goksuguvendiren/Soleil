@@ -23,7 +23,7 @@ target_link_libraries(PathTracerLib PUBLIC ${OpenCV_LIBS})
 target_include_directories(PathTracerLib PUBLIC include)
 target_include_directories(PathTracerLib PUBLIC /usr/local/include)
 
-add_executable(PathTracer main.cpp include/integrators/mc_integrator.hpp)
+add_executable(PathTracer main.cpp include/integrators/mc_integrator.hpp include/materials/texture.hpp)
 target_link_libraries(PathTracer PUBLIC PathTracerLib)
 
 enable_testing()

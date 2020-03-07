@@ -62,7 +62,9 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
         return glm::vec3(0,0,0);
 
     auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
-    auto L_direct = ldotn * sample_light->intensity() * sample_light->attenuate(light_position, pld->hit_pos) * material->f(scene, *pld);
+    auto bsdf = material->f(scene, *pld);
+
+    auto L_direct = ldotn * sample_light->intensity() * sample_light->attenuate(light_position, pld->hit_pos) * bsdf;
 
     return L_direct;// (L_indirect + L_direct) / 2.f;
 }

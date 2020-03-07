@@ -3,10 +3,11 @@
 //
 
 #define TINYOBJLOADER_IMPLEMENTATION
-#include "tinyobjloader.hpp"
 #include "scene.hpp"
+#include "tinyobjloader.hpp"
 
 #include <iostream>
+#include <materials/texture.hpp>
 
 namespace rtr
 {
@@ -80,12 +81,26 @@ rtr::scene load_obj(const std::string& filename)
                 auto ny = attrib.normals[3 * idx.normal_index + 1];
                 auto nz = attrib.normals[3 * idx.normal_index + 2];
 
-                face_vertices[j] = rtr::vertex(glm::vec3{vx, vy, vz}, glm::vec3{nx, ny, nz});
+                int current_material_id = shape.mesh.material_ids[i]; // no material if -1
+
+                float tu = 0.f;
+                float tv = 0.f;
+
+                if (attrib.texcoords.size() > 0 && (idx.texcoord_index >= 0)) // has valid texture coords
+                {
+                    tu = attrib.texcoords[2 * idx.texcoord_index + 0];
+                    tv = attrib.texcoords[2 * idx.texcoord_index + 1];
+                }
+
+                face_vertices[j] = rtr::vertex(glm::vec3{vx, vy, vz}, glm::vec3{nx, ny, nz}, glm::vec2{tu, tv});
             }
             rtr::primitives::face face_new(face_vertices, rtr::primitives::face::normal_types::per_vertex,
                                            rtr::primitives::face::material_binding::per_object);
             faces.push_back(face_new);
         }
+
+        rtr::materials::texture tex("../Scenes/obj/spot/spot_texture.png");
+        info.textures.push_back(std::make_unique<rtr::materials::texture>(tex));
 
         rtr::materials::base base_material({0.63, 0.065, 0.05}, {10, 10, 10}, {0, 0, 0}, {0, 0, 0}, 0, 0);
         info.materials.push_back(std::make_unique<rtr::materials::base>(base_material));
