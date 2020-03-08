@@ -26,7 +26,37 @@ namespace materials
 class base
 {
 public:
-    base() : diffuse({0.0f, 0.0f, 0.0f}), ambient({0.0f, 0.0f, 0.0f}), specular({0.f, 0.f, 0.f}), emissive(0), exp(0), trans(0), refr_index(1.f)
+    base()
+        : diffuse({0.0f, 0.0f, 0.0f})
+        , ambient({0.0f, 0.0f, 0.0f})
+        , specular({0.f, 0.f, 0.f})
+        , emissive(0)
+        , exp(0)
+        , trans(0)
+        , refr_index(1.f)
+        , texture_index(std::nullopt)
+    {}
+
+    base(const glm::vec3& diff)
+        : diffuse(diff)
+        , ambient({0.0f, 0.0f, 0.0f})
+        , specular({0.f, 0.f, 0.f})
+        , emissive(0)
+        , exp(0)
+        , trans(0)
+        , refr_index(1.f)
+        , texture_index(std::nullopt)
+    {}
+
+    base(const glm::vec3& diff, int texture_idx)
+        : diffuse(diff)
+        , ambient({0.0f, 0.0f, 0.0f})
+        , specular({0.f, 0.f, 0.f})
+        , emissive(0)
+        , exp(0)
+        , trans(0)
+        , refr_index(1.f)
+        , texture_index(texture_idx)
     {}
 
     base(const glm::vec3& diff, const glm::vec3& amb, const glm::vec3& spec, const glm::vec3& ems, float p, float t)
@@ -37,6 +67,7 @@ public:
         , exp(p)
         , trans(t)
         , refr_index(1.0f)
+        , texture_index(std::nullopt)
     {
         if (trans > 0.f)
             refr_index = 1.5f;
@@ -73,6 +104,7 @@ public:
     float refr_index;
 
 private:
+    std::optional<int> texture_index;
 };
 } // namespace materials
 } // namespace rtr

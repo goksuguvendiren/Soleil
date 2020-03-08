@@ -37,6 +37,8 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     if (pld->ray.rec_depth >= 4)
         return material->f(scene, *pld); // replace with russian roulette
 
+    return (pld->hit_normal + 1.f) * 0.5f;
+
     // BRDF sampling:
     auto sample_direction = material->sample(pld->hit_normal, *pld);
 

@@ -12,10 +12,10 @@ int main(int argc, const char** argv)
 {
     auto begin = std::chrono::system_clock::now();
 
-    std::string folder_name = "obj";
-    std::string scene_name = "spot";
-    std::string scene_path = "../Scenes/" + folder_name + "/" + scene_name + "/spot_triangulated_good.obj";
-    std::cerr << scene_path << '\n';
+    std::string folder_name = "Tungsten";
+    std::string scene_name = "veach-bidir";
+    std::string scene_path = "../Scenes/" + folder_name + "/" + scene_name + "/scene.json";
+
     bool pinhole_camera = true;
     float image_plane_distance = 1.f;
     float lens_width = 1.f;
@@ -38,6 +38,7 @@ int main(int argc, const char** argv)
         }
     }
 
+    std::cerr << scene_path << '\n';
     rtr::scene scene = rtr::loaders::load(scene_path);
 
     auto width = scene.get_camera().width;
@@ -59,8 +60,10 @@ int main(int argc, const char** argv)
 
     cv::Mat image(height, width, CV_32FC3, output_buffer.data());
     cv::cvtColor(image, image, cv::COLOR_RGB2BGR);
-     cv::imshow(scene.output_file_name(), image);
-     cv::waitKey(0);
+    cv::resize(image, image, image.size() / 4);
+
+    cv::imshow(scene.output_file_name(), image);
+    cv::waitKey(0);
     cv::imwrite(scene.output_file_name() + "new_output.png", image * 255);
 
     return 0;
