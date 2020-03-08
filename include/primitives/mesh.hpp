@@ -49,6 +49,15 @@ struct face
             set_normal();
     }
 
+    void transform(const glm::mat4x4& transformer)
+    {
+        for (auto& vert : vertices)
+        {
+            vert.transform(transformer);
+        }
+        box = aabb(vertices);
+    }
+
     std::array<rtr::vertex, 3> vertices;
     std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
@@ -79,17 +88,56 @@ public:
         auto end = std::chrono::system_clock::now();
         std::cout << "BVH construction took : "
                   << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
+
+    }
+
+    void transform(const glm::mat4x4& transformer)
+    {
+        for (auto& face : faces)
+            face.transform(transformer);
+
+        std::vector<rtr::primitives::face*> face_ptrs;
+        face_ptrs.reserve(faces.size());
+        for (auto& f : faces)
+        {
+            face_ptrs.push_back(&f);
+        }
+        tree = rtr::kd_tree(face_ptrs);
+    }
+
+    void update_tree()
+    {
+        std::vector<rtr::primitives::face*> face_ptrs;
+        face_ptrs.reserve(faces.size());
+        for (auto& f : faces)
+        {
+            face_ptrs.push_back(&f);
+        }
+
+        tree = rtr::kd_tree(face_ptrs);
     }
 
     std::vector<int> material_idx;
-    std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+    [[nodiscard]] std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
     int id;
     std::string name;
 
     mesh(mesh&&) noexcept = default;
     mesh(const mesh&) = delete;
+
     std::vector<rtr::primitives::face> faces;
+
+    mesh copy() const
+    {
+        auto fcs = faces;
+        auto nm = name;
+
+        auto m = mesh(fcs, nm);
+        m.material_idx = material_idx;
+
+        return m;
+    }
 
     void configure_materials()
     {
@@ -101,7 +149,7 @@ public:
             }
         }
     }
-    const rtr::aabb& bounding_box() const { return tree.bounding_box(); }
+    [[nodiscard]] const rtr::aabb& bounding_box() const { return tree.bounding_box(); }
 
 private:
     rtr::kd_tree tree;

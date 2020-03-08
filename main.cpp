@@ -1,19 +1,20 @@
-#include "mc_integrator.hpp"
+#include "integrators/progressive_integrator.hpp"
 #include "photon_integrator.hpp"
 #include "renderer.hpp"
 #include "scene.hpp"
 #include "scene_loaders.hpp"
 
+#include <integrators/mc_integrator.hpp>
 #include <iostream>
 #include <scene_io.h>
 
-int main(int argc, const char **argv)
+int main(int argc, const char** argv)
 {
     auto begin = std::chrono::system_clock::now();
 
-    //    std::string scene_path = "../../Scenes/obj/dragon/dragon.obj";
-    std::string scene_path = "../../Scenes/xml/cornellbox_ldr.xml";
-    //    std::string scene_path = "../../Scenes/obj/CornellBox/CornellBox-Original.obj";
+    std::string folder_name = "obj";
+    std::string scene_name = "spot";
+    std::string scene_path = "../Scenes/" + folder_name + "/" + scene_name + "/spot_triangulated_good.obj";
     std::cerr << scene_path << '\n';
     bool pinhole_camera = true;
     float image_plane_distance = 1.f;
@@ -36,9 +37,8 @@ int main(int argc, const char **argv)
             focal_length = std::stof(std::string(argv[4]));
         }
     }
-    rtr::scene scene = rtr::loaders::load(scene_path);
 
-    // scene.print();
+    rtr::scene scene = rtr::loaders::load(scene_path);
 
     auto width = scene.get_camera().width;
     auto height = scene.get_camera().height;
@@ -47,45 +47,21 @@ int main(int argc, const char **argv)
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";
 
-    rtr::renderer<rtr::mc_integrator> r(width, height);
-    std::vector<glm::vec3> accum_buffer;
-    std::vector<glm::vec3> result_buffer;
-    std::vector<glm::vec3> output_buffer;
+//    rtr::renderer<rtr::mc_integrator> r(width, height);
+    rtr::mc_integrator r(width, height);
 
-    accum_buffer.resize(width * height);
-    result_buffer.resize(width * height);
+    begin = std::chrono::system_clock::now();
+    auto output_buffer = r.render(scene);
+    end = std::chrono::system_clock::now();
 
-    int n_frames = 0;
+    std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
+              << " millisecs.";
 
-    int key = 0;
-    while (key != 27)
-    {
-        begin = std::chrono::system_clock::now();
-        output_buffer = r.render(scene);
-        end = std::chrono::system_clock::now();
-
-        std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
-                  << " millisecs.\n";
-
-        for (int i = 0; i < output_buffer.size(); ++i)
-            accum_buffer[i] += output_buffer[i];
-        n_frames++;
-        for (int i = 0; i < accum_buffer.size(); ++i)
-            result_buffer[i] = accum_buffer[i] / float(n_frames);
-
-        cv::Mat image(height, width, CV_32FC3, result_buffer.data());
-        cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-        // if (!pinhole_camera)
-        //     cv::flip(image, image, -1);
-        cv::imshow(scene.output_file_name(), image);
-
-        key = cv::waitKey(1000);
-        cv::imwrite(scene.output_file_name() + "random.png", image * 255);
-        // std::cin.ignore();
-
-        // using namespace std::chrono_literals;
-        // std::this_thread::sleep_for(1s);
-    }
+    cv::Mat image(height, width, CV_32FC3, output_buffer.data());
+    cv::cvtColor(image, image, cv::COLOR_RGB2BGR);
+     cv::imshow(scene.output_file_name(), image);
+     cv::waitKey(0);
+    cv::imwrite(scene.output_file_name() + "new_output.png", image * 255);
 
     return 0;
 }

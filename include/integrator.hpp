@@ -2,9 +2,9 @@
 
 namespace rtr
 {
-template <int sq_sample_pp>
+template<int sq_sample_pp>
 glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
-                                        const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<true>)
+                        const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<true>)
 {
     auto random_u = get_random_float();
     auto random_v = get_random_float();
@@ -15,7 +15,8 @@ glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane
     // stratified sampling of the pixel. -> random p location on the film plane
     auto sample = top_left + right * x_offset + below * y_offset;
 
-    auto line_through_lens_center = glm::normalize(camera.center() - sample); // direction of the ray from sample through the center of the lens
+    auto line_through_lens_center =
+        glm::normalize(camera.center() - sample); // direction of the ray from sample through the center of the lens
     auto point_on_plane = camera.center() + camera.focal_distance() * camera.view();
 
     auto plane_normal = camera.view();
@@ -27,9 +28,9 @@ glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane
     return sample + t * line_through_lens_center; // returns the q
 }
 
-template <int sq_sample_pp>
+template<int sq_sample_pp>
 glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
-                                        const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<false>)
+                        const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<false>)
 {
     if constexpr (sq_sample_pp == 1)
     {
@@ -45,4 +46,4 @@ glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane
     auto sample = top_left + right * x_offset + below * y_offset;
     return sample;
 }
-}
+} // namespace rtr

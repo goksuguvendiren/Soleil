@@ -80,7 +80,7 @@ glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) co
     {
         assert(pld->material_idx >= 0 && " negative material index found!");
         auto &material = information.materials[pld->material_idx];
-        auto &diffuse = material->diffuse;
+        auto& diffuse = material->diffuse;
         auto normalized_diffuse = material->diffuse; // diffuse / std::max(std::max(diffuse.x, diffuse.y), diffuse.z);
         return shadow * normalized_diffuse * material->trans;
     }
@@ -91,9 +91,8 @@ glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) co
     return shadow * shadow_trace(shadow_ray, light_distance - glm::length(pld->hit_pos - ray.origin()));
 }
 
-// glm::vec3 rtr::scene::photon_trace(const rtr::ray &photon_ray) const
-// {
-// }
+//glm::vec3 rtr::scene::photon_trace(const rtr::ray& photon_ray) const
+//{}
 
 void rtr::scene::print() const
 {
@@ -117,7 +116,7 @@ void rtr::scene::print() const
     }
     std::cerr << "Spheres : \n";
     i = 0;
-    for (auto &s : information.spheres)
+    for (auto& s : information.spheres)
     {
         std::cerr << "\t\t Sphere " << i++ << " : \n";
         std::cerr << "\t\t Material " << information.materials[s.material_idx[0]]->diffuse << " : \n";
