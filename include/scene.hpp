@@ -98,7 +98,7 @@ public:
     [[nodiscard]] const rtr::light* sample_light() const
     {
         auto random = get_random_float();
-        auto index = 0;//int(random * information.lghts.size());
+        auto index = int(random * information.lghts.size());
         return &(information.lghts[index]);
     }
 //
@@ -107,7 +107,7 @@ public:
 //        return mesh_lights()[0].get();
 //    }
 
-    std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+    [[nodiscard]] std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
     template<class FnT>
     void for_each_light(FnT&& func) const
