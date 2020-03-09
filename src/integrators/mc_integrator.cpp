@@ -21,10 +21,12 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     {
         return glm::vec3(0,0,0);
     }
+
     auto visualize_direction = [](const glm::vec3& dir) -> glm::vec3
     {
         return (dir + 1.f) * 0.5f;
     };
+
     auto normal_visualized = visualize_direction(pld->hit_normal);
 
     // FIXME: quad loading bug, to be fixed
@@ -39,8 +41,20 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
         return material->f(scene, *pld);
     }
 
-    if (pld->ray.rec_depth >= 4)
-        return material->f(scene, *pld); // replace with russian roulette
+    // direct lighting.
+    auto light = scene.sample_light();
+    auto [li, light_dir] = light->sample_li(scene, *pld);
+
+    auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
+    auto bsdf = material->f(scene, *pld);
+
+    auto L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
+
+    if (pld->ray.rec_depth >= 16)
+    {
+        // return direct lighting at the hit point
+        return L_direct; // replace with russian roulette
+    }
 
     // BRDF sampling:
     auto sample_direction = material->sample(pld->hit_normal, *pld);
@@ -52,18 +66,7 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     auto cos_theta = glm::max(glm::dot(pld->hit_normal, sample_direction), 0.f);
     auto L_indirect = L_in * material->f(scene, *pld) * cos_theta * 2.f * glm::pi<float>();
 
-    // direct lighting.
-    auto light = scene.sample_light();
-    auto [li, light_dir] = light->sample_li(scene, *pld);
-
-//    std::cerr << "li: " << li << ", dir: " << light_dir << '\n';
-
-    auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
-    auto bsdf = material->f(scene, *pld);
-
-    auto L_direct = ldotn * li * bsdf;
-
-    return L_direct;//(L_indirect + L_direct) / 2.f;
+    return (L_indirect + L_direct) / 2.f;
 }
 
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
@@ -71,7 +74,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
                                                     const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 1;
+    constexpr int sq_sample_pp = 32;
     auto is_lens = std::bool_constant<false>();
 
     glm::vec3 color = {0, 0, 0};

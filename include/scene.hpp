@@ -6,6 +6,7 @@
 
 #include "camera.hpp"
 #include "dir_light.hpp"
+#include "lights/directional.hpp"
 #include "lights/point.hpp"
 #include "payload.hpp"
 #include "primitives/emissive_mesh.hpp"
@@ -14,6 +15,7 @@
 #include "scene_io.h"
 
 #include <glm/vec3.hpp>
+#include <lights/directional.hpp>
 #include <materials/texture.hpp>
 #include <opencv2/opencv.hpp>
 #include <optional>
@@ -42,7 +44,7 @@ struct scene_information
     std::vector<rtr::primitives::sphere> spheres;
     std::vector<rtr::primitives::mesh> meshes;
     std::vector<rtr::light::point> lghts;
-    std::vector<rtr::dir_light> dir_lghts;
+    std::vector<rtr::light::directional> dir_lghts;
 
     std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> mesh_lights;
     std::vector<std::unique_ptr<rtr::materials::base>> materials;
@@ -95,11 +97,11 @@ public:
         information.camera = std::move(cam);
     }
 
-    [[nodiscard]] const rtr::light::point* sample_light() const
+    [[nodiscard]] const rtr::light::directional* sample_light() const
     {
         auto random = get_random_float();
         auto index = int(random * information.lghts.size());
-        return &(information.lghts[index]);
+        return &(information.dir_lghts[index]);
     }
 //
 //    rtr::primitives::emissive_mesh* sample_light() const
@@ -131,7 +133,7 @@ public:
         return information.lghts;
     }
 
-    const std::vector<rtr::dir_light>& dir_lights() const
+    const std::vector<rtr::light::directional>& dir_lights() const
     {
         return information.dir_lghts;
     }

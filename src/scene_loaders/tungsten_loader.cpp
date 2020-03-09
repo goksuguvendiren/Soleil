@@ -101,7 +101,7 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
         }
 
         faces.emplace_back(rtr::primitives::face{
-            vert, rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object});
+            vert, rtr::primitives::face::normal_types::per_vertex, rtr::primitives::face::material_binding::per_object});
     }
 
     rtr::primitives::mesh mesh(std::move(faces), "wood");
@@ -352,7 +352,12 @@ rtr::scene load_tungsten(const std::string &filename)
     }
     // Add a point light source when there's none!
     if (info.lghts.size() == 0)
-        info.lghts.push_back(rtr::light::point({-18.862, 69.2312, 69.651}, {80000.0, 80000.0, 80000.0}));
+    {
+        auto from = glm::vec3(-18.862, 69.2312, 69.651);
+        auto to = glm::vec3(0, 0, 0);
+        info.dir_lghts.push_back(rtr::light::directional(to - from, {8.,8.,8.}));
+    }
+        //    info.lghts.push_back(rtr::light::point({-18.862, 69.2312, 69.651}, {8000.0, 8000.0, 8000.0}));
 //    info.lghts.push_back(rtr::light::point({10, 30, 69.651}, {60000.0, 60000.0, 60000.0}));
 
     info.materials = std::move(all_materials);

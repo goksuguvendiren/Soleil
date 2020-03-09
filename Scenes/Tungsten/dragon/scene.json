@@ -218,7 +218,7 @@
             ]
         },
         "type": "pinhole",
-        "fov": 35.0
+        "fov": 20.0
     },
     "integrator": {
         "min_bounces": 0,

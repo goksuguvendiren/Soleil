@@ -63,7 +63,9 @@ int main(int argc, const char** argv)
     cv::cvtColor(image, image, cv::COLOR_RGB2BGR);
      cv::imshow(scene.output_file_name(), image);
      cv::waitKey(0);
-    cv::imwrite(scene.output_file_name() + "new_output.png", image * 255);
 
+    cv::imwrite(scene.output_file_name() + "new_output.exr", image);
+    cv::imwrite(scene.output_file_name() + "new_output.png", image);
+   
     return 0;
 }

@@ -245,7 +245,7 @@ inline rtr::light::point load_point_light(tinyxml2::XMLElement* child)
     return rtr::light::point(position, intensity);
 }
 
-inline rtr::dir_light load_directional_light(tinyxml2::XMLElement* child)
+inline rtr::light::directional load_directional_light(tinyxml2::XMLElement* child)
 {
     int id;
     child->QueryIntAttribute("id", &id);
@@ -253,7 +253,7 @@ inline rtr::dir_light load_directional_light(tinyxml2::XMLElement* child)
     auto direction = GetElem(child->FirstChildElement("Direction"));
     auto radiance = GetElem(child->FirstChildElement("Radiance"));
 
-    return rtr::dir_light(direction, radiance);
+    return rtr::light::directional(direction, radiance);
 }
 
 inline rtr::scene load_from_xml(const std::string& filename)
