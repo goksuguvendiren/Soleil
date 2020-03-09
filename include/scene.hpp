@@ -6,7 +6,7 @@
 
 #include "camera.hpp"
 #include "dir_light.hpp"
-#include "lights/light.hpp"
+#include "lights/point.hpp"
 #include "payload.hpp"
 #include "primitives/emissive_mesh.hpp"
 #include "primitives/mesh.hpp"
@@ -41,7 +41,7 @@ struct scene_information
 
     std::vector<rtr::primitives::sphere> spheres;
     std::vector<rtr::primitives::mesh> meshes;
-    std::vector<rtr::light> lghts;
+    std::vector<rtr::light::point> lghts;
     std::vector<rtr::dir_light> dir_lghts;
 
     std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> mesh_lights;
@@ -95,7 +95,7 @@ public:
         information.camera = std::move(cam);
     }
 
-    [[nodiscard]] const rtr::light* sample_light() const
+    [[nodiscard]] const rtr::light::point* sample_light() const
     {
         auto random = get_random_float();
         auto index = int(random * information.lghts.size());
@@ -126,7 +126,7 @@ public:
         std::for_each(mesh_lights().begin(), mesh_lights().end(), func);
     }
 
-    [[nodiscard]] const std::vector<rtr::light>& lights() const
+    [[nodiscard]] const std::vector<rtr::light::point>& lights() const
     {
         return information.lghts;
     }

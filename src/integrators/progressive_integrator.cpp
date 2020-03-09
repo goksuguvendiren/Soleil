@@ -48,17 +48,11 @@ glm::vec3 rtr::progressive_integrator::shade(const rtr::scene& scene, const rtr:
     auto L_out = L_in * material->f(scene, *pld) * 2.f * glm::pi<float>();
 
     // direct lighting.
-    auto sample_light = scene.sample_light();
-    auto light_position = sample_light->position();
-    auto light_dir = glm::normalize(light_position - pld->hit_pos);
-
-    // check for visibility
-    auto shadow_ray = rtr::ray(pld->hit_pos + (light_dir * 1e-3f), light_dir, pld->ray.rec_depth + 1, false);
-    auto shadow_pld = scene.hit(shadow_ray);
-    if (shadow_pld && glm::distance(shadow_pld->hit_pos, pld->hit_pos) < glm::distance(light_position, pld->hit_pos)) return L_out;
+    auto light = scene.sample_light();
+    auto [li, light_dir] = light->sample_li(scene, *pld);
 
     L_out /= 2.f;
-    L_out += glm::dot(light_dir, pld->hit_normal) * sample_light->attenuate(light_position, pld->hit_pos) * material->f(scene, *pld) * 0.5f;
+    L_out += glm::dot(light_dir, pld->hit_normal) * li * material->f(scene, *pld) * 0.5f;
 
     return L_out;
 }

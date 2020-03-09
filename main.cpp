@@ -7,9 +7,11 @@
 #include <integrators/mc_integrator.hpp>
 #include <iostream>
 #include <scene_io.h>
+#include <fenv.h>
 
 int main(int argc, const char** argv)
 {
+    feenableexcept( FE_INVALID | FE_OVERFLOW);
     auto begin = std::chrono::system_clock::now();
 
     std::string folder_name = "obj";

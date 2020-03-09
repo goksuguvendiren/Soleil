@@ -233,7 +233,7 @@ inline std::unique_ptr<rtr::materials::base> load_material(tinyxml2::XMLElement*
     return std::make_unique<rtr::materials::base>(mat);
 }
 
-inline rtr::light load_point_light(tinyxml2::XMLElement* child)
+inline rtr::light::point load_point_light(tinyxml2::XMLElement* child)
 {
     assert(child->Name() == std::string("PointLight"));
     int id;
@@ -242,7 +242,7 @@ inline rtr::light load_point_light(tinyxml2::XMLElement* child)
     auto position = GetElem(child->FirstChildElement("Position"));
     auto intensity = GetElem(child->FirstChildElement("Intensity"));
 
-    return rtr::light(position, intensity);
+    return rtr::light::point(position, intensity);
 }
 
 inline rtr::dir_light load_directional_light(tinyxml2::XMLElement* child)

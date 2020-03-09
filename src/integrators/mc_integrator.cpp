@@ -53,24 +53,17 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     auto L_indirect = L_in * material->f(scene, *pld) * cos_theta * 2.f * glm::pi<float>();
 
     // direct lighting.
-    auto sample_light = scene.sample_light();
-    auto light_position = sample_light->position();
-    auto light_dir = glm::normalize(light_position - pld->hit_pos);
+    auto light = scene.sample_light();
+    auto [li, light_dir] = light->sample_li(scene, *pld);
 
-    // check for visibility
-    auto shadow_ray = rtr::ray(pld->hit_pos + (pld->hit_normal * 8e-2f), light_dir, pld->ray.rec_depth + 1, false);
-    auto shadow_pld = scene.hit(shadow_ray);
-
-    if (shadow_pld && (glm::distance(shadow_pld->hit_pos, pld->hit_pos) < glm::distance(light_position, pld->hit_pos)))
-//        return L_indirect;
-        return glm::vec3(0,0,0);
+//    std::cerr << "li: " << li << ", dir: " << light_dir << '\n';
 
     auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
     auto bsdf = material->f(scene, *pld);
 
-    auto L_direct = ldotn * sample_light->intensity() * sample_light->attenuate(light_position, pld->hit_pos) * bsdf;
+    auto L_direct = ldotn * li * bsdf;
 
-    return (L_indirect + L_direct) / 2.f;
+    return L_direct;//(L_indirect + L_direct) / 2.f;
 }
 
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
@@ -78,7 +71,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
                                                     const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 16;
+    constexpr int sq_sample_pp = 1;
     auto is_lens = std::bool_constant<false>();
 
     glm::vec3 color = {0, 0, 0};

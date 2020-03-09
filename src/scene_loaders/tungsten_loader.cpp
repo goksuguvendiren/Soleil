@@ -272,7 +272,7 @@ rtr::scene load_tungsten(const std::string &filename)
     }
 
     // info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{100, 100, 100});
-    info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
+//    info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
 
     /*
      * Load the primitives
@@ -320,7 +320,6 @@ rtr::scene load_tungsten(const std::string &filename)
             std::cerr << "material idxxx: " << mat;
         }
 
-        bool scene_has_light = false;
         if (primitive.find("power") != primitive.end())
         {
             auto power_json = primitive["power"];
@@ -332,8 +331,6 @@ rtr::scene load_tungsten(const std::string &filename)
 
             auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
             info.mesh_lights.push_back(std::move(mesh_light));
-
-            scene_has_light = true;
         }
         if (primitive.find("emission") != primitive.end())
         {
@@ -346,20 +343,17 @@ rtr::scene load_tungsten(const std::string &filename)
 
             auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
             info.mesh_lights.push_back(std::move(mesh_light));
-
-            scene_has_light = true;
         }
-
-        // Add a point light source when there's none!
-        if (!scene_has_light)
-            info.lghts.push_back(rtr::light({-18.862, 69.2312, 69.651}, {800.0, 800.0, 800.0}));
-        info.lghts.push_back(rtr::light({10, 30, 69.651}, {600.0, 600.0, 600.0}));
 
         std::cerr << "Mesh id: " << id++ << "\n";
         std::cerr << "Material idx: " << info.meshes.back().material_idx[0] << "\n";
         // for (auto& vert : info.meshes.back().faces.)
         // std::cerr << "Normals: " << info.meshes.back().material_idx[0] << "\n";
     }
+    // Add a point light source when there's none!
+    if (info.lghts.size() == 0)
+        info.lghts.push_back(rtr::light::point({-18.862, 69.2312, 69.651}, {80000.0, 80000.0, 80000.0}));
+//    info.lghts.push_back(rtr::light::point({10, 30, 69.651}, {60000.0, 60000.0, 60000.0}));
 
     info.materials = std::move(all_materials);
     return rtr::scene(std::move(info));
