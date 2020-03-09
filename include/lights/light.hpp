@@ -10,6 +10,7 @@
 
 namespace rtr
 {
+// point light
 class light
 {
 public:

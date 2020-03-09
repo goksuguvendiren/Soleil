@@ -204,6 +204,8 @@ rtr::primitives::mesh load_cube(const glm::mat4x4 &transform, const std::string&
 
 rtr::scene load_tungsten(const std::string &filename)
 {
+    auto last_slash = filename.find_last_of("/");
+    auto folder_path = filename.substr(0, last_slash);
     // rtr::scene scene;
     rtr::scene_information info;
     std::ifstream input_file(filename);
@@ -288,7 +290,8 @@ rtr::scene load_tungsten(const std::string &filename)
         if (type == "mesh")
         {
             // if (primitive["file"])
-            auto mesh = load_mesh("../Scenes/Tungsten/veach-bidir/" + std::string(primitive["file"]));
+            auto mesh = load_mesh(folder_path + "/" + std::string(primitive["file"]));
+            std::cerr << "Bounding box of the mesh: min coords: " << mesh.bounding_box().min << ", max coords: " << mesh.bounding_box().max << '\n';
             // assert(false && "hard coded, correct it!");
             mesh.material_idx.push_back(mesh_material_idx);
             info.meshes.emplace_back(std::move(mesh));
@@ -317,6 +320,7 @@ rtr::scene load_tungsten(const std::string &filename)
             std::cerr << "material idxxx: " << mat;
         }
 
+        bool scene_has_light = false;
         if (primitive.find("power") != primitive.end())
         {
             auto power_json = primitive["power"];
@@ -328,6 +332,8 @@ rtr::scene load_tungsten(const std::string &filename)
 
             auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
             info.mesh_lights.push_back(std::move(mesh_light));
+
+            scene_has_light = true;
         }
         if (primitive.find("emission") != primitive.end())
         {
@@ -340,7 +346,14 @@ rtr::scene load_tungsten(const std::string &filename)
 
             auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
             info.mesh_lights.push_back(std::move(mesh_light));
+
+            scene_has_light = true;
         }
+
+        // Add a point light source when there's none!
+        if (!scene_has_light)
+            info.lghts.push_back(rtr::light({-18.862, 69.2312, 69.651}, {800.0, 800.0, 800.0}));
+        info.lghts.push_back(rtr::light({10, 30, 69.651}, {600.0, 600.0, 600.0}));
 
         std::cerr << "Mesh id: " << id++ << "\n";
         std::cerr << "Material idx: " << info.meshes.back().material_idx[0] << "\n";

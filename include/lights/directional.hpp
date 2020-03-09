@@ -1,0 +1,8 @@
+//
+// Created by goksu on 3/8/20.
+//
+
+#ifndef PATHTRACER_DIRECTIONAL_HPP
+#define PATHTRACER_DIRECTIONAL_HPP
+
+#endif // PATHTRACER_DIRECTIONAL_HPP

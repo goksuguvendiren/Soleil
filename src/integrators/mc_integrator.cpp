@@ -21,6 +21,11 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     {
         return glm::vec3(0,0,0);
     }
+    auto visualize_direction = [](const glm::vec3& dir) -> glm::vec3
+    {
+        return (dir + 1.f) * 0.5f;
+    };
+    auto normal_visualized = visualize_direction(pld->hit_normal);
 
     // FIXME: quad loading bug, to be fixed
 //    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
@@ -65,7 +70,7 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
 
     auto L_direct = ldotn * sample_light->intensity() * sample_light->attenuate(light_position, pld->hit_pos) * bsdf;
 
-    return L_direct; // (L_indirect + L_direct) / 2.f;
+    return (L_indirect + L_direct) / 2.f;
 }
 
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
@@ -73,7 +78,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
                                                     const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 1;
+    constexpr int sq_sample_pp = 16;
     auto is_lens = std::bool_constant<false>();
 
     glm::vec3 color = {0, 0, 0};

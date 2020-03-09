@@ -6,7 +6,7 @@
 
 #include "camera.hpp"
 #include "dir_light.hpp"
-#include "light.hpp"
+#include "lights/light.hpp"
 #include "payload.hpp"
 #include "primitives/emissive_mesh.hpp"
 #include "primitives/mesh.hpp"

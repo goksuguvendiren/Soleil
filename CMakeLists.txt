@@ -9,7 +9,7 @@ find_package(OpenCV REQUIRED)
 find_package(ZLIB REQUIRED)
 
 add_library(PathTracerLib src/scene_io.cpp include/scene.hpp src/scene.cpp 
-    include/renderer.hpp src/renderer.cpp include/camera.hpp include/light.hpp 
+    include/renderer.hpp src/renderer.cpp include/camera.hpp include/lights/light.hpp
         include/primitives/sphere.hpp include/materials/base.hpp include/primitives/mesh.hpp 
         include/vertex.hpp src/sphere.cpp include/aabb.hpp include/kd_tree.hpp 
 		src/kd_tree.cpp src/mesh.cpp include/dir_light.hpp include/tinyobjloader.hpp 
