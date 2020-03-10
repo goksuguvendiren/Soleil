@@ -12,7 +12,7 @@ namespace rtr::light
 {
 class scene;
 class payload;
-class directional : base
+class directional : public base
 {
 public:
     directional(const glm::vec3& dir, const glm::vec3& intens);

@@ -13,7 +13,7 @@ namespace rtr
 {
 namespace light
 {
-class point : base
+class point : public base
 {
 public:
     point(const glm::vec3& poss, const glm::vec3& intens);

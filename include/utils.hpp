@@ -114,5 +114,11 @@ inline glm::vec3 to_vec3(float* vert)
 
 inline glm::vec3 to_vec3(nlohmann::json& vert)
 {
-    return {float(vert[0]), float(vert[1]), float(vert[2])};
+    std::cerr << "vert.is_array(): " << vert.is_array() << '\n';
+    if (vert.is_array())
+        return {float(vert[0]), float(vert[1]), float(vert[2])};
+
+    std::cerr << "vert.is_number_float(): " << vert.is_number_float() << '\n';
+    if (vert.is_number_float())
+        return {float(vert), float(vert), float(vert)};
 }

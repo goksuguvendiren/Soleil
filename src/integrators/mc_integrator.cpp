@@ -42,15 +42,15 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     }
 
     // direct lighting.
-    auto light = scene.sample_light();
-    auto [li, light_dir] = light->sample_li(scene, *pld);
+    const auto& light = scene.sample_light();
+    auto [li, light_dir] = light.sample_li(scene, *pld);
 
     auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
     auto bsdf = material->f(scene, *pld);
 
     auto L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
 
-    if (pld->ray.rec_depth >= 16)
+    if (pld->ray.rec_depth >= 6)
     {
         // return direct lighting at the hit point
         return L_direct; // replace with russian roulette
@@ -74,7 +74,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
                                                     const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 32;
+    constexpr int sq_sample_pp = 2;
     auto is_lens = std::bool_constant<false>();
 
     glm::vec3 color = {0, 0, 0};

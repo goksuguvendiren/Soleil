@@ -329,9 +329,9 @@ inline rtr::scene load_from_xml(const std::string& filename)
         for (auto child = elem->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
         {
             if (child->Name() == std::string("PointLight"))
-                info.lghts.push_back(load_point_light(child));
+                info.lights.push_back(load_point_light(child));
             else
-                info.dir_lghts.push_back(load_directional_light(child));
+                info.dir_lights.push_back(load_directional_light(child));
         }
     }
 
@@ -389,10 +389,10 @@ inline rtr::scene load_from_veach(const std::string& filename)
     {
         if (light->type == LightType::POINT_LIGHT)
         {
-            info.lghts.emplace_back(to_vec3(light->position), to_vec3(light->color));
+            info.lights.emplace_back(to_vec3(light->position), to_vec3(light->color));
         } else if (light->type == LightType::DIRECTIONAL_LIGHT)
         {
-            info.dir_lghts.emplace_back(to_vec3(light->direction), to_vec3(light->color));
+            info.dir_lights.emplace_back(to_vec3(light->direction), to_vec3(light->color));
         }
         light = light->next;
     }

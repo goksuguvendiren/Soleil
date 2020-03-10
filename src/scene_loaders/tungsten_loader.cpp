@@ -3,6 +3,8 @@
 #include "scene_loaders.hpp"
 #include "utils.hpp"
 
+#include "lights/area.hpp"
+
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -202,6 +204,19 @@ rtr::primitives::mesh load_cube(const glm::mat4x4 &transform, const std::string&
     return rtr::primitives::mesh(faces, name);
 }
 
+rtr::light::area load_area_light(const rtr::primitives::mesh& quad, nlohmann::json& primitive)
+{
+    glm::vec3 intensity;
+    if (primitive.find("power") != primitive.end()) intensity = to_vec3(primitive["power"]);
+    else if (primitive.find("emission") != primitive.end()) intensity = to_vec3(primitive["emission"]);
+
+    std::cerr << "load area light | intensity is: " << intensity << '\n';
+
+    rtr::light::area area_light(quad, intensity);
+
+    return area_light;
+}
+
 rtr::scene load_tungsten(const std::string &filename)
 {
     auto last_slash = filename.find_last_of("/");
@@ -254,10 +269,6 @@ rtr::scene load_tungsten(const std::string &filename)
     info.camera =
         rtr::camera(position, lookat_dir, up_dir, rtr::radians{glm::radians(fov)}, width, height, pinhole == "pinhole");
 
-    // std::cerr << width << '\n';
-    // std::cerr << scene.camera.height << '\n';
-    // std::cerr << scene.camera.is_pinhole() << '\n';
-
     /*
      * Load the materials
      */
@@ -271,8 +282,8 @@ rtr::scene load_tungsten(const std::string &filename)
         material_mappings.insert({mat.first, all_materials.size() - 1});
     }
 
-    // info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{100, 100, 100});
-//    info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
+    // info.lights.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{100, 100, 100});
+//    info.lights.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
 
     /*
      * Load the primitives
@@ -287,26 +298,29 @@ rtr::scene load_tungsten(const std::string &filename)
         auto name = primitive["bsdf"];
         std::string material_id = primitive["bsdf"];
         auto mesh_material_idx = material_mappings[material_id];
+
         if (type == "mesh")
         {
-            // if (primitive["file"])
             auto mesh = load_mesh(folder_path + "/" + std::string(primitive["file"]));
-            std::cerr << "Bounding box of the mesh: min coords: " << mesh.bounding_box().min << ", max coords: " << mesh.bounding_box().max << '\n';
-            // assert(false && "hard coded, correct it!");
+
             mesh.material_idx.push_back(mesh_material_idx);
             info.meshes.emplace_back(std::move(mesh));
         }
         else if (type == "quad")
         {
             auto quad = load_quad(transform, name);
-            std::cerr << "hi\n";
-            std::cerr << "primitive.find(\"power\") == primitive.end() && primitive.find(\"emission\") == primitive.end(): "
-                      << (primitive.find("power") == primitive.end() && primitive.find("emission") == primitive.end()) << '\n';
+
+            // NOT an emissive quad, directly add as a mesh.
             if (primitive.find("power") == primitive.end() && primitive.find("emission") == primitive.end())
             {
                 quad.material_idx.push_back(mesh_material_idx);
+                info.meshes.emplace_back(std::move(quad));
             }
-            info.meshes.emplace_back(std::move(quad));
+            else
+            {
+                auto area_light = load_area_light(quad, primitive);
+//                info.area_lights.push_back(std::move(area_light));
+            }
         }
         else if (type == "cube")
         {
@@ -315,12 +329,7 @@ rtr::scene load_tungsten(const std::string &filename)
             info.meshes.emplace_back(std::move(cube));
         }
 
-        for (auto mat : info.meshes.back().material_idx)
-        {
-            std::cerr << "material idxxx: " << mat;
-        }
-
-        if (primitive.find("power") != primitive.end())
+        if (primitive.find("power") != primitive.end() && type != "quad")
         {
             auto power_json = primitive["power"];
 
@@ -332,7 +341,7 @@ rtr::scene load_tungsten(const std::string &filename)
             auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
             info.mesh_lights.push_back(std::move(mesh_light));
         }
-        if (primitive.find("emission") != primitive.end())
+        if (primitive.find("emission") != primitive.end() && type != "quad")
         {
             auto emission_json = primitive["emission"];
 
@@ -345,20 +354,20 @@ rtr::scene load_tungsten(const std::string &filename)
             info.mesh_lights.push_back(std::move(mesh_light));
         }
 
-        std::cerr << "Mesh id: " << id++ << "\n";
-        std::cerr << "Material idx: " << info.meshes.back().material_idx[0] << "\n";
+//        std::cerr << "Mesh id: " << id++ << "\n";
+//        std::cerr << "Material idx: " << info.meshes.back().material_idx[0] << "\n";
         // for (auto& vert : info.meshes.back().faces.)
         // std::cerr << "Normals: " << info.meshes.back().material_idx[0] << "\n";
     }
     // Add a point light source when there's none!
-    if (info.lghts.size() == 0)
+    if (info.lights.size() == 0)
     {
         auto from = glm::vec3(-18.862, 69.2312, 69.651);
         auto to = glm::vec3(0, 0, 0);
-        info.dir_lghts.push_back(rtr::light::directional(to - from, {8.,8.,8.}));
+        info.dir_lights.push_back(rtr::light::directional(to - from, {8.,8.,8.}));
     }
-        //    info.lghts.push_back(rtr::light::point({-18.862, 69.2312, 69.651}, {8000.0, 8000.0, 8000.0}));
-//    info.lghts.push_back(rtr::light::point({10, 30, 69.651}, {60000.0, 60000.0, 60000.0}));
+        //    info.lights.push_back(rtr::light::point({-18.862, 69.2312, 69.651}, {8000.0, 8000.0, 8000.0}));
+//    info.lights.push_back(rtr::light::point({10, 30, 69.651}, {60000.0, 60000.0, 60000.0}));
 
     info.materials = std::move(all_materials);
     return rtr::scene(std::move(info));

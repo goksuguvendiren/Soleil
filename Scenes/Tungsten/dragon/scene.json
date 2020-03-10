@@ -45,6 +45,11 @@
             "name": "Deco2",
             "albedo": 0.79311,
             "type": "lambert"
+        },
+        {
+            "name": "Light",
+            "albedo": 1,
+            "type": "null"
         }
     ],
     "primitives": [
@@ -191,6 +196,32 @@
             "recompute_normals": false,
             "file": "models/Mesh000.wo3",
             "bsdf": "Deco2"
+        },
+        {
+            "transform": {
+                "position": [
+                    -0.005,
+                    1.98,
+                    -0.03
+                ],
+                "scale": [
+                    0.47,
+                    0.1786,
+                    0.38
+                ],
+                "rotation": [
+                    0,
+                    180,
+                    180
+                ]
+            },
+            "emission": [
+                17,
+                12,
+                4
+            ],
+            "type": "quad",
+            "bsdf": "Light"
         }
     ],
     "camera": {

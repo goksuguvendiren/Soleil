@@ -15,6 +15,7 @@
 #include "scene_io.h"
 
 #include <glm/vec3.hpp>
+#include <lights/area.hpp>
 #include <lights/directional.hpp>
 #include <materials/texture.hpp>
 #include <opencv2/opencv.hpp>
@@ -41,12 +42,17 @@ struct scene_information
     float intersection_test_epsilon = 1e-6;
     float max_recursion_depth = 5;
 
+    // objects:
     std::vector<rtr::primitives::sphere> spheres;
     std::vector<rtr::primitives::mesh> meshes;
-    std::vector<rtr::light::point> lghts;
-    std::vector<rtr::light::directional> dir_lghts;
 
+    // light sources
+    std::vector<rtr::light::point> lights;
+    std::vector<rtr::light::directional> dir_lights;
+    std::vector<rtr::light::area> area_lights;
     std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>> mesh_lights;
+
+    // materials
     std::vector<std::unique_ptr<rtr::materials::base>> materials;
     std::vector<std::unique_ptr<rtr::materials::texture>> textures;
 
@@ -57,6 +63,8 @@ struct scene_information
     std::string output_hdr_name;
 
     rtr::camera camera;
+
+    unsigned int total_light_size() const { return lights.size() + dir_lights.size() + area_lights.size(); }
 };
 
 class scene
@@ -97,17 +105,7 @@ public:
         information.camera = std::move(cam);
     }
 
-    [[nodiscard]] const rtr::light::directional* sample_light() const
-    {
-        auto random = get_random_float();
-        auto index = int(random * information.lghts.size());
-        return &(information.dir_lghts[index]);
-    }
-//
-//    rtr::primitives::emissive_mesh* sample_light() const
-//    {
-//        return mesh_lights()[0].get();
-//    }
+    [[nodiscard]] const rtr::light::base& sample_light() const;
 
     [[nodiscard]] std::optional<rtr::payload> hit(const rtr::ray& ray) const;
 
@@ -130,12 +128,12 @@ public:
 
     [[nodiscard]] const std::vector<rtr::light::point>& lights() const
     {
-        return information.lghts;
+        return information.lights;
     }
 
     const std::vector<rtr::light::directional>& dir_lights() const
     {
-        return information.dir_lghts;
+        return information.dir_lights;
     }
 
     const std::vector<std::unique_ptr<rtr::primitives::emissive_mesh>>& mesh_lights() const
@@ -148,8 +146,9 @@ public:
     glm::vec3 shadow_trace(const rtr::ray& ray, float light_distance) const;
 
     void print() const;
-    
+
     std::string output_file_name() const { return information.output_file_name; }
+    std::string output_hdr_name() const { return information.output_hdr_name; }
 
     const rtr::primitives::sphere& environment_sphere() const { return bounding_sphere; }
     int recursion_depth() const { return information.max_recursion_depth; }

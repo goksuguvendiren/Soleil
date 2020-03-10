@@ -49,8 +49,8 @@ int main(int argc, const char** argv)
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";
 
-//    rtr::renderer<rtr::mc_integrator> r(width, height);
-    rtr::mc_integrator r(width, height);
+    rtr::renderer<rtr::mc_integrator> r(width, height);
+//    rtr::mc_integrator r(width, height);
 
     begin = std::chrono::system_clock::now();
     auto output_buffer = r.render(scene);
@@ -61,11 +61,11 @@ int main(int argc, const char** argv)
 
     cv::Mat image(height, width, CV_32FC3, output_buffer.data());
     cv::cvtColor(image, image, cv::COLOR_RGB2BGR);
-     cv::imshow(scene.output_file_name(), image);
-     cv::waitKey(0);
+    cv::imshow(scene.output_file_name(), image);
+    cv::waitKey(0);
 
-    cv::imwrite(scene.output_file_name() + "new_output.exr", image);
-    cv::imwrite(scene.output_file_name() + "new_output.png", image);
-   
+    cv::imwrite(scene.output_hdr_name()  + "new_output.exr", image);
+    cv::imwrite(scene.output_file_name() + "new_output.png", image * 255);
+
     return 0;
 }

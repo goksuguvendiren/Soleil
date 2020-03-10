@@ -48,8 +48,8 @@ glm::vec3 rtr::progressive_integrator::shade(const rtr::scene& scene, const rtr:
     auto L_out = L_in * material->f(scene, *pld) * 2.f * glm::pi<float>();
 
     // direct lighting.
-    auto light = scene.sample_light();
-    auto [li, light_dir] = light->sample_li(scene, *pld);
+    const auto& light = scene.sample_light();
+    auto [li, light_dir] = light.sample_li(scene, *pld);
 
     L_out /= 2.f;
     L_out += glm::dot(light_dir, pld->hit_normal) * li * material->f(scene, *pld) * 0.5f;
