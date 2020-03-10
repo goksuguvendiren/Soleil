@@ -24,7 +24,10 @@ area::area(const rtr::primitives::mesh& quad, const glm::vec3& intens) : m_inten
 
 std::optional<rtr::payload> area::hit(const rtr::ray& ray) const
 {
-    return m_quad.hit();
+    auto pld = m_quad.hit(ray);
+    if (pld) pld->emission = m_intensity;
+
+    return pld;
 }
 
 glm::vec3 area::random_sample_position() const

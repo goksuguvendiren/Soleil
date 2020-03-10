@@ -309,17 +309,17 @@ rtr::scene load_tungsten(const std::string &filename)
         else if (type == "quad")
         {
             auto quad = load_quad(transform, name);
+            quad.material_idx.push_back(mesh_material_idx);
 
             // NOT an emissive quad, directly add as a mesh.
             if (primitive.find("power") == primitive.end() && primitive.find("emission") == primitive.end())
             {
-                quad.material_idx.push_back(mesh_material_idx);
                 info.meshes.emplace_back(std::move(quad));
             }
             else
             {
                 auto area_light = load_area_light(quad, primitive);
-//                info.area_lights.push_back(std::move(area_light));
+                info.area_lights.push_back(std::move(area_light));
             }
         }
         else if (type == "cube")
@@ -360,7 +360,7 @@ rtr::scene load_tungsten(const std::string &filename)
         // std::cerr << "Normals: " << info.meshes.back().material_idx[0] << "\n";
     }
     // Add a point light source when there's none!
-    if (info.lights.size() == 0)
+    if (info.total_light_size() == 0)
     {
         auto from = glm::vec3(-18.862, 69.2312, 69.651);
         auto to = glm::vec3(0, 0, 0);

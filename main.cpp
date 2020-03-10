@@ -49,7 +49,7 @@ int main(int argc, const char** argv)
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";
 
-    rtr::renderer<rtr::mc_integrator> r(width, height);
+    rtr::renderer<rtr::progressive_integrator> r(width, height);
 //    rtr::mc_integrator r(width, height);
 
     begin = std::chrono::system_clock::now();

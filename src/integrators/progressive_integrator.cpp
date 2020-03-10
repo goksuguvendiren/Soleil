@@ -22,40 +22,51 @@ glm::vec3 rtr::progressive_integrator::shade(const rtr::scene& scene, const rtr:
         return glm::vec3(0,0,0);
     }
 
-    // FIXME: quad loading bug, to be fixed
-    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
+    auto visualize_direction = [](const glm::vec3& dir) -> glm::vec3
     {
-        pld->hit_normal *= -1;
-    }
+        return (dir + 1.f) * 0.5f;
+    };
+
+    auto normal_visualized = visualize_direction(pld->hit_normal);
+
+    // FIXME: quad loading bug, to be fixed
+//    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
+//    {
+//        pld->hit_normal *= -1;
+//    }
 
     const auto &material = scene.get_material(pld->material_idx);
-    if (material->is_emissive())
+    if (pld->emission)
     {
-        return material->f(scene, *pld);
+        return *pld->emission;
     }
-
-    if (pld->ray.rec_depth >= 4)
-        return material->f(scene, *pld); // replace with russian roulette
-
-    // BRDF sampling:
-    auto sample_direction = material->sample(pld->hit_normal, *pld);
-
-    // incoming light from the random ray.
-    auto reflection_ray = rtr::ray(pld->hit_pos + (sample_direction * 1e-3f), sample_direction, pld->ray.rec_depth + 1, false);
-    auto L_in = shade(scene, reflection_ray);
-
-    auto cos_theta = glm::dot(pld->hit_normal, sample_direction);
-    auto L_out = L_in * material->f(scene, *pld) * 2.f * glm::pi<float>();
 
     // direct lighting.
     const auto& light = scene.sample_light();
     auto [li, light_dir] = light.sample_li(scene, *pld);
 
-    L_out /= 2.f;
-    L_out += glm::dot(light_dir, pld->hit_normal) * li * material->f(scene, *pld) * 0.5f;
+    auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
+    auto bsdf = material->f(scene, *pld);
 
-    return L_out;
-}
+    auto L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
+
+    if (pld->ray.rec_depth >= 6)
+    {
+        // return direct lighting at the hit point
+        return L_direct; // replace with russian roulette
+    }
+
+    // BRDF sampling:
+    auto sample_direction = material->sample(pld->hit_normal, *pld);
+
+    // incoming light from the random ray.
+    auto reflection_ray = rtr::ray(pld->hit_pos + (pld->hit_normal * 7e-2f), sample_direction, pld->ray.rec_depth + 1, false);
+    auto L_in = shade(scene, reflection_ray);
+
+    auto cos_theta = glm::max(glm::dot(pld->hit_normal, sample_direction), 0.f);
+    auto L_indirect = L_in * material->f(scene, *pld) * cos_theta * 2.f * glm::pi<float>();
+
+    return (L_indirect + L_direct) / 2.f;}
 
 glm::vec3 rtr::progressive_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
                                            const glm::vec3& pix_center, const rtr::image_plane& plane,

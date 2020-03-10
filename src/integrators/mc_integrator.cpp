@@ -36,9 +36,9 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
 //    }
 
     const auto &material = scene.get_material(pld->material_idx);
-    if (material->is_emissive())
+    if (pld->emission)
     {
-        return material->f(scene, *pld);
+        return *pld->emission;
     }
 
     // direct lighting.

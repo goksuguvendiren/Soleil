@@ -20,6 +20,8 @@ namespace rtr
         float param = std::numeric_limits<float>::infinity();
         int material_idx;
         glm::vec2 texture_coords;
+
         int obj_id;
+        std::optional<glm::vec3> emission = std::nullopt;
     };
 } // namespace rtr
