@@ -5,7 +5,8 @@
 
 glm::vec3 rtr::materials::base::f(const rtr::scene& scene, const rtr::payload& pld) const
 {
-    return diffuse / glm::pi<float>(); // lambertian model
+    auto albedo = diffuse;// TODO: add texture stuff here
+    return albedo / glm::pi<float>(); // lambertian model
 }
 
 static glm::vec3 refract(const glm::vec3& I, const glm::vec3& N, const float& ior)

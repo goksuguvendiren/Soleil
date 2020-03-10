@@ -98,6 +98,7 @@ std::optional<rtr::payload> rtr::kd_tree::hit(const rtr::ray& ray) const
 {
     if (!box.hit(ray))
         return std::nullopt;
+
     if (!left && !right) // then a leaf box
     {
         auto hit = object->hit(ray);

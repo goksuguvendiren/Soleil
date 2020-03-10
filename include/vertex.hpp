@@ -30,6 +30,15 @@ public:
         , v(0)
     {}
 
+    vertex(const glm::vec3& pos, const glm::vec3& n, const glm::vec2 uv)
+        : poss(pos)
+        , normal(n)
+        , mat(-1)
+        , u(uv.x)
+        , v(uv.y)
+        , m_uv(uv)
+    {}
+
     vertex(const glm::vec3& pos, const glm::vec3& n, int m, float s, float t)
         : poss(pos)
         , normal(n)
@@ -42,6 +51,7 @@ public:
     glm::vec3 normal;
 
     glm::vec3 poss;
+    glm::vec2 m_uv;
     float u, v;
 
     glm::vec3& position()

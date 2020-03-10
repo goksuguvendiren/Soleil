@@ -62,6 +62,22 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
         }
     }
 
+    for (auto& mesh : information.area_lights)
+    {
+        auto hit = mesh.hit(ray);
+        if (!hit)
+            continue;
+        if (std::isnan(hit->param))
+            throw std::runtime_error("param is nan in scene::hit()!");
+
+        if (!min_hit || hit->param < min_hit->param)
+        {
+            if (std::isnan(hit->param))
+                throw std::runtime_error("param is nan in scene::hit() 2!");
+            min_hit = *hit;
+        }
+    }
+
     if (min_hit && std::isnan(min_hit->param))
         throw std::runtime_error("param is nan in scene::hit() 3!");
 
@@ -133,4 +149,30 @@ void rtr::scene::print() const
         std::cerr << "\t\t Light source: \n";
         // std::cerr <<
     });
+}
+
+const rtr::light::base& rtr::scene::sample_light() const
+{
+    auto total_light_count = information.total_light_size();
+    auto random = get_random_float();
+    auto index = int(random * total_light_count);
+
+    if (index < information.lights.size())
+    {
+        return information.lights[index];
+    }
+    index -= information.lights.size();
+
+    if (index < information.dir_lights.size())
+    {
+        return information.dir_lights[index];
+    }
+    index -= information.dir_lights.size();
+
+    if (index < information.area_lights.size())
+    {
+        return information.area_lights[index];
+    }
+
+    assert(false);
 }

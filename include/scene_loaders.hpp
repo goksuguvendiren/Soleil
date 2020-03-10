@@ -233,7 +233,7 @@ inline std::unique_ptr<rtr::materials::base> load_material(tinyxml2::XMLElement*
     return std::make_unique<rtr::materials::base>(mat);
 }
 
-inline rtr::light load_point_light(tinyxml2::XMLElement* child)
+inline rtr::light::point load_point_light(tinyxml2::XMLElement* child)
 {
     assert(child->Name() == std::string("PointLight"));
     int id;
@@ -242,10 +242,10 @@ inline rtr::light load_point_light(tinyxml2::XMLElement* child)
     auto position = GetElem(child->FirstChildElement("Position"));
     auto intensity = GetElem(child->FirstChildElement("Intensity"));
 
-    return rtr::light(position, intensity);
+    return rtr::light::point(position, intensity);
 }
 
-inline rtr::dir_light load_directional_light(tinyxml2::XMLElement* child)
+inline rtr::light::directional load_directional_light(tinyxml2::XMLElement* child)
 {
     int id;
     child->QueryIntAttribute("id", &id);
@@ -253,7 +253,7 @@ inline rtr::dir_light load_directional_light(tinyxml2::XMLElement* child)
     auto direction = GetElem(child->FirstChildElement("Direction"));
     auto radiance = GetElem(child->FirstChildElement("Radiance"));
 
-    return rtr::dir_light(direction, radiance);
+    return rtr::light::directional(direction, radiance);
 }
 
 inline rtr::scene load_from_xml(const std::string& filename)
@@ -329,9 +329,9 @@ inline rtr::scene load_from_xml(const std::string& filename)
         for (auto child = elem->FirstChildElement(); child != nullptr; child = child->NextSiblingElement())
         {
             if (child->Name() == std::string("PointLight"))
-                info.lghts.push_back(load_point_light(child));
+                info.lights.push_back(load_point_light(child));
             else
-                info.dir_lghts.push_back(load_directional_light(child));
+                info.dir_lights.push_back(load_directional_light(child));
         }
     }
 
@@ -389,10 +389,10 @@ inline rtr::scene load_from_veach(const std::string& filename)
     {
         if (light->type == LightType::POINT_LIGHT)
         {
-            info.lghts.emplace_back(to_vec3(light->position), to_vec3(light->color));
+            info.lights.emplace_back(to_vec3(light->position), to_vec3(light->color));
         } else if (light->type == LightType::DIRECTIONAL_LIGHT)
         {
-            info.dir_lghts.emplace_back(to_vec3(light->direction), to_vec3(light->color));
+            info.dir_lights.emplace_back(to_vec3(light->direction), to_vec3(light->color));
         }
         light = light->next;
     }

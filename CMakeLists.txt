@@ -9,7 +9,7 @@ find_package(OpenCV REQUIRED)
 find_package(ZLIB REQUIRED)
 
 add_library(PathTracerLib src/scene_io.cpp include/scene.hpp src/scene.cpp 
-    include/renderer.hpp src/renderer.cpp include/camera.hpp include/light.hpp 
+    include/renderer.hpp src/renderer.cpp include/camera.hpp include/lights/point.hpp
         include/primitives/sphere.hpp include/materials/base.hpp include/primitives/mesh.hpp 
         include/vertex.hpp src/sphere.cpp include/aabb.hpp include/kd_tree.hpp 
 		src/kd_tree.cpp src/mesh.cpp include/dir_light.hpp include/tinyobjloader.hpp 
@@ -23,7 +23,7 @@ target_link_libraries(PathTracerLib PUBLIC ${OpenCV_LIBS})
 target_include_directories(PathTracerLib PUBLIC include)
 target_include_directories(PathTracerLib PUBLIC /usr/local/include)
 
-add_executable(PathTracer main.cpp include/integrators/mc_integrator.hpp)
+add_executable(PathTracer main.cpp include/integrators/mc_integrator.hpp include/materials/texture.hpp include/lights/directional.hpp include/lights/light.hpp src/lights/point.cpp src/lights/directional.cpp include/lights/area.hpp src/lights/area.cpp)
 target_link_libraries(PathTracer PUBLIC PathTracerLib)
 
 enable_testing()
