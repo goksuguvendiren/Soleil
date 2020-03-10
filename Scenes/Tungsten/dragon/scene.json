@@ -45,6 +45,11 @@
             "name": "Deco2",
             "albedo": 0.79311,
             "type": "lambert"
+        },
+        {
+            "name": "Light",
+            "albedo": 1,
+            "type": "null"
         }
     ],
     "primitives": [
@@ -218,7 +223,7 @@
             ]
         },
         "type": "pinhole",
-        "fov": 35.0
+        "fov": 20.0
     },
     "integrator": {
         "min_bounces": 0,

@@ -80,18 +80,17 @@ std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray& ray) cons
     glm::vec3 normal;
     glm::vec2 tex_coords;
 
-    if (normal_type == normal_types::per_vertex)
-    {
+//    if (normal_type == normal_types::per_vertex)
+//    {
         normal = glm::normalize(alpha * a.normal + beta * b.normal + gamma * c.normal);
         tex_coords = alpha * a.m_uv + beta * b.m_uv + gamma * c.m_uv;
-    }
-    else
-    {
-        normal = glm::normalize(vertices[0].normal);
-        tex_coords = vertices[0].m_uv;
-    }
+//    }
+//    else
+//    {
+//        normal = glm::normalize(vertices[0].normal);
+//        tex_coords = vertices[0].m_uv;
+//    }
 
-    // materials::base* mtrl_ptr = nullptr;
     if (material_type == material_binding::per_vertex)
     {
         // assert(false && " disabled material_binding::per_vertex, enable this!");

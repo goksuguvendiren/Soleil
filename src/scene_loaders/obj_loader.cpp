@@ -40,6 +40,7 @@ rtr::scene load_obj(const std::string& filename)
     {
         std::cout << "WARN: " << warn << std::endl;
     }
+
     if (!err.empty())
     {
         std::cerr << err << std::endl;
@@ -56,8 +57,9 @@ rtr::scene load_obj(const std::string& filename)
         glm::vec3{0, 1, 0}, rtr::radians{vertical_fov}, width, height, true);
 
     // create default light sources
-    info.lghts.emplace_back(glm::vec3{20, 20, 20}, glm::vec3{500, 500, 500});
-    info.lghts.emplace_back(glm::vec3{-20, 20, 0}, glm::vec3{500, 500, 500});
+    info.lights.emplace_back(glm::vec3{20, 20, 30}, glm::vec3{1000, 1000, 1000});
+    info.lights.emplace_back(glm::vec3{ 0, 20, 30}, glm::vec3{1000, 1000, 1000});
+    info.lights.emplace_back(glm::vec3{-20, 20, 30}, glm::vec3{1000, 1000, 1000});
 
     int id = 0;
     for (auto& shape : shapes)

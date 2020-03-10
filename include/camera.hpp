@@ -61,7 +61,7 @@ public:
 
     auto view() const
     {
-        return view_dir;
+        return glm::normalize(view_dir);
     }
 
     auto center() const

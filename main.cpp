@@ -12,10 +12,9 @@ int main(int argc, const char** argv)
 {
     auto begin = std::chrono::system_clock::now();
 
-    std::string folder_name = "Tungsten";
-    std::string scene_name = "veach-bidir";
-    std::string scene_path = "../Scenes/" + folder_name + "/" + scene_name + "/scene.json";
-
+    std::string folder_name = "obj";
+    std::string scene_name = "spot";
+    std::string scene_path = "../Scenes/" + folder_name + "/" + scene_name + "/spot_triangulated_good.obj";
     bool pinhole_camera = true;
     float image_plane_distance = 1.f;
     float lens_width = 1.f;
@@ -38,7 +37,10 @@ int main(int argc, const char** argv)
         }
     }
 
-    std::cerr << scene_path << '\n';
+    auto number_of_threads = std::thread::hardware_concurrency();
+    std::cerr << "Threads enabled! Running " << number_of_threads << " threads!\n";
+
+    std::cerr << "Loading: " << scene_path << '\n';
     rtr::scene scene = rtr::loaders::load(scene_path);
 
     auto width = scene.get_camera().width;
@@ -48,8 +50,8 @@ int main(int argc, const char** argv)
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";
 
-//    rtr::renderer<rtr::mc_integrator> r(width, height);
-    rtr::mc_integrator r(width, height);
+    rtr::renderer<rtr::mc_integrator> r(width, height);
+//    rtr::mc_integrator r(width, height);
 
     begin = std::chrono::system_clock::now();
     auto output_buffer = r.render(scene);
@@ -60,10 +62,10 @@ int main(int argc, const char** argv)
 
     cv::Mat image(height, width, CV_32FC3, output_buffer.data());
     cv::cvtColor(image, image, cv::COLOR_RGB2BGR);
-    cv::resize(image, image, image.size() / 4);
-
     cv::imshow(scene.output_file_name(), image);
     cv::waitKey(0);
+
+    cv::imwrite(scene.output_hdr_name()  + "new_output.exr", image);
     cv::imwrite(scene.output_file_name() + "new_output.png", image * 255);
 
     return 0;

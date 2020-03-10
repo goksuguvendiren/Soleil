@@ -3,6 +3,8 @@
 #include "scene_loaders.hpp"
 #include "utils.hpp"
 
+#include "lights/area.hpp"
+
 #include <algorithm>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -101,7 +103,7 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
         }
 
         faces.emplace_back(rtr::primitives::face{
-            vert, rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object});
+            vert, rtr::primitives::face::normal_types::per_vertex, rtr::primitives::face::material_binding::per_object});
     }
 
     rtr::primitives::mesh mesh(std::move(faces), "wood");
@@ -111,7 +113,11 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
 std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<std::unique_ptr<rtr::materials::texture>>>
     load_material(const nlohmann::json& material_json)
 {
-    std::string name = material_json["name"];
+    static int default_id = 0;
+    std::string name = "default_" + std::to_string(default_id++);
+    if (material_json.find("name") != material_json.end())
+        name = material_json["name"];
+
     auto albedo_json = material_json["albedo"];
 
     std::optional<std::unique_ptr<rtr::materials::texture>> opt_texture;
@@ -121,12 +127,17 @@ std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<std
     {
         albedo.x = albedo.y = albedo.z = float(albedo_json);
     }
-    else if (albedo_json.is_string())
+    else if  (albedo_json.is_string())
     {
-        std::cerr << "texture loading: ";
-        auto texture_name = std::string(albedo_json);
-        opt_texture = std::make_unique<rtr::materials::texture>(texture_name);
-        std::cerr << texture_name << '\n';
+        // TODO : Load the textures here
+        auto random_color = get_random_float();
+        albedo.x = albedo.y = albedo.z = float(random_color);
+
+
+//        std::cerr << "texture loading: ";
+//        auto texture_name = std::string(albedo_json);
+//        opt_texture = std::make_unique<rtr::materials::texture>(texture_name);
+//        std::cerr << texture_name << '\n';
     }
     else
     {
@@ -213,6 +224,19 @@ rtr::primitives::mesh load_cube(const glm::mat4x4 &transform, const std::string&
     return rtr::primitives::mesh(faces, name);
 }
 
+rtr::light::area load_area_light(const rtr::primitives::mesh& quad, nlohmann::json& primitive)
+{
+    glm::vec3 intensity;
+    if (primitive.find("power") != primitive.end()) intensity = to_vec3(primitive["power"]);
+    else if (primitive.find("emission") != primitive.end()) intensity = to_vec3(primitive["emission"]);
+
+    std::cerr << "load area light | intensity is: " << intensity << '\n';
+
+    rtr::light::area area_light(quad, intensity);
+
+    return area_light;
+}
+
 rtr::scene load_tungsten(const std::string &filename)
 {
     auto last_slash = filename.find_last_of("/");
@@ -266,10 +290,6 @@ rtr::scene load_tungsten(const std::string &filename)
     info.camera =
         rtr::camera(position, lookat_dir, up_dir, rtr::radians{glm::radians(fov)}, width, height, pinhole == "pinhole");
 
-    // std::cerr << width << '\n';
-    // std::cerr << scene.camera.height << '\n';
-    // std::cerr << scene.camera.is_pinhole() << '\n';
-
     /*
      * Load the materials
      */
@@ -284,9 +304,6 @@ rtr::scene load_tungsten(const std::string &filename)
         material_mappings.insert({name, all_materials.size() - 1});
     }
 
-    // info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{100, 100, 100});
-    info.lghts.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
-
     /*
      * Load the primitives
      */
@@ -296,64 +313,54 @@ rtr::scene load_tungsten(const std::string &filename)
     {
         //     std::cerr << std::setw(4) << primitive << '\n';
         auto transform = get_transform_matrix(primitive["transform"]);
-        assert(primitive["type"].is_string());
-        auto type = std::string(primitive["type"]);
-
-        std::string material_id;
+        auto type = primitive["type"];
         std::string name = "";
-        int idx = 0;
 
-        // loaded the material, now get the id and bind them.
-        if (primitive["bsdf"].is_string())
+        std::cerr << "Tungsten Loader | Loading primitive : " << name << '\n';
+        auto material_id = primitive["bsdf"];
+        int mesh_material_idx = 0;
+        if (material_id.is_string())
         {
-            name = std::string(primitive["bsdf"]);
-            material_id = name;
+            name = std::string(material_id);
+            mesh_material_idx = material_mappings[material_id];
         }
-        else // an json obj, create a new material and add it to the container, and bind them
+        else if (material_id.is_object())
         {
-            std::string new_name = "blank_material_" + std::to_string(idx++);
+            // that's a very basic bsdf that's inlined.
+            auto [nm, material] = load_material(material_id);
+            all_materials.push_back(std::move(material)); // put the material to the list, get its index, and put it into the map
+            material_mappings.insert({nm, all_materials.size() - 1});
 
-            auto bsdf = primitive["bsdf"];
-            auto js_albedo = bsdf["albedo"];
-
-            glm::vec3 albedo = glm::vec3(0.f);
-            if (js_albedo.is_number_float())
-            {
-                albedo = glm::vec3(float(js_albedo));
-                std::cerr << "albedo is : " << albedo << '\n';
-            }
-            else
-            {
-                albedo = to_vec3(js_albedo);
-            }
-
-            auto material = std::make_pair(new_name, std::make_unique<rtr::materials::base>(
-                rtr::materials::base(albedo, {0.0, 0.0, 0.0}, {0, 0, 0}, {0, 0, 0}, 0, 0)));
-            all_materials.push_back(std::move(material.second));
-            material_mappings.insert({material.first, all_materials.size() - 1});
+            mesh_material_idx = material_mappings[nm];
+            name = nm;
         }
-
-        auto mesh_material_idx = material_mappings[material_id];
+        else
+        {
+            assert(false && "unknown material type");
+        }
 
         if (type == "mesh")
         {
-            // if (primitive["file"])
             auto mesh = load_mesh(folder_path + "/" + std::string(primitive["file"]));
-            // assert(false && "hard coded, correct it!");
+
             mesh.material_idx.push_back(mesh_material_idx);
             info.meshes.emplace_back(std::move(mesh));
         }
         else if (type == "quad")
         {
             auto quad = load_quad(transform, name);
-            std::cerr << "hi\n";
-            std::cerr << "primitive.find(\"power\") == primitive.end() && primitive.find(\"emission\") == primitive.end(): "
-                      << (primitive.find("power") == primitive.end() && primitive.find("emission") == primitive.end()) << '\n';
+            quad.material_idx.push_back(mesh_material_idx);
+
+            // NOT an emissive quad, directly add as a mesh.
             if (primitive.find("power") == primitive.end() && primitive.find("emission") == primitive.end())
             {
-                quad.material_idx.push_back(mesh_material_idx);
+                info.meshes.emplace_back(std::move(quad));
             }
-            info.meshes.emplace_back(std::move(quad));
+            else
+            {
+                auto area_light = load_area_light(quad, primitive);
+                info.area_lights.push_back(std::move(area_light));
+            }
         }
         else if (type == "cube")
         {
@@ -362,17 +369,11 @@ rtr::scene load_tungsten(const std::string &filename)
             info.meshes.emplace_back(std::move(cube));
         }
 
-        for (auto mat : info.meshes.back().material_idx)
-        {
-            std::cerr << "material idxxx: " << mat;
-        }
-
-        if (primitive.find("power") != primitive.end())
+        if (primitive.find("power") != primitive.end() && type != "quad")
         {
             auto power_json = primitive["power"];
 
-            auto light_material = power_json.is_array() ? std::make_unique<materials::emissive>(materials::emissive(to_vec3(power_json))) :
-                                                          std::make_unique<materials::emissive>(materials::emissive(float(power_json)));
+            auto light_material = power_json.is_array() ? std::make_unique<materials::emissive>(materials::emissive(to_vec3(power_json))) : std::make_unique<materials::emissive>(materials::emissive(float(power_json)));
             all_materials.push_back(std::move(light_material));
             auto mat_idx = int(all_materials.size() - 1);
             info.meshes.back().material_idx.push_back(mat_idx);
@@ -380,7 +381,7 @@ rtr::scene load_tungsten(const std::string &filename)
             auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
             info.mesh_lights.push_back(std::move(mesh_light));
         }
-        if (primitive.find("emission") != primitive.end())
+        if (primitive.find("emission") != primitive.end() && type != "quad")
         {
             auto emission_json = primitive["emission"];
 
@@ -392,7 +393,21 @@ rtr::scene load_tungsten(const std::string &filename)
             auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
             info.mesh_lights.push_back(std::move(mesh_light));
         }
+
+//        std::cerr << "Mesh id: " << id++ << "\n";
+//        std::cerr << "Material idx: " << info.meshes.back().material_idx[0] << "\n";
+        // for (auto& vert : info.meshes.back().faces.)
+        // std::cerr << "Normals: " << info.meshes.back().material_idx[0] << "\n";
     }
+    // Add a point light source when there's none!
+    if (info.total_light_size() == 0)
+    {
+        auto from = glm::vec3(-18.862, 69.2312, 69.651);
+        auto to = glm::vec3(0, 0, 0);
+        info.dir_lights.push_back(rtr::light::directional(to - from, {8.,8.,8.}));
+    }
+        //    info.lights.push_back(rtr::light::point({-18.862, 69.2312, 69.651}, {8000.0, 8000.0, 8000.0}));
+//    info.lights.push_back(rtr::light::point({10, 30, 69.651}, {60000.0, 60000.0, 60000.0}));
 
     info.materials = std::move(all_materials);
     return rtr::scene(std::move(info));

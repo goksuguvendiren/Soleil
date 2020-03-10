@@ -7164,8 +7164,8 @@
     "camera": {
         "tonemap": "filmic",
         "resolution": [
-            720,
-            1280
+            360,
+            640
         ],
         "reconstruction_filter": "tent",
         "transform": {
@@ -7186,7 +7186,7 @@
             ]
         },
         "type": "pinhole",
-        "fov": 145.0
+        "fov": 61.0
     },
     "integrator": {
         "min_bounces": 0,
