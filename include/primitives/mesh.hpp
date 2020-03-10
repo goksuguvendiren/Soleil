@@ -86,8 +86,8 @@ public:
         tree = rtr::kd_tree(face_ptrs);
 
         auto end = std::chrono::system_clock::now();
-        std::cout << "BVH construction took : "
-                  << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
+//        std::cout << "BVH construction took : "
+//                  << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
 
     }
 

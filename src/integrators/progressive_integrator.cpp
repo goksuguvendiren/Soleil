@@ -22,12 +22,18 @@ glm::vec3 rtr::progressive_integrator::shade(const rtr::scene& scene, const rtr:
         return glm::vec3(0,0,0);
     }
 
+    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
+    {
+        pld->hit_normal *= -1;
+    }
+
     auto visualize_direction = [](const glm::vec3& dir) -> glm::vec3
     {
         return (dir + 1.f) * 0.5f;
     };
 
     auto normal_visualized = visualize_direction(pld->hit_normal);
+//    return normal_visualized;
 
     // FIXME: quad loading bug, to be fixed
 //    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
@@ -127,7 +133,6 @@ void rtr::progressive_integrator::sub_render(const rtr::scene& scene)
     // cv::setMouseCallback("window", CallBackFunc, NULL);
 
     auto number_of_threads = std::thread::hardware_concurrency();
-    std::cerr << "Threads enabled! Running " << number_of_threads << " threads!\n";
     std::vector<std::thread> threads;
     int n = 0;
     for (int i = 0; i < number_of_threads; ++i)

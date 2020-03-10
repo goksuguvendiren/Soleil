@@ -112,7 +112,11 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
 
 std::pair<std::string, std::unique_ptr<rtr::materials::base>> load_material(const nlohmann::json& material_json)
 {
-    std::string name = material_json["name"];
+    static int default_id = 0;
+    std::string name = "default_" + std::to_string(default_id++);
+    if (material_json.find("name") != material_json.end())
+        name = material_json["name"];
+
     auto albedo_json = material_json["albedo"];
 
     glm::vec3 albedo;
@@ -289,9 +293,6 @@ rtr::scene load_tungsten(const std::string &filename)
         material_mappings.insert({mat.first, all_materials.size() - 1});
     }
 
-    // info.lights.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{100, 100, 100});
-//    info.lights.emplace_back(glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
-
     /*
      * Load the primitives
      */
@@ -304,7 +305,7 @@ rtr::scene load_tungsten(const std::string &filename)
         auto type = primitive["type"];
         auto name = primitive["bsdf"];
 
-        std::cerr << "name is : " << name << '\n';
+        std::cerr << "Tungsten Loader | Loading primitive : " << name << '\n';
         auto material_id = primitive["bsdf"];
         int mesh_material_idx = 0;
         if (material_id.is_string())
@@ -313,12 +314,19 @@ rtr::scene load_tungsten(const std::string &filename)
         }
         else if (material_id.is_object())
         {
-            assert(false && "not implemented");
+            // that's a very basic bsdf that's inlined.
+            auto [nm, material] = load_material(material_id);
+            all_materials.push_back(std::move(material)); // put the material to the list, get its index, and put it into the map
+            material_mappings.insert({nm, all_materials.size() - 1});
+
+            mesh_material_idx = material_mappings[nm];
+            name = nm;
         }
         else
         {
             assert(false && "unknown material type");
         }
+
         if (type == "mesh")
         {
             auto mesh = load_mesh(folder_path + "/" + std::string(primitive["file"]));
