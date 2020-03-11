@@ -99,13 +99,13 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
 void rtr::mc_integrator::render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i)
 {
     const auto& camera = scene.get_camera();
-    rtr::image_plane plane(camera, width, height);
+    rtr::image_plane plane(camera, m_width, m_height);
 
-    auto right = (1 / float(width)) * plane.right();
-    auto below = -(1 / float(height)) * plane.up();
+    auto right = (1 / float(m_width)) * plane.right();
+    auto below = -(1 / float(m_height)) * plane.up();
 
     glm::vec3 pix_center = row_begin;
-    for (int j = 0; j < width; ++j)
+    for (int j = 0; j < m_width; ++j)
     {
         pix_center += right;
         glm::vec3 color = {0.f, 0.f, 0.f};
@@ -114,17 +114,17 @@ void rtr::mc_integrator::render_line(const rtr::scene& scene, const glm::vec3& r
             color += render_pixel(scene, camera, pix_center, plane, right, below);
         }
 
-        frame_buffer[i * width + j] = color;// / float(scene.samples_per_pixel());
+        frame_buffer[i * m_width + j] = color;// / float(scene.samples_per_pixel());
     }
 }
 
 void rtr::mc_integrator::sub_render(const rtr::scene& scene)
 {
     const auto& camera = scene.get_camera();
-    rtr::image_plane plane(camera, width, height);
+    rtr::image_plane plane(camera, m_width, m_height);
 
-    auto right = (1 / float(width)) * plane.right();
-    auto below = -(1 / float(height)) * plane.up();
+    auto right = (1 / float(m_width)) * plane.right();
+    auto below = -(1 / float(m_height)) * plane.up();
 
     auto pix_center = plane.top_left_position();
 
@@ -136,12 +136,12 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
     {
         threads.push_back(std::thread([i, &scene, pix_center, this, &below, &n, number_of_threads]
         {
-            for (int j = i; j < height; j += number_of_threads)
+            for (int j = i; j < m_height; j += number_of_threads)
             {
                 auto row_begin = pix_center + below * float(j);
                 render_line(scene, row_begin, j);
                 n++;
-                UpdateProgress(n / (float)height);
+                UpdateProgress(n / (float)m_height);
             }
         }));
     }
@@ -155,10 +155,10 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
 glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, int i, int j)
 {
     const auto& camera = scene.get_camera();
-    rtr::image_plane plane(camera, width, height);
+    rtr::image_plane plane(camera, m_width, m_height);
 
-    auto right = (1 / float(width)) * plane.right();
-    auto below = -(1 / float(height)) * plane.up();
+    auto right = (1 / float(m_width)) * plane.right();
+    auto below = -(1 / float(m_height)) * plane.up();
 
     auto pix_center = plane.top_left_position();
 
@@ -168,7 +168,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, int i, int j
     pix_center += right;
     auto color = render_pixel(scene, camera, pix_center, plane, right, below);
 
-    frame_buffer[i * width + j] = color;
+    frame_buffer[i * m_width + j] = color;
 
     return color;
 }
