@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <opencv2/opencv.hpp>
 #include <string>
@@ -29,13 +30,19 @@ public:
         height = image_data.rows;
     }
 
-    [[nodiscard]] glm::vec3 getColor(const glm::vec2& uv)
+    [[nodiscard]] glm::vec3 getColor(const glm::vec2& uv) const
     {
         return getColor(uv.x, uv.y);
     }
 
-    [[nodiscard]] glm::vec3 getColor(float u, float v)
+    [[nodiscard]] glm::vec3 getColor(float u, float v) const
     {
+        u = fmod(u, 1.f);
+        if (u < 0) u += 1.f;
+
+        v = fmod(v, 1.f);
+        if (v < 0) v += 1.f;
+
         auto u_img = u * width;
         auto v_img = (1 - v) * height;
         auto color = image_data.at<cv::Vec3b>(v_img, u_img);

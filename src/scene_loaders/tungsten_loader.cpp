@@ -98,8 +98,7 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
             auto& vertex = vertices[triangle.vs[i]];
             vert[i].poss = {vertex.pos[0], vertex.pos[1], vertex.pos[2]};
             vert[i].normal = {vertex.nor[0], vertex.nor[1], vertex.nor[2]};
-            vert[i].u = vertex.uv[0];
-            vert[i].v = vertex.uv[1];
+            vert[i].m_uv = {vertex.uv[0], vertex.uv[1]};
         }
 
         faces.emplace_back(rtr::primitives::face{
@@ -110,8 +109,8 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
     return mesh;
 }
 
-std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<std::unique_ptr<rtr::materials::texture>>>
-    load_material(const nlohmann::json& material_json)
+std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<rtr::materials::texture>>
+    load_material(const nlohmann::json& material_json, const std::string& folder_path)
 {
     static int default_id = 0;
     std::string name = "default_" + std::to_string(default_id++);
@@ -120,7 +119,7 @@ std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<std
 
     auto albedo_json = material_json["albedo"];
 
-    std::optional<std::unique_ptr<rtr::materials::texture>> opt_texture;
+    std::optional<rtr::materials::texture> opt_texture;
 
     glm::vec3 albedo;
     if (albedo_json.is_number())
@@ -129,15 +128,10 @@ std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<std
     }
     else if  (albedo_json.is_string())
     {
-        // TODO : Load the textures here
-        auto random_color = get_random_float();
-        albedo.x = albedo.y = albedo.z = float(random_color);
+        auto texture_name = std::string(albedo_json);
+        std::cerr << "Tungsten Loader | Loading texture : " << texture_name << '\n';
 
-
-//        std::cerr << "texture loading: ";
-//        auto texture_name = std::string(albedo_json);
-//        opt_texture = std::make_unique<rtr::materials::texture>(texture_name);
-//        std::cerr << texture_name << '\n';
+        opt_texture = rtr::materials::texture(folder_path + "/" + texture_name);
     }
     else
     {
@@ -146,7 +140,7 @@ std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<std
         albedo.z = albedo_json[2];
     }
 
-    return std::make_tuple(name, std::make_unique<rtr::materials::base>(rtr::materials::base(albedo)), opt_texture);
+    return std::make_tuple(name, std::make_unique<rtr::materials::base>(rtr::materials::base(albedo, std::move(opt_texture))), opt_texture);
 }
 
 rtr::primitives::mesh load_quad(const glm::mat4x4& transform, const std::string& name)
@@ -298,7 +292,7 @@ rtr::scene load_tungsten(const std::string &filename)
     std::map<std::string, int> material_mappings; // name - index mapping of the materials
     for (auto &material : materials)
     {
-        auto mat = load_material(material);
+        auto mat = load_material(material, folder_path);
         auto& [name, m, opt_tex] = mat;
         all_materials.push_back(std::move(m)); // put the material to the list, get its index, and put it into the map
         material_mappings.insert({name, all_materials.size() - 1});
@@ -316,7 +310,6 @@ rtr::scene load_tungsten(const std::string &filename)
         auto type = primitive["type"];
         std::string name = "";
 
-        std::cerr << "Tungsten Loader | Loading primitive : " << name << '\n';
         auto material_id = primitive["bsdf"];
         int mesh_material_idx = 0;
         if (material_id.is_string())
@@ -327,7 +320,7 @@ rtr::scene load_tungsten(const std::string &filename)
         else if (material_id.is_object())
         {
             // that's a very basic bsdf that's inlined.
-            auto [nm, material] = load_material(material_id);
+            auto [nm, material, _] = load_material(material_id, folder_path);
             all_materials.push_back(std::move(material)); // put the material to the list, get its index, and put it into the map
             material_mappings.insert({nm, all_materials.size() - 1});
 
@@ -339,9 +332,11 @@ rtr::scene load_tungsten(const std::string &filename)
             assert(false && "unknown material type");
         }
 
+        std::cerr << "Tungsten Loader | Loading primitive : " << name << '\n';
         if (type == "mesh")
         {
-            auto mesh = load_mesh(folder_path + "/" + std::string(primitive["file"]));
+            auto model_file = std::string(primitive["file"]);
+            auto mesh = load_mesh(folder_path + "/" + std::string(model_file));
 
             mesh.material_idx.push_back(mesh_material_idx);
             info.meshes.emplace_back(std::move(mesh));

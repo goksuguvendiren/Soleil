@@ -33,13 +33,6 @@ glm::vec3 rtr::progressive_integrator::shade(const rtr::scene& scene, const rtr:
     };
 
     auto normal_visualized = visualize_direction(pld->hit_normal);
-//    return normal_visualized;
-
-    // FIXME: quad loading bug, to be fixed
-//    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
-//    {
-//        pld->hit_normal *= -1;
-//    }
 
     const auto &material = scene.get_material(pld->material_idx);
     if (pld->emission)
@@ -79,7 +72,7 @@ glm::vec3 rtr::progressive_integrator::render_pixel(const rtr::scene& scene, con
                                            const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 1;
+    constexpr int sq_sample_pp = 4;
     auto is_lens = std::bool_constant<false>();
 
     glm::vec3 color = {0, 0, 0};
@@ -198,7 +191,12 @@ std::vector<glm::vec3> rtr::progressive_integrator::render(const rtr::scene& sce
         cv::cvtColor(image, rgb_img, cv::COLOR_BGR2RGB);
         cv::imshow(scene.output_file_name(), rgb_img);
 
+        cv::imwrite(scene.output_hdr_name(), rgb_img);
+        cv::imwrite(scene.output_file_name(), rgb_img * 255);
+
         key = cv::waitKey(100);
+
+        std::cerr << "Frame count: " << n_frames << '\n';
     }
 
     return result_buffer;

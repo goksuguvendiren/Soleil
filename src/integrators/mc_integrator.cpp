@@ -56,8 +56,6 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
         return L_direct; // replace with russian roulette
     }
 
-    return (pld->hit_normal + 1.f) * 0.5f;
-
     // BRDF sampling:
     auto sample_direction = material->sample(pld->hit_normal, *pld);
 
@@ -76,7 +74,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
                                                     const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 32;
+    constexpr int sq_sample_pp = 1;
     auto is_lens = std::bool_constant<false>();
 
     glm::vec3 color = {0, 0, 0};

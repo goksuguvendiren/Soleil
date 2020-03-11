@@ -5,7 +5,10 @@
 
 glm::vec3 rtr::materials::base::f(const rtr::scene& scene, const rtr::payload& pld) const
 {
-    auto albedo = diffuse;// TODO: add texture stuff here
+    glm::vec3 albedo = diffuse;
+    if (texture)
+        albedo = texture->getColor(pld.texture_coords);
+
     return albedo / glm::pi<float>(); // lambertian model
 }
 

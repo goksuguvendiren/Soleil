@@ -4,8 +4,10 @@
 
 #pragma once
 
+#include "texture.hpp"
 #include "utils.hpp"
 
+#include <utility>
 #include <glm/vec3.hpp>
 #include <vector>
 
@@ -34,7 +36,7 @@ public:
         , exp(0)
         , trans(0)
         , refr_index(1.f)
-        , texture_index(std::nullopt)
+        , texture(std::nullopt)
     {}
 
     base(const glm::vec3& diff)
@@ -45,7 +47,18 @@ public:
         , exp(0)
         , trans(0)
         , refr_index(1.f)
-        , texture_index(std::nullopt)
+        , texture(std::nullopt)
+    {}
+
+    base(const glm::vec3& diff, std::optional<rtr::materials::texture> tex)
+        : diffuse(diff)
+        , ambient({0.0f, 0.0f, 0.0f})
+        , specular({0.f, 0.f, 0.f})
+        , emissive(0)
+        , exp(0)
+        , trans(0)
+        , refr_index(1.f)
+        , texture(std::move(tex))
     {}
 
     base(const glm::vec3& diff, int texture_idx)
@@ -56,7 +69,7 @@ public:
         , exp(0)
         , trans(0)
         , refr_index(1.f)
-        , texture_index(texture_idx)
+        , texture(std::nullopt)
     {}
 
     base(const glm::vec3& diff, const glm::vec3& amb, const glm::vec3& spec, const glm::vec3& ems, float p, float t)
@@ -67,7 +80,7 @@ public:
         , exp(p)
         , trans(t)
         , refr_index(1.0f)
-        , texture_index(std::nullopt)
+        , texture(std::nullopt)
     {
         if (trans > 0.f)
             refr_index = 1.5f;
@@ -104,7 +117,7 @@ public:
     float refr_index;
 
 private:
-    std::optional<int> texture_index;
+    std::optional<rtr::materials::texture> texture;
 };
 } // namespace materials
 } // namespace rtr
