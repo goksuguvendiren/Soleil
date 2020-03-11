@@ -1,1 +1,3 @@
-# Path Tracer
+# Soleil Renderer
+
+Soleil is an educational renderer, which started as a course project.
