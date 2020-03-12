@@ -1,3 +1,9 @@
+:imagesdir: assets
+
 # Soleil Renderer
 
 Soleil is an educational renderer, which started as a course project, and turned out to be an eventual research/hobby project.
+
+### Outputs
+image::dragon.png[Dragon]
+image::staircase.png[Staircase]
