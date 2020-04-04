@@ -11,7 +11,7 @@
 #include <glm/vec3.hpp>
 #include <vector>
 
-namespace rtr
+namespace soleil
 {
 class scene;
 class payload;
@@ -50,7 +50,7 @@ public:
         , texture(std::nullopt)
     {}
 
-    base(const glm::vec3& diff, std::optional<rtr::materials::texture> tex)
+    base(const glm::vec3& diff, std::optional<soleil::materials::texture> tex)
         : diffuse(diff)
         , ambient({0.0f, 0.0f, 0.0f})
         , specular({0.f, 0.f, 0.f})
@@ -88,7 +88,7 @@ public:
 
     virtual glm::vec3 f(const scene& scene, const payload& pld) const;
 
-    rtr::PathType russian_roulette() const
+    soleil::PathType russian_roulette() const
     {
         auto rr = get_random_float(0, 1);
         if (rr < 0.1)
@@ -117,7 +117,7 @@ public:
     float refr_index;
 
 private:
-    std::optional<rtr::materials::texture> texture;
+    std::optional<soleil::materials::texture> texture;
 };
 } // namespace materials
-} // namespace rtr
+} // namespace soleil

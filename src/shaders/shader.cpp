@@ -3,7 +3,7 @@
 #include <payload.hpp>
 #include <shaders/shader.hpp>
 
-bool rtr::shaders::Checkerboard(const rtr::payload& payload)
+bool soleil::::shaders::Checkerboard(const soleil::::payload& payload)
 {
     bool u_white = (int(payload.texture_coords.x * 20) % 2) == 1;
     bool v_white = (int(payload.texture_coords.y * 10) % 2) == 1;
@@ -21,11 +21,11 @@ static glm::vec3 to_vec3(const cv::Vec3b& color)
     return glm::vec3{z, y, x};
 }
 
-rtr::material rtr::shaders::EarthTexture(const rtr::payload& payload, const rtr::material* mat)
+soleil::::material soleil::::shaders::EarthTexture(const soleil::::payload& payload, const soleil::::material* mat)
 {
     static auto image = cv::imread("../src/shaders/earth.jpg");
     //    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-    rtr::material m(*mat);
+    soleil::::material m(*mat);
 
     auto uv = payload.texture_coords;
 

@@ -3,7 +3,7 @@
 #include "payload.hpp"
 #include "scene.hpp"
 
-glm::vec3 rtr::materials::base::f(const rtr::scene& scene, const rtr::payload& pld) const
+glm::vec3 soleil::materials::base::f(const soleil::scene& scene, const soleil::payload& pld) const
 {
     glm::vec3 albedo = diffuse;
     if (texture)
@@ -30,7 +30,7 @@ static glm::vec3 refract(const glm::vec3& I, const glm::vec3& N, const float& io
     return k < 0 ? glm::vec3{0, 0, 0} : eta * I + (eta * cosi - sqrtf(k)) * n;
 }
 
-glm::vec3 rtr::materials::base::sample(const glm::vec3& hit_normal, const payload& pld) const
+glm::vec3 soleil::materials::base::sample(const glm::vec3& hit_normal, const payload& pld) const
 {
     return sample_hemisphere(hit_normal);
 }

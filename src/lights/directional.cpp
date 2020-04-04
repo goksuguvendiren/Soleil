@@ -11,18 +11,18 @@
 
 #include <payload.hpp>
 
-namespace rtr::light
+namespace soleil::light
 {
 directional::directional(const glm::vec3& dir, const glm::vec3& intens) : direction(dir), intensity(intens)
 {}
 
-std::pair<glm::vec3, glm::vec3> directional::sample_li(const rtr::scene &scene, const rtr::payload& pld) const
+std::pair<glm::vec3, glm::vec3> directional::sample_li(const soleil::scene &scene, const soleil::payload& pld) const
 {
     auto intens = intensity;
     auto shadow_direction = -direction;
 
     // check for visibility
-    auto shadow_ray = rtr::ray(pld.hit_pos + (pld.hit_normal * 1e-4f), shadow_direction, pld.ray.rec_depth + 1, false);
+    auto shadow_ray = soleil::ray(pld.hit_pos + (pld.hit_normal * 1e-4f), shadow_direction, pld.ray.rec_depth + 1, false);
     auto shadow_pld = scene.hit(shadow_ray);
 
     if (shadow_pld)
@@ -31,4 +31,4 @@ std::pair<glm::vec3, glm::vec3> directional::sample_li(const rtr::scene &scene, 
     return {intens, -glm::normalize(direction)};
 
 }
-} // namespace rtr::lights
+} // namespace soleil::lights

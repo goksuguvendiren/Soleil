@@ -14,7 +14,7 @@
 #include <thread>
 #include <vector>
 
-namespace rtr
+namespace soleil
 {
 // class scene;
 // class ray;
@@ -32,22 +32,22 @@ public:
         refr_indices.push(1.f);
     }
 
-    std::vector<glm::vec3> render(const rtr::scene& scene)
+    std::vector<glm::vec3> render(const soleil::scene& scene)
     {
         return integrator.render(scene);
     }
 
-    void render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i);
-    glm::vec3 render_pixel(const rtr::scene& scene, const camera& camera, const glm::vec3& pix_center,
-                           const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
-    glm::vec3 render_pixel(const rtr::scene& scene, int i, int j);
+    void render_line(const soleil::scene& scene, const glm::vec3& row_begin, int i);
+    glm::vec3 render_pixel(const soleil::scene& scene, const camera& camera, const glm::vec3& pix_center,
+                           const soleil::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
+    glm::vec3 render_pixel(const soleil::scene& scene, int i, int j);
 
     template<int sq_sample_pp>
-    glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
+    glm::vec3 get_pixel_pos(const glm::vec3& top_left, const soleil::image_plane& plane, const soleil::camera& camera,
                             const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<true>);
 
     template<int sq_sample_pp>
-    glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
+    glm::vec3 get_pixel_pos(const glm::vec3& top_left, const soleil::image_plane& plane, const soleil::camera& camera,
                             const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<false>);
 
 private:
@@ -62,8 +62,8 @@ private:
 
 template<typename Integrator>
 template<int sq_sample_pp>
-glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane,
-                                              const rtr::camera& camera, const glm::vec3& right, const glm::vec3& below,
+glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3& top_left, const soleil::image_plane& plane,
+                                              const soleil::camera& camera, const glm::vec3& right, const glm::vec3& below,
                                               int u, int v, std::bool_constant<true>)
 {
     auto random_u = get_random_float();
@@ -90,8 +90,8 @@ glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3& top_left, const r
 
 template<typename Integrator>
 template<int sq_sample_pp>
-glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane,
-                                              const rtr::camera& camera, const glm::vec3& right, const glm::vec3& below,
+glm::vec3 renderer<Integrator>::get_pixel_pos(const glm::vec3& top_left, const soleil::image_plane& plane,
+                                              const soleil::camera& camera, const glm::vec3& right, const glm::vec3& below,
                                               int u, int v, std::bool_constant<false>)
 {
     if constexpr (sq_sample_pp == 1)
@@ -138,8 +138,8 @@ inline void UpdateProgress(float progress)
 
 /*
 template<typename Integrator>
-glm::vec3 renderer<Integrator>::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
-                                             const glm::vec3& pix_center, const rtr::image_plane& plane,
+glm::vec3 renderer<Integrator>::render_pixel(const soleil::scene& scene, const soleil::camera& camera,
+                                             const glm::vec3& pix_center, const soleil::image_plane& plane,
                                              const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
@@ -156,7 +156,7 @@ glm::vec3 renderer<Integrator>::render_pixel(const rtr::scene& scene, const rtr:
                                                  //            std::cout << camera_pos << '\n';
             auto sub_pix_position =
                 get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
-            auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
+            auto ray = soleil::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
             color += scene.trace(ray);
 
@@ -168,10 +168,10 @@ glm::vec3 renderer<Integrator>::render_pixel(const rtr::scene& scene, const rtr:
 }*/
 
 template<typename Integrator>
-void renderer<Integrator>::render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i)
+void renderer<Integrator>::render_line(const soleil::scene& scene, const glm::vec3& row_begin, int i)
 {
     const auto& camera = scene.get_camera();
-    rtr::image_plane plane(camera, width, height);
+    soleil::image_plane plane(camera, width, height);
 
     auto right = (1 / float(width)) * plane.right();
     auto below = -(1 / float(height)) * plane.up();
@@ -187,11 +187,11 @@ void renderer<Integrator>::render_line(const rtr::scene& scene, const glm::vec3&
 }
 
 // template <typename Integrator>
-// std::vector<glm::vec3> renderer<Integrator>::render(const rtr::scene &scene)
+// std::vector<glm::vec3> renderer<Integrator>::render(const soleil::scene &scene)
 // {
 //     // Phase 1 for photon mapping:
 //     const auto& camera = scene.get_camera();
-//     rtr::image_plane plane(camera, width, height);
+//     soleil::image_plane plane(camera, width, height);
 
 //     auto right = (1 / float(width)) * plane.right;
 //     auto below = -(1 / float(height)) * plane.up;
@@ -225,4 +225,4 @@ void renderer<Integrator>::render_line(const rtr::scene& scene, const glm::vec3&
 //     return frame_buffer;
 // }
 
-} // namespace rtr
+} // namespace soleil

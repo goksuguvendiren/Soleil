@@ -8,7 +8,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace rtr
+namespace soleil
 {
 class vertex
 {
@@ -66,4 +66,4 @@ public:
         normal = glm::vec3(inv_tr_transform * glm::vec4(normal, 0.0f));
     }
 };
-} // namespace rtr
+} // namespace soleil

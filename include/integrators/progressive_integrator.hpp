@@ -9,7 +9,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace rtr
+namespace soleil
 {
 class ray;
 class scene;
@@ -20,10 +20,10 @@ public:
         : m_mc_integrator(w, h, sq)
     {}
 
-    std::vector<glm::vec3> render(const rtr::scene& scene);
-    glm::vec3 render_pixel(const rtr::scene& scene, int i, int j);
+    std::vector<glm::vec3> render(const soleil::scene& scene);
+    glm::vec3 render_pixel(const soleil::scene& scene, int i, int j);
 
 private:
-    rtr::mc_integrator m_mc_integrator;
+    soleil::mc_integrator m_mc_integrator;
 };
-} // namespace rtr
+} // namespace soleil

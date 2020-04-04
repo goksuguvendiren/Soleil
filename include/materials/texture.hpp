@@ -9,7 +9,7 @@
 #include <opencv2/opencv.hpp>
 #include <string>
 
-namespace rtr
+namespace soleil
 {
 namespace materials
 {

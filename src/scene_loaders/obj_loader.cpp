@@ -9,7 +9,7 @@
 #include <iostream>
 #include <materials/texture.hpp>
 
-namespace rtr
+namespace soleil
 {
 namespace loaders
 {
@@ -20,7 +20,7 @@ inline std::string GetBaseDir(const std::string& filepath)
     return "";
 }
 
-rtr::scene load_obj(const std::string& filename)
+soleil::scene load_obj(const std::string& filename)
 {
     tinyobj::attrib_t attrib;
     std::vector<tinyobj::shape_t> shapes;
@@ -46,15 +46,15 @@ rtr::scene load_obj(const std::string& filename)
         std::cerr << err << std::endl;
     }
 
-    rtr::scene_information info;
+    soleil::scene_information info;
 
     // create a default camera located at the origin, looking at the -z direction.
     auto vertical_fov = glm::radians(33.f);
     auto width = 700;
     auto height = 700;
 
-    info.camera = rtr::camera(glm::vec3{0, 0, 10}, glm::vec3{0, 0, -1},
-        glm::vec3{0, 1, 0}, rtr::radians{vertical_fov}, width, height, true);
+    info.camera = soleil::camera(glm::vec3{0, 0, 10}, glm::vec3{0, 0, -1},
+        glm::vec3{0, 1, 0}, soleil::radians{vertical_fov}, width, height, true);
 
     // create default light sources
     info.lights.emplace_back(glm::vec3{20, 20, 30}, glm::vec3{1000, 1000, 1000});
@@ -66,11 +66,11 @@ rtr::scene load_obj(const std::string& filename)
     {
         std::cerr << "Loading mesh : " << id << "\n";
         std::cerr << shape.mesh.indices.size() << '\n';
-        std::vector<rtr::primitives::face> faces;
+        std::vector<soleil::primitives::face> faces;
 
         for (int i = 0; i < shape.mesh.indices.size(); i += 3)
         {
-            std::array<rtr::vertex, 3> face_vertices{};
+            std::array<soleil::vertex, 3> face_vertices{};
             for (int j = 0; j < 3; ++j)
             {
                 tinyobj::index_t idx = shape.mesh.indices[i + j];
@@ -94,18 +94,18 @@ rtr::scene load_obj(const std::string& filename)
                     tv = attrib.texcoords[2 * idx.texcoord_index + 1];
                 }
 
-                face_vertices[j] = rtr::vertex(glm::vec3{vx, vy, vz}, glm::vec3{nx, ny, nz}, glm::vec2{tu, tv});
+                face_vertices[j] = soleil::vertex(glm::vec3{vx, vy, vz}, glm::vec3{nx, ny, nz}, glm::vec2{tu, tv});
             }
-            rtr::primitives::face face_new(face_vertices, rtr::primitives::face::normal_types::per_vertex,
-                                           rtr::primitives::face::material_binding::per_object);
+            soleil::primitives::face face_new(face_vertices, soleil::primitives::face::normal_types::per_vertex,
+                                              soleil::primitives::face::material_binding::per_object);
             faces.push_back(face_new);
         }
 
-        rtr::materials::texture tex("../Scenes/obj/spot/spot_texture.png");
-        info.textures.push_back(std::make_unique<rtr::materials::texture>(tex));
+        soleil::materials::texture tex("../Scenes/obj/spot/spot_texture.png");
+        info.textures.push_back(std::make_unique<soleil::materials::texture>(tex));
 
-        rtr::materials::base base_material({0.63, 0.065, 0.05}, {10, 10, 10}, {0, 0, 0}, {0, 0, 0}, 0, 0);
-        info.materials.push_back(std::make_unique<rtr::materials::base>(base_material));
+        soleil::materials::base base_material({0.63, 0.065, 0.05}, {10, 10, 10}, {0, 0, 0}, {0, 0, 0}, 0, 0);
+        info.materials.push_back(std::make_unique<soleil::materials::base>(base_material));
 
         info.meshes.emplace_back(faces, "");
 
@@ -123,7 +123,7 @@ rtr::scene load_obj(const std::string& filename)
         m.transform(transformer);
     }
 
-    return rtr::scene(std::move(info));
+    return soleil::scene(std::move(info));
 }
 }
 }

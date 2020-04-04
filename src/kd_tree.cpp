@@ -29,21 +29,21 @@ float get_random(float min, float max) // box inclusive
     return dist(rng);
 }
 
-bool y_compare(rtr::primitives::face* f1, rtr::primitives::face* f2)
+bool y_compare(soleil::primitives::face* f1, soleil::primitives::face* f2)
 {
     return f1->box.min.y < f2->box.min.y;
 }
 
-bool z_compare(rtr::primitives::face* f1, rtr::primitives::face* f2)
+bool z_compare(soleil::primitives::face* f1, soleil::primitives::face* f2)
 {
     return f1->box.min.z < f2->box.min.z;
 }
 
-rtr::kd_tree::kd_tree(const std::vector<rtr::primitives::face*>& faces)
+soleil::kd_tree::kd_tree(const std::vector<soleil::primitives::face*>& faces)
 {
     auto axis = get_random(0, 2);
 
-    std::vector<rtr::primitives::face*> sfaces = faces;
+    std::vector<soleil::primitives::face*> sfaces = faces;
     switch (axis)
     {
     case 0:
@@ -82,8 +82,8 @@ rtr::kd_tree::kd_tree(const std::vector<rtr::primitives::face*>& faces)
         auto middling = sfaces.begin() + (sfaces.size() / 2);
         auto ending = sfaces.end();
 
-        auto leftshapes = std::vector<rtr::primitives::face*>(beginning, middling);
-        auto rightshapes = std::vector<rtr::primitives::face*>(middling, ending);
+        auto leftshapes = std::vector<soleil::primitives::face*>(beginning, middling);
+        auto rightshapes = std::vector<soleil::primitives::face*>(middling, ending);
 
         assert(faces.size() == (leftshapes.size() + rightshapes.size()));
 
@@ -94,7 +94,7 @@ rtr::kd_tree::kd_tree(const std::vector<rtr::primitives::face*>& faces)
     }
 }
 
-std::optional<rtr::payload> rtr::kd_tree::hit(const rtr::ray& ray) const
+std::optional<soleil::payload> soleil::kd_tree::hit(const soleil::ray& ray) const
 {
     if (!box.hit(ray))
         return std::nullopt;

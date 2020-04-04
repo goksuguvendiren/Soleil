@@ -6,7 +6,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace rtr
+namespace soleil
 {
 class photon
 {
@@ -35,4 +35,4 @@ private:
     glm::vec3 org;
     glm::vec3 dir;
 };
-} // namespace rtr
+} // namespace soleil

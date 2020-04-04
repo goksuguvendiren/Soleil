@@ -1,9 +1,9 @@
 #include <glm/vec3.hpp>
 
-namespace rtr
+namespace soleil
 {
 template<int sq_sample_pp>
-glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
+glm::vec3 get_pixel_pos(const glm::vec3& top_left, const soleil::image_plane& plane, const soleil::camera& camera,
                         const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<true>)
 {
     auto random_u = get_random_float();
@@ -29,7 +29,7 @@ glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane
 }
 
 template<int sq_sample_pp>
-glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
+glm::vec3 get_pixel_pos(const glm::vec3& top_left, const soleil::image_plane& plane, const soleil::camera& camera,
                         const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<false>)
 {
     if constexpr (sq_sample_pp == 1)
@@ -46,4 +46,4 @@ glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane
     auto sample = top_left + right * x_offset + below * y_offset;
     return sample;
 }
-} // namespace rtr
+} // namespace soleil

@@ -7,9 +7,9 @@
 
 #include <payload.hpp>
 
-namespace rtr::light
+namespace soleil::light
 {
-area::area(const rtr::primitives::mesh& quad, const glm::vec3& intens) : m_intensity(intens), m_quad(quad.copy())
+area::area(const soleil::primitives::mesh& quad, const glm::vec3& intens) : m_intensity(intens), m_quad(quad.copy())
 {
     const auto& top_left = quad.faces[0].vertices[0].position();
     const auto& right    = quad.faces[0].vertices[1].position();
@@ -22,7 +22,7 @@ area::area(const rtr::primitives::mesh& quad, const glm::vec3& intens) : m_inten
     assert(quad.faces.size() == 2);
 }
 
-std::optional<rtr::payload> area::hit(const rtr::ray& ray) const
+std::optional<soleil::payload> area::hit(const soleil::ray& ray) const
 {
     auto pld = m_quad.hit(ray);
     if (pld) pld->emission = m_intensity;
@@ -38,7 +38,7 @@ glm::vec3 area::random_sample_position() const
     return m_position + random_u * m_u + random_v * m_v;
 }
 
-std::pair<glm::vec3, glm::vec3> area::sample_li(const rtr::scene &scene, const rtr::payload& pld) const
+std::pair<glm::vec3, glm::vec3> area::sample_li(const soleil::scene &scene, const soleil::payload& pld) const
 {
     auto position = random_sample_position();
     auto difference = position - pld.hit_pos;
@@ -49,7 +49,7 @@ std::pair<glm::vec3, glm::vec3> area::sample_li(const rtr::scene &scene, const r
     auto intensity = m_intensity;
 
     // check for visibility
-    auto shadow_ray = rtr::ray(pld.hit_pos + (pld.hit_normal * 8e-2f), light_dir, pld.ray.rec_depth + 1, false);
+    auto shadow_ray = soleil::ray(pld.hit_pos + (pld.hit_normal * 8e-2f), light_dir, pld.ray.rec_depth + 1, false);
     auto shadow_pld = scene.hit(shadow_ray);
 
     if (shadow_pld && (glm::distance(shadow_pld->hit_pos, pld.hit_pos) < glm::distance(position, pld.hit_pos)))

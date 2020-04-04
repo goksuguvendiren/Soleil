@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-namespace rtr
+namespace soleil
 {
 class area_light
 {
@@ -41,4 +41,4 @@ public:
         return 1.0f;
     }
 };
-} // namespace rtr
+} // namespace soleil

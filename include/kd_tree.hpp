@@ -5,7 +5,7 @@
 #include <memory>
 #include <optional>
 
-namespace rtr
+namespace soleil
 {
 namespace primitives
 {
@@ -28,15 +28,15 @@ public:
         : left(nullptr)
         , right(nullptr)
     {}
-    kd_tree(const std::vector<rtr::primitives::face*>& faces);
+    kd_tree(const std::vector<soleil::primitives::face*>& faces);
 
-    std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+    std::optional<soleil::payload> hit(const soleil::ray& ray) const;
 
     const aabb& bounding_box() const
     {
         return box;
     }
 
-    rtr::primitives::face* object;
+    soleil::primitives::face* object;
 };
-} // namespace rtr
+} // namespace soleil

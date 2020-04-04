@@ -19,7 +19,7 @@ static glm::vec2 get_lat_long(const glm::vec3& point, const glm::vec3& center)
     return {u, v};
 }
 
-std::optional<rtr::payload> rtr::primitives::sphere::hit(const rtr::ray& ray) const
+std::optional<soleil::payload> soleil::primitives::sphere::hit(const soleil::ray& ray) const
 {
     auto eminc = ray.origin() - origin;
 
@@ -56,7 +56,7 @@ std::optional<rtr::payload> rtr::primitives::sphere::hit(const rtr::ray& ray) co
 
     assert(material_idx.size() > 0 && " sphere has no materials, hitting the default sphere probably.");
 
-    auto pld = rtr::payload{surface_normal, hit_point, ray, param, material_idx.front(), uv, id};
+    auto pld = soleil::payload{surface_normal, hit_point, ray, param, material_idx.front(), uv, id};
 
     return pld;
 }

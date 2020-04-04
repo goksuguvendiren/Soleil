@@ -41,7 +41,7 @@ int main(int argc, const char** argv)
     std::cerr << "Threads enabled! Running " << number_of_threads << " threads!\n";
 
     std::cerr << "Loading: " << scene_path << '\n';
-    rtr::scene scene = rtr::loaders::load(scene_path);
+    soleil::scene scene = soleil::loaders::load(scene_path);
 
     auto width = scene.get_camera().width;
     auto height = scene.get_camera().height;
@@ -50,8 +50,8 @@ int main(int argc, const char** argv)
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";
 
-    rtr::renderer<rtr::mc_integrator> r(width, height);
-//    rtr::mc_integrator r(width, height);
+    soleil::renderer<soleil::progressive_integrator> r(width, height);
+//    soleil::mc_integrator r(width, height);
 
     begin = std::chrono::system_clock::now();
     auto output_buffer = r.render(scene);

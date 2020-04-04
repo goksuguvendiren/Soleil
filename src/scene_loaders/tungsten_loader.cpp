@@ -11,7 +11,7 @@
 #include <iostream>
 #include <string>
 
-namespace rtr
+namespace soleil
 {
 namespace loaders
 {
@@ -49,7 +49,7 @@ static glm::mat4x4 get_transform_matrix(const nlohmann::json& transform_json)
     return transform;
 }
 
-// TODO: Remove this struct, use rtr::vertex instead
+// TODO: Remove this struct, use soleil::vertex instead
 struct vert
 {
     std::array<float, 3> pos, nor;
@@ -68,7 +68,7 @@ struct triangle
     uint32_t material;
 };
 
-static rtr::primitives::mesh load_mesh(const std::string& filename)
+static soleil::primitives::mesh load_mesh(const std::string& filename)
 {
     std::ifstream input_file(filename, std::ios_base::in | std::ios_base::binary);
     if (!input_file.good())
@@ -88,11 +88,11 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
     triangles.resize(num_triangles);
     input_file.read(reinterpret_cast<char*>(triangles.data()), num_triangles * sizeof(triangle));
 
-    std::vector<rtr::primitives::face> faces;
+    std::vector<soleil::primitives::face> faces;
     faces.reserve(num_triangles);
     for (auto& triangle : triangles)
     {
-        std::array<rtr::vertex, 3> vert;
+        std::array<soleil::vertex, 3> vert;
         for (int i = 0; i < 3; ++i)
         {
             auto& vertex = vertices[triangle.vs[i]];
@@ -101,15 +101,15 @@ static rtr::primitives::mesh load_mesh(const std::string& filename)
             vert[i].m_uv = {vertex.uv[0], vertex.uv[1]};
         }
 
-        faces.emplace_back(rtr::primitives::face{
-            vert, rtr::primitives::face::normal_types::per_vertex, rtr::primitives::face::material_binding::per_object});
+        faces.emplace_back(soleil::primitives::face{
+            vert, soleil::primitives::face::normal_types::per_vertex, soleil::primitives::face::material_binding::per_object});
     }
 
-    rtr::primitives::mesh mesh(std::move(faces), "wood");
+    soleil::primitives::mesh mesh(std::move(faces), "wood");
     return mesh;
 }
 
-std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<rtr::materials::texture>>
+std::tuple<std::string, std::unique_ptr<soleil::materials::base>, std::optional<soleil::materials::texture>>
     load_material(const nlohmann::json& material_json, const std::string& folder_path)
 {
     static int default_id = 0;
@@ -119,7 +119,7 @@ std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<rtr
 
     auto albedo_json = material_json["albedo"];
 
-    std::optional<rtr::materials::texture> opt_texture;
+    std::optional<soleil::materials::texture> opt_texture;
 
     glm::vec3 albedo;
     if (albedo_json.is_number())
@@ -131,7 +131,7 @@ std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<rtr
         auto texture_name = std::string(albedo_json);
         std::cerr << "Tungsten Loader | Loading texture : " << texture_name << '\n';
 
-        opt_texture = rtr::materials::texture(folder_path + "/" + texture_name);
+        opt_texture = soleil::materials::texture(folder_path + "/" + texture_name);
     }
     else
     {
@@ -140,85 +140,85 @@ std::tuple<std::string, std::unique_ptr<rtr::materials::base>, std::optional<rtr
         albedo.z = albedo_json[2];
     }
 
-    return std::make_tuple(name, std::make_unique<rtr::materials::base>(rtr::materials::base(albedo, std::move(opt_texture))), opt_texture);
+    return std::make_tuple(name, std::make_unique<soleil::materials::base>(soleil::materials::base(albedo, std::move(opt_texture))), opt_texture);
 }
 
-rtr::primitives::mesh load_quad(const glm::mat4x4& transform, const std::string& name)
+soleil::primitives::mesh load_quad(const glm::mat4x4& transform, const std::string& name)
 {
-    std::vector<rtr::vertex> vertices = {rtr::vertex({-0.5f, 0.0f, -0.5f}),
-                                         rtr::vertex({0.5f, 0.0f, -0.5f}),
-                                         rtr::vertex({0.5f, 0.0f, 0.5f}),
-                                         rtr::vertex({-0.5f, 0.0f, 0.5f})};
+    std::vector<soleil::vertex> vertices = {soleil::vertex({-0.5f, 0.0f, -0.5f}),
+                                         soleil::vertex({0.5f, 0.0f, -0.5f}),
+                                         soleil::vertex({0.5f, 0.0f, 0.5f}),
+                                         soleil::vertex({-0.5f, 0.0f, 0.5f})};
 
     for (auto& vertex : vertices) vertex.transform(transform);
 
-    std::vector<rtr::primitives::face> faces;
-    faces.emplace_back(rtr::primitives::face({vertices[0], vertices[1], vertices[2]},
-                                             rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
-    faces.emplace_back(rtr::primitives::face({vertices[0], vertices[2], vertices[3]},
-                                             rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
+    std::vector<soleil::primitives::face> faces;
+    faces.emplace_back(soleil::primitives::face({vertices[0], vertices[1], vertices[2]},
+                                             soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
+    faces.emplace_back(soleil::primitives::face({vertices[0], vertices[2], vertices[3]},
+                                             soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
 
-    return rtr::primitives::mesh(faces, name);
+    return soleil::primitives::mesh(faces, name);
 }
 
-rtr::primitives::mesh load_cube(const glm::mat4x4 &transform, const std::string& name)
+soleil::primitives::mesh load_cube(const glm::mat4x4 &transform, const std::string& name)
 {
-    std::vector<rtr::vertex> vertices = {
+    std::vector<soleil::vertex> vertices = {
         // Top
-        rtr::vertex({-0.5f, 0.5f, -0.5f}),
-        rtr::vertex({0.5f, 0.5f, -0.5f}),
-        rtr::vertex({0.5f, 0.5f, 0.5f}),
-        rtr::vertex({-0.5f, 0.5f, 0.5f}),
+        soleil::vertex({-0.5f, 0.5f, -0.5f}),
+        soleil::vertex({0.5f, 0.5f, -0.5f}),
+        soleil::vertex({0.5f, 0.5f, 0.5f}),
+        soleil::vertex({-0.5f, 0.5f, 0.5f}),
 
         // Bottom
-        rtr::vertex({-0.5f, -0.5f, -0.5f}),
-        rtr::vertex({0.5f, -0.5f, -0.5f}),
-        rtr::vertex({0.5f, -0.5f, 0.5f}),
-        rtr::vertex({-0.5f, -0.5f, 0.5f}),
+        soleil::vertex({-0.5f, -0.5f, -0.5f}),
+        soleil::vertex({0.5f, -0.5f, -0.5f}),
+        soleil::vertex({0.5f, -0.5f, 0.5f}),
+        soleil::vertex({-0.5f, -0.5f, 0.5f}),
 
         // Right
-        rtr::vertex({0.5f, 0.5f, 0.5f}),
-        rtr::vertex({0.5f, 0.5f, -0.5f}),
-        rtr::vertex({0.5f, -0.5f, -0.5f}),
-        rtr::vertex({0.5f, -0.5f, 0.5f}),
+        soleil::vertex({0.5f, 0.5f, 0.5f}),
+        soleil::vertex({0.5f, 0.5f, -0.5f}),
+        soleil::vertex({0.5f, -0.5f, -0.5f}),
+        soleil::vertex({0.5f, -0.5f, 0.5f}),
 
         // Left
-        rtr::vertex({-0.5f, 0.5f, -0.5f}),
-        rtr::vertex({-0.5f, 0.5f, 0.5f}),
-        rtr::vertex({-0.5f, -0.5f, 0.5f}),
-        rtr::vertex({-0.5f, -0.5f, -0.5f}),
+        soleil::vertex({-0.5f, 0.5f, -0.5f}),
+        soleil::vertex({-0.5f, 0.5f, 0.5f}),
+        soleil::vertex({-0.5f, -0.5f, 0.5f}),
+        soleil::vertex({-0.5f, -0.5f, -0.5f}),
 
         // Back
-        rtr::vertex({0.5f, 0.5f, -0.5f}),
-        rtr::vertex({-0.5f, 0.5f, -0.5f}),
-        rtr::vertex({-0.5f, -0.5f, -0.5f}),
-        rtr::vertex({0.5f, -0.5f, -0.5f}),
+        soleil::vertex({0.5f, 0.5f, -0.5f}),
+        soleil::vertex({-0.5f, 0.5f, -0.5f}),
+        soleil::vertex({-0.5f, -0.5f, -0.5f}),
+        soleil::vertex({0.5f, -0.5f, -0.5f}),
 
         // Front
-        rtr::vertex({-0.5f, 0.5f, 0.5f}),
-        rtr::vertex({0.5f, 0.5f, 0.5f}),
-        rtr::vertex({0.5f, -0.5f, 0.5f}),
-        rtr::vertex({-0.5f, -0.5f, 0.5f}),
+        soleil::vertex({-0.5f, 0.5f, 0.5f}),
+        soleil::vertex({0.5f, 0.5f, 0.5f}),
+        soleil::vertex({0.5f, -0.5f, 0.5f}),
+        soleil::vertex({-0.5f, -0.5f, 0.5f}),
     };
 
     for (auto &vertex : vertices)
         vertex.transform(transform);
 
-    std::vector<rtr::primitives::face> faces;
+    std::vector<soleil::primitives::face> faces;
     for (int i = 0; i < vertices.size() / 4; i++)
     {
-        faces.emplace_back(rtr::primitives::face({vertices[4 * i], vertices[4 * i + 1], vertices[4 * i + 2]},
-                                                 rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
-        faces.emplace_back(rtr::primitives::face({vertices[4 * i], vertices[4 * i + 2], vertices[4 * i + 3]},
-                                                 rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
+        faces.emplace_back(soleil::primitives::face({vertices[4 * i], vertices[4 * i + 1], vertices[4 * i + 2]},
+                                                 soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
+        faces.emplace_back(soleil::primitives::face({vertices[4 * i], vertices[4 * i + 2], vertices[4 * i + 3]},
+                                                 soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
     }
 
     std::cerr << faces.size() << '\n';
 
-    return rtr::primitives::mesh(faces, name);
+    return soleil::primitives::mesh(faces, name);
 }
 
-rtr::light::area load_area_light(const rtr::primitives::mesh& quad, nlohmann::json& primitive)
+soleil::light::area load_area_light(const soleil::primitives::mesh& quad, nlohmann::json& primitive)
 {
     glm::vec3 intensity;
     if (primitive.find("power") != primitive.end()) intensity = to_vec3(primitive["power"]);
@@ -226,18 +226,18 @@ rtr::light::area load_area_light(const rtr::primitives::mesh& quad, nlohmann::js
 
     std::cerr << "load area light | intensity is: " << intensity << '\n';
 
-    rtr::light::area area_light(quad, intensity);
+    soleil::light::area area_light(quad, intensity);
 
     return area_light;
 }
 
-rtr::scene load_tungsten(const std::string &filename)
+soleil::scene load_tungsten(const std::string &filename)
 {
     auto last_slash = filename.find_last_of("/");
     auto folder_path = filename.substr(0, last_slash);
 
-    // rtr::scene scene;
-    rtr::scene_information info;
+    // soleil::scene scene;
+    soleil::scene_information info;
     std::ifstream input_file(filename);
     nlohmann::json scene_json;
     input_file >> scene_json;
@@ -282,13 +282,13 @@ rtr::scene load_tungsten(const std::string &filename)
     }
 
     info.camera =
-        rtr::camera(position, lookat_dir, up_dir, rtr::radians{glm::radians(fov)}, width, height, pinhole == "pinhole");
+        soleil::camera(position, lookat_dir, up_dir, soleil::radians{glm::radians(fov)}, width, height, pinhole == "pinhole");
 
     /*
      * Load the materials
      */
     auto materials = scene_json["bsdfs"];
-    std::vector<std::unique_ptr<rtr::materials::base>> all_materials;
+    std::vector<std::unique_ptr<soleil::materials::base>> all_materials;
     std::map<std::string, int> material_mappings; // name - index mapping of the materials
     for (auto &material : materials)
     {
@@ -399,13 +399,13 @@ rtr::scene load_tungsten(const std::string &filename)
     {
         auto from = glm::vec3(-18.862, 69.2312, 69.651);
         auto to = glm::vec3(0, 0, 0);
-        info.dir_lights.push_back(rtr::light::directional(to - from, {8.,8.,8.}));
+        info.dir_lights.push_back(soleil::light::directional(to - from, {8.,8.,8.}));
     }
-        //    info.lights.push_back(rtr::light::point({-18.862, 69.2312, 69.651}, {8000.0, 8000.0, 8000.0}));
-//    info.lights.push_back(rtr::light::point({10, 30, 69.651}, {60000.0, 60000.0, 60000.0}));
+        //    info.lights.push_back(soleil::light::point({-18.862, 69.2312, 69.651}, {8000.0, 8000.0, 8000.0}));
+//    info.lights.push_back(soleil::light::point({10, 30, 69.651}, {60000.0, 60000.0, 60000.0}));
 
     info.materials = std::move(all_materials);
-    return rtr::scene(std::move(info));
+    return soleil::scene(std::move(info));
 }
 } // namespace loaders
-} // namespace rtr
+} // namespace soleil

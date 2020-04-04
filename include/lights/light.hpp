@@ -9,7 +9,7 @@
 #include <payload.hpp>
 #include <photon.hpp>
 #include <utils.hpp>
-namespace rtr
+namespace soleil
 {
 class scene;
 namespace light
@@ -17,9 +17,9 @@ namespace light
 class base
 {
 public:
-    virtual std::pair<glm::vec3, glm::vec3> sample_li(const rtr::scene& scene, const rtr::payload& pld) const = 0;
+    virtual std::pair<glm::vec3, glm::vec3> sample_li(const soleil::scene& scene, const soleil::payload& pld) const = 0;
 
-//    std::vector<rtr::photon> distribute_photons(int num_photons)
+//    std::vector<soleil::photon> distribute_photons(int num_photons)
 //    {
 //        std::vector<photon> photons;
 //

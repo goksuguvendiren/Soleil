@@ -9,7 +9,7 @@
 #include <glm/vec3.hpp>
 #include <vector>
 
-namespace rtr
+namespace soleil
 {
 class scene;
 class payload;
@@ -49,7 +49,7 @@ public:
 
     glm::vec3 shade(const scene& scene, const payload& pld) const;
 
-    rtr::PathType russian_roulette() const
+    soleil::PathType russian_roulette() const
     {
         auto rr = get_random_float(0, 1);
         if (rr < 0.1)
@@ -74,4 +74,4 @@ public:
 
 private:
 };
-} // namespace rtr
+} // namespace soleil

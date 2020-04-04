@@ -8,7 +8,7 @@
 
 #include <glm/glm.hpp>
 
-namespace rtr
+namespace soleil
 {
 struct degrees
 {
@@ -24,7 +24,7 @@ class camera
 {
 public:
     camera() = default;
-    camera(const glm::vec3& pos, const glm::vec3& view, const glm::vec3& up, rtr::radians fov, int w, int h,
+    camera(const glm::vec3& pos, const glm::vec3& view, const glm::vec3& up, soleil::radians fov, int w, int h,
            bool pin = true)
         : eye_pos(pos)
         , view_dir(view)
@@ -159,4 +159,4 @@ private:
     glm::vec3 m_up;
 
 };
-} // namespace rtr
+} // namespace soleil

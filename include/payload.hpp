@@ -10,13 +10,13 @@
 #include <primitives/sphere.hpp>
 #include <variant>
 
-namespace rtr
+namespace soleil
 {
     struct payload
     {
         glm::vec3 hit_normal;
         glm::vec3 hit_pos;
-        rtr::ray ray;
+        soleil::ray ray;
         float param = std::numeric_limits<float>::infinity();
         int material_idx;
         glm::vec2 texture_coords;
@@ -24,4 +24,4 @@ namespace rtr
         int obj_id;
         std::optional<glm::vec3> emission = std::nullopt;
     };
-} // namespace rtr
+} // namespace soleil

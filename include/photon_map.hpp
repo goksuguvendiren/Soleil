@@ -33,7 +33,7 @@ struct hash<vector<T>>
 };
 } // namespace std
 
-namespace rtr
+namespace soleil
 {
 class ray;
 struct payload;
@@ -45,8 +45,8 @@ class photon_map
 
 public:
     photon_map() = default;
-    photon_map(const std::vector<rtr::photon>& photons);
+    photon_map(const std::vector<soleil::photon>& photons);
 
     std::vector<photon> search(const glm::vec3& position, float d) const;
 };
-} // namespace rtr
+} // namespace soleil

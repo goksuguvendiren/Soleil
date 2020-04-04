@@ -13,7 +13,7 @@
 #include <thread>
 #include <vector>
 
-std::vector<glm::vec3> rtr::progressive_integrator::render(const rtr::scene& scene)
+std::vector<glm::vec3> soleil::progressive_integrator::render(const soleil::scene& scene)
 {
     std::vector<glm::vec3> accum_buffer;
     std::vector<glm::vec3> result_buffer;
@@ -51,7 +51,8 @@ std::vector<glm::vec3> rtr::progressive_integrator::render(const rtr::scene& sce
 
     return result_buffer;
 }
-glm::vec3 rtr::progressive_integrator::render_pixel(const rtr::scene& scene, int i, int j)
+
+glm::vec3 soleil::progressive_integrator::render_pixel(const soleil::scene& scene, int i, int j)
 {
     return m_mc_integrator.render_pixel(scene, i, j);
 }

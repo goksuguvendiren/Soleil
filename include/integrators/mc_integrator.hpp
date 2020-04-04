@@ -9,7 +9,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace rtr
+namespace soleil
 {
 class ray;
 class scene;
@@ -27,8 +27,8 @@ public:
     auto width() const { return m_width; }
     auto height() const { return m_height; }
 
-    std::vector<glm::vec3> render(const rtr::scene& scene);
-    glm::vec3 render_pixel(const rtr::scene& scene, int i, int j);
+    std::vector<glm::vec3> render(const soleil::scene& scene);
+    glm::vec3 render_pixel(const soleil::scene& scene, int i, int j);
     [[nodiscard]] const std::vector<glm::vec3>& get_frame_buffer() const { return frame_buffer; }
 
 private:
@@ -38,10 +38,10 @@ private:
 
     std::vector<glm::vec3> frame_buffer;
 
-    void sub_render(const rtr::scene& scene);
-    void render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i);
-    glm::vec3 render_pixel(const rtr::scene& scene, const rtr::camera& camera, const glm::vec3& pix_center,
-                           const rtr::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
-    [[nodiscard]] glm::vec3 shade(const rtr::scene& scene, const rtr::ray& ray) const;
+    void sub_render(const soleil::scene& scene);
+    void render_line(const soleil::scene& scene, const glm::vec3& row_begin, int i);
+    glm::vec3 render_pixel(const soleil::scene& scene, const soleil::camera& camera, const glm::vec3& pix_center,
+                           const soleil::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
+    [[nodiscard]] glm::vec3 shade(const soleil::scene& scene, const soleil::ray& ray) const;
 };
-} // namespace rtr
+} // namespace soleil

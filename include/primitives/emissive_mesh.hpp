@@ -13,7 +13,7 @@
 #include <optional>
 #include <string>
 
-namespace rtr
+namespace soleil
 {
 struct payload;
 namespace primitives
@@ -21,14 +21,14 @@ namespace primitives
 class emissive_mesh
 {
 public:
-    emissive_mesh(rtr::primitives::mesh geo, int idx)
+    emissive_mesh(soleil::primitives::mesh geo, int idx)
         : geometry(std::move(geo))
         , material_idx(idx)
         , color({1.f, 1.f, 1.f})
     {}
 
     int material_idx;
-    std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+    std::optional<soleil::payload> hit(const soleil::ray& ray) const;
 
     glm::vec3 direction(const glm::vec3& hit_pos) const
     {
@@ -63,8 +63,8 @@ public:
         auto attenuation = 1.f / float(c_1 + c_2 * distance + c_3 * distance * distance);
         return std::min(1.f, attenuation);
     }
-    rtr::primitives::mesh geometry;
+    soleil::primitives::mesh geometry;
     glm::vec3 color;
 };
 } // namespace primitives
-} // namespace rtr
+} // namespace soleil
