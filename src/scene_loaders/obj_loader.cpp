@@ -20,6 +20,17 @@ inline std::string GetBaseDir(const std::string& filepath)
     return "";
 }
 
+inline std::string get_file_name(const std::string& fullpath)
+{
+    int begin_index = 0;
+    if (fullpath.find_last_of("/\\") != std::string::npos)
+        begin_index = fullpath.find_last_of("/\\");
+    auto last_dot = fullpath.find_last_of(".");
+    assert(last_dot != std::string::npos);
+
+    return fullpath.substr(begin_index + 1, last_dot - begin_index - 1);
+}
+
 soleil::scene load_obj(const std::string& filename)
 {
     tinyobj::attrib_t attrib;
@@ -33,6 +44,8 @@ soleil::scene load_obj(const std::string& filename)
     {
         base_dir = ".";
     }
+
+    auto obj_name = get_file_name(filename);
 
     bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filename.c_str(), base_dir.c_str());
 
@@ -101,11 +114,9 @@ soleil::scene load_obj(const std::string& filename)
             faces.push_back(face_new);
         }
 
-        soleil::materials::texture tex("../Scenes/obj/spot/spot_texture.png");
-        info.textures.push_back(std::make_unique<soleil::materials::texture>(tex));
-
-        soleil::materials::base base_material({0.63, 0.065, 0.05}, {10, 10, 10}, {0, 0, 0}, {0, 0, 0}, 0, 0);
-        info.materials.push_back(std::make_unique<soleil::materials::base>(base_material));
+        std::string tex_name = "spot_texture";
+        soleil::materials::texture tex("../Scenes/obj/spot/" + tex_name + ".png");
+        info.materials.push_back(std::make_unique<soleil::materials::base>(soleil::materials::base({0.63, 0.065, 0.05}, std::move(tex), tex_name)));
 
         info.meshes.emplace_back(faces, "");
 
@@ -121,6 +132,9 @@ soleil::scene load_obj(const std::string& filename)
 
         transformer = glm::rotate(glm::identity<glm::mat4x4>(), glm::radians(140.f), {0.f, 1.f, 0.f});
         m.transform(transformer);
+
+        info.output_file_name = obj_name + ".png";
+        info.output_hdr_name = obj_name + ".exr";
     }
 
     return soleil::scene(std::move(info));

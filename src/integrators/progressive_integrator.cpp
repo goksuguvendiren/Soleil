@@ -39,7 +39,7 @@ std::vector<glm::vec3> soleil::progressive_integrator::render(const soleil::scen
     int n_frames = 0;
 
     cv::namedWindow(scene.output_file_name(), 1);
-    cv::setMouseCallback(scene.output_file_name(), mouse_click_handler, NULL);
+    cv::setMouseCallback(scene.output_file_name(), mouse_click_handler, nullptr);
 
     while (key != 27)
     {
