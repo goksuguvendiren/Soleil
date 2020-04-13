@@ -12,6 +12,17 @@
 #include <renderer.hpp>
 #include <thread>
 #include <vector>
+void mouse_click_handler(int event, int x, int y, int flags, void* userdata)
+{
+    if  ( event == cv::EVENT_LBUTTONDOWN )
+    {
+        std::cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << std::endl;
+    }
+    else if  ( event == cv::EVENT_RBUTTONDOWN )
+    {
+        std::cout << "Right button of the mouse is clicked - position (" << x << ", " << y << ")" << std::endl;
+    }
+}
 
 std::vector<glm::vec3> soleil::progressive_integrator::render(const soleil::scene& scene)
 {
@@ -26,6 +37,9 @@ std::vector<glm::vec3> soleil::progressive_integrator::render(const soleil::scen
 
     int key = 0;
     int n_frames = 0;
+
+    cv::namedWindow(scene.output_file_name(), 1);
+    cv::setMouseCallback(scene.output_file_name(), mouse_click_handler, NULL);
 
     while (key != 27)
     {

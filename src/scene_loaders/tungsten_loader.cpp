@@ -52,7 +52,8 @@ static glm::mat4x4 get_transform_matrix(const nlohmann::json& transform_json)
 // TODO: Remove this struct, use soleil::vertex instead
 struct vert
 {
-    std::array<float, 3> pos, nor;
+    std::array<float, 3> pos;
+    std::array<float, 3> nor;
     std::array<float, 2> uv;
 };
 
@@ -92,13 +93,13 @@ static soleil::primitives::mesh load_mesh(const std::string& filename)
     faces.reserve(num_triangles);
     for (auto& triangle : triangles)
     {
-        std::array<soleil::vertex, 3> vert;
+        std::array<soleil::vertex, 3> vert{};
         for (int i = 0; i < 3; ++i)
         {
             auto& vertex = vertices[triangle.vs[i]];
-            vert[i].poss = {vertex.pos[0], vertex.pos[1], vertex.pos[2]};
+            vert[i].poss   = {vertex.pos[0], vertex.pos[1], vertex.pos[2]};
             vert[i].normal = {vertex.nor[0], vertex.nor[1], vertex.nor[2]};
-            vert[i].m_uv = {vertex.uv[0], vertex.uv[1]};
+            vert[i].m_uv   = {vertex.uv[0],  vertex.uv[1]};
         }
 
         faces.emplace_back(soleil::primitives::face{
@@ -140,7 +141,9 @@ std::tuple<std::string, std::unique_ptr<soleil::materials::base>, std::optional<
         albedo.z = albedo_json[2];
     }
 
-    return std::make_tuple(name, std::make_unique<soleil::materials::base>(soleil::materials::base(albedo, std::move(opt_texture))), opt_texture);
+    return std::make_tuple(name,
+        std::make_unique<soleil::materials::base>(soleil::materials::base(albedo, std::move(opt_texture), name)),
+            opt_texture);
 }
 
 soleil::primitives::mesh load_quad(const glm::mat4x4& transform, const std::string& name)

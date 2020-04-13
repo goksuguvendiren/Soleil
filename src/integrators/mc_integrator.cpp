@@ -162,10 +162,10 @@ glm::vec3 soleil::mc_integrator::render_pixel(const soleil::scene& scene, int i,
 
     auto pix_center = plane.top_left_position();
 
-    auto row_begin = pix_center + below * float(j);
+    auto row_begin = pix_center + below * float(i);
     pix_center += float(j) * right;
     //    render_line(scene, row_begin, j);
-    pix_center += right;
+//    pix_center += right;
     auto color = render_pixel(scene, camera, pix_center, plane, right, below);
 
     frame_buffer[i * m_width + j] = color;

@@ -50,7 +50,7 @@ public:
         , texture(std::nullopt)
     {}
 
-    base(const glm::vec3& diff, std::optional<soleil::materials::texture> tex)
+    base(const glm::vec3& diff, std::optional<soleil::materials::texture> tex, std::string name)
         : diffuse(diff)
         , ambient({0.0f, 0.0f, 0.0f})
         , specular({0.f, 0.f, 0.f})
@@ -59,6 +59,7 @@ public:
         , trans(0)
         , refr_index(1.f)
         , texture(std::move(tex))
+        , m_name(name)
     {}
 
     base(const glm::vec3& diff, int texture_idx)
@@ -115,6 +116,8 @@ public:
     float exp;
     float trans;
     float refr_index;
+
+    std::string m_name;
 
 private:
     std::optional<soleil::materials::texture> texture;

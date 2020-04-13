@@ -40,7 +40,10 @@ public:
     void render_line(const soleil::scene& scene, const glm::vec3& row_begin, int i);
     glm::vec3 render_pixel(const soleil::scene& scene, const camera& camera, const glm::vec3& pix_center,
                            const soleil::image_plane& plane, const glm::vec3& right, const glm::vec3& below);
-    glm::vec3 render_pixel(const soleil::scene& scene, int i, int j);
+    glm::vec3 render_pixel(const soleil::scene& scene, int i, int j)
+    {
+        return integrator.render_pixel(scene, i, j);
+    }
 
     template<int sq_sample_pp>
     glm::vec3 get_pixel_pos(const glm::vec3& top_left, const soleil::image_plane& plane, const soleil::camera& camera,

@@ -50,10 +50,12 @@ int main(int argc, const char** argv)
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";
 
-    soleil::renderer<soleil::progressive_integrator> r(width, height);
-//    soleil::mc_integrator r(width, height);
+//    soleil::renderer<soleil::progressive_integrator> r(width, height);
+    soleil::progressive_integrator r(width, height);
 
     begin = std::chrono::system_clock::now();
+    r.render_pixel(scene, 134, 352);
+    r.render_pixel(scene, 352, 134);
     auto output_buffer = r.render(scene);
     end = std::chrono::system_clock::now();
 
