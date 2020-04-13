@@ -45,6 +45,10 @@ public:
 
         auto u_img = u * width;
         auto v_img = (1 - v) * height;
+
+        if (u_img == width) u_img--;
+        if (v_img == height) v_img--;
+
         auto color = image_data.at<cv::Vec3b>(v_img, u_img);
 
         return glm::vec3(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f);
