@@ -54,8 +54,6 @@ int main(int argc, const char** argv)
     soleil::progressive_integrator r(width, height);
 
     begin = std::chrono::system_clock::now();
-    r.render_pixel(scene, 134, 352);
-    r.render_pixel(scene, 352, 134);
     auto output_buffer = r.render(scene);
     end = std::chrono::system_clock::now();
 

@@ -380,7 +380,7 @@ inline soleil::scene load_from_veach(const std::string& filename)
     int width = 400;
     int height = 400;
     info.camera = soleil::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp),
-                              soleil::radians{cam->focalDistance}, cam->verticalFOV, width, height);
+                              soleil::radians{cam->verticalFOV}, width, height);
     //    camera = soleil::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp),
     //    cam->focalDistance, cam->verticalFOV, 12.f, false);
 
@@ -442,7 +442,7 @@ inline soleil::scene load_from_veach(const std::string& filename)
                 auto polygon = data->poly[i];
                 assert(polygon.numVertices == 3);
 
-                std::array<soleil::vertex, 3> vertices;
+                std::array<soleil::vertex, 3> vertices{};
                 for (int j = 0; j < polygon.numVertices; ++j)
                 {
                     auto& poly = polygon.vert[j];
@@ -460,6 +460,10 @@ inline soleil::scene load_from_veach(const std::string& filename)
         obj = obj->next;
     }
     info.materials = std::move(all_materials);
+
+    info.output_file_name = "veach_file.png";
+    info.output_hdr_name  = "veach_file.exr";
+
     return soleil::scene(std::move(info));
 }
 
