@@ -18,7 +18,7 @@ add_library(PathTracerLib src/scene_io.cpp include/scene.hpp src/scene.cpp
 		include/photon_map.hpp src/photon_map.cpp include/photon.hpp src/photon_integrator.cpp 
 		include/photon_integrator.hpp include/KDTree.hpp src/KDTree.cpp include/integrators/progressive_integrator.hpp
 	    include/integrator.hpp src/integrators/progressive_integrator.cpp src/scene_loaders/tungsten_loader.cpp
-		src/integrators/mc_integrator.cpp src/scene_loaders/obj_loader.cpp)
+		src/integrators/mc_integrator.cpp src/scene_loaders/obj_loader.cpp src/scene_loaders/veach_loader.cpp)
 target_link_libraries(PathTracerLib PUBLIC ${OpenCV_LIBS})
 target_include_directories(PathTracerLib PUBLIC include)
 target_include_directories(PathTracerLib PUBLIC /usr/local/include)

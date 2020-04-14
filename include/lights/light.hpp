@@ -42,15 +42,15 @@ public:
 //        return photons;
 //    }
 
-    [[nodiscard]] glm::vec3 intensity() const
-    {
-        return pow * color;
-    }
+//    [[nodiscard]] glm::vec3 intensity() const
+//    {
+//        return m_power * m_color;
+//    }
 
 private:
-    glm::vec3 pos;
-    glm::vec3 color;
-    float pow;
+//    glm::vec3 m_position;
+//    glm::vec3 m_color;
+//    float m_power;
 };
 }
 }

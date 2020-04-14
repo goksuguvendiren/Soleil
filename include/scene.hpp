@@ -12,7 +12,6 @@
 #include "primitives/emissive_mesh.hpp"
 #include "primitives/mesh.hpp"
 #include "primitives/sphere.hpp"
-#include "scene_io.h"
 
 #include <glm/vec3.hpp>
 #include <lights/area.hpp>

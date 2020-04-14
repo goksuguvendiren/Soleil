@@ -34,7 +34,6 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
     }
 
     auto normal_visualized = visualize_direction(pld->hit_normal);
-    return normal_visualized;
 
     const auto &material = scene.get_material(pld->material_idx);
     if (pld->emission)

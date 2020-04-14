@@ -17,11 +17,11 @@ class point : public base
 {
 public:
     point(const glm::vec3& poss, const glm::vec3& intens);
-    std::pair<glm::vec3, glm::vec3> sample_li(const soleil::scene& scene, const soleil::payload& pld) const;
+    [[nodiscard]] std::pair<glm::vec3, glm::vec3> sample_li(const soleil::scene& scene, const soleil::payload& pld) const;
 
 private:
-    glm::vec3 position;
-    glm::vec3 intensity;
+    glm::vec3 m_position;
+    glm::vec3 m_intensity;
 };
 }
 } // namespace soleil
