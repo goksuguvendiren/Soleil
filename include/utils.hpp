@@ -1,8 +1,9 @@
+#include "nlohmann/json.hpp"
+
 #include <glm/gtc/quaternion.hpp>
 #include <iostream>
+#include <mutex>
 #include <random>
-#include <glm/gtc/quaternion.hpp>
-#include "nlohmann/json.hpp"
 
 #pragma once
 
@@ -35,13 +36,21 @@ inline int get_random_int(int min, int max) // box inclusive
     return dist(rng);
 }
 
+inline int global_random() {
+    static std::mutex prot;
+    static std::mt19937 global_rng(0);
+
+    std::lock_guard lg{prot};
+    return global_rng();
+}
+
 inline glm::vec3 sample_hemisphere(int ms_id, int max_ms)
 {
-    static std::mt19937 rng(0);
-    static std::uniform_real_distribution<float> dist1(0, 1);
-    static std::uniform_real_distribution<float> dist2(0, 1);
+    thread_local std::mt19937 rng(global_random());
+    thread_local std::uniform_real_distribution<float> dist1(0, 1);
+    thread_local std::uniform_real_distribution<float> dist2(0, 1);
 
-    static constexpr double pi = 3.14159265358979323846;
+    thread_local constexpr double pi = 3.14159265358979323846;
 
     auto ksi1 = dist1(rng); // costheta, y coordinate
     auto ksi2 = dist2(rng);
@@ -117,6 +126,8 @@ inline glm::vec3 to_vec3(nlohmann::json& vert)
     if (vert.is_array())
         return {float(vert[0]), float(vert[1]), float(vert[2])};
 
-    if (vert.is_number_float())
+    if (vert.is_number())
         return {float(vert), float(vert), float(vert)};
+
+    assert(false);
 }

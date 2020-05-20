@@ -69,7 +69,7 @@ struct triangle
     uint32_t material;
 };
 
-static soleil::primitives::mesh load_mesh(const std::string& filename)
+static soleil::primitives::mesh load_mesh(const std::string& filename, const glm::mat4x4& transform)
 {
     std::ifstream input_file(filename, std::ios_base::in | std::ios_base::binary);
     if (!input_file.good())
@@ -97,9 +97,11 @@ static soleil::primitives::mesh load_mesh(const std::string& filename)
         for (int i = 0; i < 3; ++i)
         {
             auto& vertex = vertices[triangle.vs[i]];
-            vert[i].poss   = {vertex.pos[0], vertex.pos[1], vertex.pos[2]};
-            vert[i].normal = {vertex.nor[0], vertex.nor[1], vertex.nor[2]};
-            vert[i].m_uv   = {vertex.uv[0],  vertex.uv[1]};
+            vert[i].poss   = glm::vec3{vertex.pos[0], vertex.pos[1], vertex.pos[2]};
+            vert[i].normal = glm::vec3{vertex.nor[0], vertex.nor[1], vertex.nor[2]};
+            vert[i].m_uv   = glm::vec2{vertex.uv[0],  vertex.uv[1]};
+
+            vert[i].transform(transform);
         }
 
         faces.emplace_back(soleil::primitives::face{
@@ -133,6 +135,13 @@ std::tuple<std::string, std::unique_ptr<soleil::materials::base>, std::optional<
         std::cerr << "Tungsten Loader | Loading texture : " << texture_name << '\n';
 
         opt_texture = soleil::materials::texture(folder_path + "/" + texture_name);
+    }
+    else if (albedo_json.is_object())
+    {
+        auto on_color = albedo_json["on_color"];
+        albedo.x = on_color[0];
+        albedo.y = on_color[1];
+        albedo.z = on_color[2];
     }
     else
     {
@@ -225,7 +234,11 @@ soleil::light::area load_area_light(const soleil::primitives::mesh& quad, nlohma
 {
     glm::vec3 intensity;
     if (primitive.find("power") != primitive.end()) intensity = to_vec3(primitive["power"]);
-    else if (primitive.find("emission") != primitive.end()) intensity = to_vec3(primitive["emission"]);
+    else if (primitive.find("emission") != primitive.end())
+    {
+        std::cerr << primitive["emission"] << '\n';
+        intensity = to_vec3(primitive["emission"]);
+    }
 
     std::cerr << "load area light | intensity is: " << intensity << '\n';
 
@@ -265,10 +278,8 @@ soleil::scene load_tungsten(const std::string &filename)
     glm::vec3 position = to_vec3(camera_settings["transform"]["position"]);
     glm::vec3 lookat = to_vec3(camera_settings["transform"]["look_at"]);
     glm::vec3 up_dir = to_vec3(camera_settings["transform"]["up"]);
+    auto lookat_dir = glm::normalize(lookat - position);// - position;
 
-    auto lookat_dir = lookat - position;
-
-    float fov = camera_settings["fov"];
     std::string pinhole = camera_settings["type"];
 
     auto resolution = camera_settings["resolution"];
@@ -284,8 +295,11 @@ soleil::scene load_tungsten(const std::string &filename)
         width = height = (int)resolution;
     }
 
+    float fov = camera_settings["fov"]; // HORIZONTAL FOV. WE WANT THE VERTICAL FOV.
+    float vertical_fov = 2 * glm::degrees(glm::atan((height / (float)width) * glm::tan(glm::radians(fov / 2.f))));
+
     info.camera =
-        soleil::camera(position, lookat_dir, up_dir, soleil::radians{glm::radians(fov)}, width, height, pinhole == "pinhole");
+        soleil::camera(position, lookat_dir, up_dir, soleil::radians{glm::radians(vertical_fov)}, width, height, pinhole == "pinhole");
 
     /*
      * Load the materials
@@ -339,7 +353,7 @@ soleil::scene load_tungsten(const std::string &filename)
         if (type == "mesh")
         {
             auto model_file = std::string(primitive["file"]);
-            auto mesh = load_mesh(folder_path + "/" + std::string(model_file));
+            auto mesh = load_mesh(folder_path + "/" + std::string(model_file), transform);
 
             mesh.material_idx.push_back(mesh_material_idx);
             info.meshes.emplace_back(std::move(mesh));
