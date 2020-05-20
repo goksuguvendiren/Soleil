@@ -1,0 +1,466 @@
+{
+    "media": [],
+    "bsdfs": [
+        {
+            "name": "Landscape",
+            "albedo": "textures/landscape-with-a-lake.jpg",
+            "type": "lambert"
+        },
+        {
+            "name": "Table",
+            "albedo": "textures/Good Textures_005844.jpg",
+            "type": "lambert"
+        },
+        {
+            "name": "DoorHandle",
+            "albedo": 1,
+            "type": "rough_conductor",
+            "material": "Al",
+            "distribution": "beckmann",
+            "roughness": 0.25
+        },
+        {
+            "name": "Door",
+            "albedo": "textures/cherry-wood-texture.jpg",
+            "type": "lambert"
+        },
+        {
+            "name": "Diffuse",
+            "albedo": 0.8,
+            "type": "lambert"
+        },
+        {
+            "name": "Floor",
+            "albedo": {
+                "type": "checker",
+                "on_color": 0.8,
+                "off_color": 0.2,
+                "res_u": 40,
+                "res_v": 160
+            },
+            "type": "rough_conductor",
+            "material": "Al",
+            "distribution": "ggx",
+            "roughness": 0.1
+        },
+        {
+            "name": "DoorFrame",
+            "albedo": [
+                0.247059,
+                0.168627,
+                0.0901961
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "PictureFrame",
+            "albedo": [
+                0.258824,
+                0.207843,
+                0.145098
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "Hinge",
+            "albedo": 1,
+            "type": "rough_conductor",
+            "material": "Al",
+            "distribution": "ggx",
+            "roughness": 0.1
+        },
+        {
+            "name": "Light",
+            "albedo": 1,
+            "type": "null"
+        },
+        {
+            "name": "Pot2",
+            "albedo": 1,
+            "type": "rough_conductor",
+            "material": "Al",
+            "distribution": "ggx",
+            "roughness": 0.15
+        },
+        {
+            "name": "Material",
+            "albedo": 0.9,
+            "type": "dielectric",
+            "ior": 1.5,
+            "enable_refraction": true
+        },
+        {
+            "name": "Pot3",
+            "albedo": 0.8,
+            "type": "lambert"
+        }
+    ],
+    "primitives": [
+        {
+            "transform": {
+                "position": [
+                    -4.4391,
+                    1.50656,
+                    -4.44377
+                ],
+                "scale": [
+                    1.46089,
+                    3.86075,
+                    2.64273
+                ],
+                "rotation": [
+                    -90,
+                    0,
+                    0
+                ]
+            },
+            "emission": 1000,
+            "type": "quad",
+            "bsdf": "Light"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh008.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Landscape"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh013.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "PictureFrame"
+        },
+        {
+            "transform": {
+                "position": [
+                    2.3,
+                    0,
+                    0
+                ],
+                "scale": [
+                    1.8,
+                    1,
+                    1
+                ]
+            },
+            "type": "mesh",
+            "file": "models/Mesh011.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Floor"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh015.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "DoorHandle"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh016.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Hinge"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh012.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Hinge"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh010.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Hinge"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh006.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Door"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh005.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "DoorFrame"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh007.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh003.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh002.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh001.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "file": "models/Mesh004.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Table"
+        },
+        {
+            "transform": {
+                "position": [
+                    2.3,
+                    0,
+                    0
+                ],
+                "scale": [
+                    1.8,
+                    1,
+                    1
+                ]
+            },
+            "type": "mesh",
+            "file": "models/Mesh014.wo3",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Diffuse"
+        },
+        {
+            "transform": {
+                "position": [
+                    -1.95645,
+                    0.648205,
+                    -1.77687
+                ],
+                "scale": 0.0891049,
+                "rotation": [
+                    0,
+                    148.272,
+                    0
+                ]
+            },
+            "type": "mesh",
+            "file": "models/Mesh009.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Pot2"
+        },
+        {
+            "transform": {
+                "position": [
+                    -1.95645,
+                    0.648205,
+                    -1.77687
+                ],
+                "scale": 0.0891049,
+                "rotation": [
+                    0,
+                    148.272,
+                    0
+                ]
+            },
+            "type": "mesh",
+            "file": "models/Mesh000.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Pot2"
+        },
+        {
+            "transform": {
+                "position": [
+                    -1.95645,
+                    0.648205,
+                    -2.67687
+                ],
+                "scale": 0.0891049,
+                "rotation": [
+                    0,
+                    180,
+                    0
+                ]
+            },
+            "type": "mesh",
+            "file": "models/Mesh000.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Pot3"
+        },
+        {
+            "transform": {
+                "position": [
+                    -1.95645,
+                    0.648205,
+                    -2.67687
+                ],
+                "scale": 0.0891049,
+                "rotation": [
+                    0,
+                    180,
+                    0
+                ]
+            },
+            "type": "mesh",
+            "file": "models/Mesh009.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Pot3"
+        },
+        {
+            "transform": {
+                "position": [
+                    -1.95645,
+                    0.651268,
+                    -3.57687
+                ],
+                "scale": [
+                    0.089105,
+                    0.0891049,
+                    0.089105
+                ],
+                "rotation": [
+                    0,
+                    -160.056,
+                    0
+                ]
+            },
+            "type": "mesh",
+            "file": "models/Mesh009.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Material"
+        },
+        {
+            "transform": {
+                "position": [
+                    -1.95645,
+                    0.651268,
+                    -3.57687
+                ],
+                "scale": 0.0891049,
+                "rotation": [
+                    0,
+                    -160.056,
+                    0
+                ]
+            },
+            "type": "mesh",
+            "file": "models/Mesh000.wo3",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "bsdf": "Material"
+        }
+    ],
+    "camera": {
+        "tonemap": "filmic",
+        "resolution": [
+            1280,
+            720
+        ],
+        "reconstruction_filter": "tent",
+        "transform": {
+            "position": [
+                4.05402,
+                1.61647,
+                -2.30652
+            ],
+            "look_at": [
+                -4.29809,
+                1.34399,
+                -3.4641
+            ],
+            "up": [
+                0,
+                1,
+                0
+            ]
+        },
+        "type": "pinhole",
+        "fov": 60
+    },
+    "integrator": {
+        "min_bounces": 0,
+        "max_bounces": 12,
+        "enable_consistency_checks": false,
+        "enable_two_sided_shading": true,
+        "type": "path_tracer",
+        "initial_sample_pool": 1000000,
+        "image_pyramid": false,
+        "large_step_probability": 0.1,
+        "strategy_perturbation_probability": 0.1,
+        "adaptive_step_size": false,
+        "gaussian_mutation": false,
+        "invertible_mutation": false,
+        "multiple_try_large_step": false,
+        "step_scale": 0.000976562
+    },
+    "renderer": {
+        "output_file": "veach-ajar.png",
+        "hdr_output_file": "veach-ajar.exr",
+        "resume_render_file": "TungstenRenderState.dat",
+        "overwrite_output_files": true,
+        "adaptive_sampling": true,
+        "enable_resume_render": false,
+        "stratified_sampler": true,
+        "scene_bvh": true,
+        "spp": 64,
+        "spp_step": 16,
+        "checkpoint_interval": "0",
+        "timeout": "0"
+    }
+}

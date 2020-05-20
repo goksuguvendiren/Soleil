@@ -1,0 +1,2780 @@
+{
+    "media": [],
+    "bsdfs": [
+        {
+            "name": "BlackDiffuse",
+            "albedo": 0.000273,
+            "type": "lambert"
+        },
+        {
+            "name": "Blue",
+            "albedo": [
+                0.05286100134253502,
+                0.13843199610710144,
+                0.7991030216217041
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "BlueGlossy",
+            "albedo": [
+                0.20513799786567688,
+                0.41849300265312195,
+                0.800000011920929
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "BrassOld",
+            "albedo": [
+                0.5023139715194702,
+                0.4414609968662262,
+                0.31396299600601196
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "BrickTextureBase",
+            "albedo": [
+                0.42669498920440674,
+                0.37501099705696106,
+                0.36300599575042725
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "Brown",
+            "albedo": [
+                0.334322988986969,
+                0.2553749978542328,
+                0.1891999989748001
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "Chrome",
+            "albedo": 0.578596,
+            "type": "lambert"
+        },
+        {
+            "name": "Chrome2",
+            "albedo": [
+                0.5756769776344299,
+                0.5785959959030151,
+                0.5634469985961914
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "DarkerGrey",
+            "albedo": [
+                0.0794840008020401,
+                0.08001100271940231,
+                0.07895699888467789
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "DeckWoodBase",
+            "albedo": [
+                0.4199790060520172,
+                0.39088699221611023,
+                0.36956799030303955
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "DrivewayBase",
+            "albedo": 0.424737,
+            "type": "lambert"
+        },
+        {
+            "name": "FenceWoodBase",
+            "albedo": 0.699394,
+            "type": "lambert"
+        },
+        {
+            "name": "Floorboards",
+            "albedo": [
+                0.41613098978996277,
+                0.39104801416397095,
+                0.38314101099967957
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "Grey",
+            "albedo": 0.080011,
+            "type": "lambert"
+        },
+        {
+            "name": "Ground",
+            "albedo": 0.661862,
+            "type": "lambert"
+        },
+        {
+            "name": "MirrorMaterial",
+            "albedo": [
+                0.4874579906463623,
+                0.4938789904117584,
+                0.4938789904117584
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "None",
+            "albedo": 0.8,
+            "type": "lambert"
+        },
+        {
+            "name": "PaleYellow",
+            "albedo": [
+                0.27383100986480713,
+                0.25856301188468933,
+                0.18313999474048615
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "Pink",
+            "albedo": 0.028991,
+            "type": "lambert"
+        },
+        {
+            "name": "Red",
+            "albedo": [
+                0.800000011920929,
+                0.061900001019239426,
+                0.03133400157094002
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "RoofTiles",
+            "albedo": "textures/Tiles.jpg",
+            "type": "lambert"
+        },
+        {
+            "name": "ShowerFloorBase",
+            "albedo": [
+                0.41613098978996277,
+                0.41502100229263306,
+                0.41413798928260803
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "StainlessSteel",
+            "albedo": 0.426132,
+            "type": "lambert"
+        },
+        {
+            "name": "StepBase",
+            "albedo": [
+                0.41613098978996277,
+                0.40157198905944824,
+                0.3955410122871399
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "TileBase",
+            "albedo": [
+                0.38100799918174744,
+                0.43404701352119446,
+                0.4516200125217438
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "WallMaterial",
+            "albedo": [
+                0.39311298727989197,
+                0.29514598846435547,
+                0.21730799973011017
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "WhiteDiffuse",
+            "albedo": 0.688883,
+            "type": "lambert"
+        },
+        {
+            "name": "WhitePaint",
+            "albedo": 0.8,
+            "type": "lambert"
+        },
+        {
+            "name": "YellowDiffuse",
+            "albedo": [
+                0.6981930136680603,
+                0.603564977645874,
+                0.42661499977111816
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "Glass",
+            "albedo": 1.0,
+            "type": "thinsheet",
+            "ior": 1.5,
+            "enable_interference": false,
+            "thickness": 0.5,
+            "sigma_a": 0.0
+        },
+        {
+            "name": "GarageDoorBase",
+            "albedo": 0.133209,
+            "type": "lambert"
+        }
+    ],
+    "primitives": [
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh116.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh062.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh112.wo3",
+            "bsdf": "Floorboards"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh110.wo3",
+            "bsdf": "Chrome2"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh125.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh096.wo3",
+            "bsdf": "RoofTiles"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh118.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh109.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh104.wo3",
+            "bsdf": "TileBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh255.wo3",
+            "bsdf": "Pink"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh185.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh138.wo3",
+            "bsdf": "BrickTextureBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh069.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh103.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh106.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh101.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh100.wo3",
+            "bsdf": "BrassOld"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh061.wo3",
+            "bsdf": "YellowDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh145.wo3",
+            "bsdf": "Floorboards"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh151.wo3",
+            "bsdf": "Chrome2"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh094.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh141.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh143.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh152.wo3",
+            "bsdf": "TileBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh168.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh068.wo3",
+            "bsdf": "Red"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh160.wo3",
+            "bsdf": "Blue"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh162.wo3",
+            "bsdf": "WallMaterial"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh167.wo3",
+            "bsdf": "StepBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh212.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh250.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh149.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh114.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh248.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh115.wo3",
+            "bsdf": "BlackDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh146.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh137.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh155.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh131.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh147.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh139.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh053.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh111.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh173.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh051.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh092.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh128.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh221.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh089.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh066.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh247.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh088.wo3",
+            "bsdf": "Red"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh087.wo3",
+            "bsdf": "Blue"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh127.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh086.wo3",
+            "bsdf": "Red"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh085.wo3",
+            "bsdf": "Blue"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh211.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh191.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh081.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh079.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh264.wo3",
+            "bsdf": "None"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh126.wo3",
+            "bsdf": "DrivewayBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh077.wo3",
+            "bsdf": "Pink"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh074.wo3",
+            "bsdf": "MirrorMaterial"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh049.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh073.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh142.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh133.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh171.wo3",
+            "bsdf": "StainlessSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh071.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh072.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh075.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh123.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh070.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh064.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh048.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh166.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh157.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh117.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh065.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh060.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh076.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh058.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh120.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh054.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh050.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh080.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh140.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh148.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh169.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh047.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh045.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh156.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh130.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh083.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh159.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh174.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh177.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh180.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh193.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh132.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh184.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh189.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh144.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh194.wo3",
+            "bsdf": "Pink"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh046.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh129.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh195.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh196.wo3",
+            "bsdf": "TileBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh186.wo3",
+            "bsdf": "MirrorMaterial"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh090.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh198.wo3",
+            "bsdf": "Red"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh201.wo3",
+            "bsdf": "Blue"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh078.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh063.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh202.wo3",
+            "bsdf": "WallMaterial"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh203.wo3",
+            "bsdf": "StainlessSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh204.wo3",
+            "bsdf": "StainlessSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh215.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh206.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh209.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh210.wo3",
+            "bsdf": "BlueGlossy"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh199.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh158.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh214.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh091.wo3",
+            "bsdf": "FenceWoodBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh216.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh218.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh098.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh219.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh223.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh136.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh082.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh225.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh227.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh228.wo3",
+            "bsdf": "StainlessSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh124.wo3",
+            "bsdf": "ShowerFloorBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh153.wo3",
+            "bsdf": "BlueGlossy"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh208.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh229.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh270.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh182.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh230.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh231.wo3",
+            "bsdf": "Floorboards"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh251.wo3",
+            "bsdf": "StainlessSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh234.wo3",
+            "bsdf": "Floorboards"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh232.wo3",
+            "bsdf": "Floorboards"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh235.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh236.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh237.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh175.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh238.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh161.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh176.wo3",
+            "bsdf": "BrickTextureBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh107.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh172.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh165.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh190.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh240.wo3",
+            "bsdf": "Floorboards"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh213.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh243.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh253.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh188.wo3",
+            "bsdf": "None"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh224.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh246.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh055.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh192.wo3",
+            "bsdf": "None"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh217.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh084.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh163.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh256.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh249.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh187.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh093.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh154.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh252.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh254.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh099.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh197.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh178.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh164.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh239.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh257.wo3",
+            "bsdf": "BlueGlossy"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh170.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh244.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh258.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh259.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh260.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh226.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh261.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh265.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh266.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh108.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh220.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh222.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh267.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh271.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh105.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh242.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh044.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh043.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh042.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh040.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh057.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh200.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh039.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh038.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh037.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh052.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh036.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh035.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh241.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh034.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh033.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh179.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh263.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh032.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh031.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh030.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh122.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh028.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh026.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh205.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh135.wo3",
+            "bsdf": "WallMaterial"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh027.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh119.wo3",
+            "bsdf": "DarkerGrey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh025.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh102.wo3",
+            "bsdf": "BlueGlossy"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh245.wo3",
+            "bsdf": "StainlessSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh183.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh024.wo3",
+            "bsdf": "PaleYellow"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh023.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh134.wo3",
+            "bsdf": "BlackDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh150.wo3",
+            "bsdf": "BlackDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh022.wo3",
+            "bsdf": "StainlessSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh041.wo3",
+            "bsdf": "Grey"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh233.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh021.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh019.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh018.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh121.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh020.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh017.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh016.wo3",
+            "bsdf": "BrickTextureBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh015.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh269.wo3",
+            "bsdf": "WallMaterial"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh014.wo3",
+            "bsdf": "Pink"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh207.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh013.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh113.wo3",
+            "bsdf": "GarageDoorBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh012.wo3",
+            "bsdf": "Glass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh056.wo3",
+            "bsdf": "DeckWoodBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh011.wo3",
+            "bsdf": "Brown"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh010.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh009.wo3",
+            "bsdf": "DeckWoodBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh181.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh268.wo3",
+            "bsdf": "StepBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh095.wo3",
+            "bsdf": "Ground"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh008.wo3",
+            "bsdf": "DeckWoodBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh097.wo3",
+            "bsdf": "Pink"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh007.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh006.wo3",
+            "bsdf": "StainlessSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh029.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh005.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh004.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh003.wo3",
+            "bsdf": "Blue"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh067.wo3",
+            "bsdf": "Red"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh262.wo3",
+            "bsdf": "FenceWoodBase"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh059.wo3",
+            "bsdf": "WhitePaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh002.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh001.wo3",
+            "bsdf": "StainlessSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh000.wo3",
+            "bsdf": "WhiteDiffuse"
+        },
+        {
+            "transform": {
+                "position": [
+                    -17.8075008392334,
+                    8.863120079040527,
+                    8.821209907531738
+                ],
+                "scale": [
+                    0.9999998807907104,
+                    1.0,
+                    1.0
+                ],
+                "rotation": [
+                    -49.077999114990234,
+                    -36.146697998046875,
+                    0.0
+                ]
+            },
+            "type": "skydome",
+            "temperature": 5777.0,
+            "gamma_scale": 1.0,
+            "turbidity": 3.0,
+            "intensity": 6.0,
+            "sample": true
+        },
+        {
+            "transform": {
+                "position": [
+                    -17.8075008392334,
+                    8.863120079040527,
+                    8.821209907531738
+                ],
+                "scale": [
+                    0.9999998807907104,
+                    1.0,
+                    1.0
+                ],
+                "rotation": [
+                    -49.077999114990234,
+                    -36.146697998046875,
+                    0.0
+                ]
+            },
+            "power": 5.0,
+            "type": "infinite_sphere_cap",
+            "sample": true,
+            "cap_angle": 10.0
+        }
+    ],
+    "camera": {
+        "tonemap": "gamma",
+        "resolution": [
+            1280,
+            720
+        ],
+        "reconstruction_filter": "tent",
+        "transform": {
+            "position": [
+                -37.4662971496582,
+                -0.6142539978027344,
+                32.12229537963867
+            ],
+            "look_at": [
+                -3.4997599124908447,
+                7.133240222930908,
+                -5.072649955749512
+            ],
+            "up": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        "type": "pinhole",
+        "fov": 35.0
+    },
+    "integrator": {
+        "min_bounces": 0,
+        "max_bounces": 64,
+        "enable_consistency_checks": false,
+        "enable_two_sided_shading": true,
+        "type": "path_tracer",
+        "enable_light_sampling": true,
+        "enable_volume_light_sampling": true
+    },
+    "renderer": {
+        "overwrite_output_files": true,
+        "adaptive_sampling": true,
+        "enable_resume_render": false,
+        "stratified_sampler": true,
+        "scene_bvh": true,
+        "spp": 64,
+        "spp_step": 16,
+        "checkpoint_interval": "0",
+        "timeout": "0",
+        "output_file": "house.png",
+        "resume_render_file": "TungstenRenderState.dat",
+        "hdr_output_file": "house.exr"
+    }
+}
