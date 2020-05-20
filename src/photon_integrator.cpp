@@ -82,7 +82,8 @@ glm::vec3 soleil::photon_integrator::render_ray(const soleil::scene& scene, cons
         color += ref_color * (material->trans);
     }
 
-    color += material->f(scene, *payload);
+    assert(false);
+//    color += material->f(scene, *payload);
 
     auto near_photons = p_map.search(payload->hit_pos, 5);
 

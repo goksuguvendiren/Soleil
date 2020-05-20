@@ -24,7 +24,7 @@ public:
         return true;
     }
 
-    glm::vec3 f(const scene& scene, const payload& pld) const
+    glm::vec3 f(const scene& scene, const payload& pld, const glm::vec3& light_direction) const
     {
         // std::cerr << "hit the light jack" << '\n';
         return power;

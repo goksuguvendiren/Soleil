@@ -87,7 +87,7 @@ public:
             refr_index = 1.5f;
     }
 
-    virtual glm::vec3 f(const scene& scene, const payload& pld) const;
+    virtual glm::vec3 f(const scene& scene, const payload& pld, const glm::vec3& light_direction) const;
 
     soleil::PathType russian_roulette() const
     {

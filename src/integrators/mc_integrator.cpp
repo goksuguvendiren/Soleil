@@ -46,7 +46,7 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
     auto [li, light_dir] = light.sample_li(scene, *pld);
 
     auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
-    auto bsdf = material->f(scene, *pld);
+    auto bsdf = material->f(scene, *pld, light_dir);
 
     auto L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
 
@@ -64,7 +64,8 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
     auto L_in = shade(scene, reflection_ray);
 
     auto cos_theta = glm::max(glm::dot(pld->hit_normal, sample_direction), 0.f);
-    auto L_indirect = L_in * material->f(scene, *pld) * cos_theta * 2.f * glm::pi<float>();
+    // TODO: Material->f() ?? is this necessary ??
+    auto L_indirect = L_in * material->f(scene, *pld, sample_direction) * cos_theta * 2.f * glm::pi<float>();
 
     return (L_indirect + L_direct) / 2.f;
 }
