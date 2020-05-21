@@ -16,9 +16,9 @@
 #include <glm/vec3.hpp>
 #include <lights/area.hpp>
 #include <lights/directional.hpp>
-#include <materials/texture.hpp>
 #include <opencv2/opencv.hpp>
 #include <optional>
+#include <textures/sampler2D.hpp>
 #include <vector>
 
 namespace soleil
@@ -44,6 +44,7 @@ struct scene_information
     // objects:
     std::vector<soleil::primitives::sphere> spheres;
     std::vector<soleil::primitives::mesh> meshes;
+    std::vector<soleil::primitives::quad> m_quads;
 
     // light sources
     std::vector<soleil::light::point> lights;
@@ -51,9 +52,9 @@ struct scene_information
     std::vector<soleil::light::area> area_lights;
     std::vector<std::unique_ptr<soleil::primitives::emissive_mesh>> mesh_lights;
 
-    // materials
+    // materials, and textures
     std::vector<std::unique_ptr<soleil::materials::base>> materials;
-    std::vector<std::unique_ptr<soleil::materials::texture>> textures;
+    std::vector<std::unique_ptr<soleil::textures::sampler2D>> textures;
 
     bool progressive_render = false;
     int samples_per_pixel;
@@ -158,7 +159,7 @@ public:
         return information.materials[index];
     }
 
-    const std::unique_ptr<soleil::materials::texture> &get_texture(int index) const
+    const std::unique_ptr<soleil::textures::sampler2D> &get_texture(int index) const
     {
         assert(index >= 0 && " texture index is negative!");
         return information.textures[index];

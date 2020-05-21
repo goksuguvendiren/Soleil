@@ -1,19 +1,14 @@
 //
-// Created by Göksu Güvendiren on 6.03.2020.
+// Created by goksu on 5/20/20.
 //
 
 #pragma once
 
-#include <glm/vec2.hpp>
-#include <glm/vec3.hpp>
-#include <opencv2/opencv.hpp>
-#include <string>
+#include "sampler2D.hpp"
 
-namespace soleil
+namespace soleil::textures
 {
-namespace materials
-{
-class texture
+class texture : public sampler2D
 {
     int width;
     int height;
@@ -30,12 +25,12 @@ public:
         height = image_data.rows;
     }
 
-    [[nodiscard]] glm::vec3 getColor(const glm::vec2& uv) const
+    [[nodiscard]] glm::vec3 get_sample(const glm::vec2& uv) const override
     {
-        return getColor(uv.x, uv.y);
+        return get_sample(uv.x, uv.y);
     }
 
-    [[nodiscard]] glm::vec3 getColor(float u, float v) const
+    [[nodiscard]] glm::vec3 get_sample(float u, float v) const override
     {
         u = fmod(u, 1.f);
         if (u < 0) u += 1.f;
@@ -53,6 +48,6 @@ public:
 
         return glm::vec3(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f);
     }
+
 };
-}
 }

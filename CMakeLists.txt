@@ -19,9 +19,9 @@ add_library(LibSoleil src/scene_io.cpp include/scene.hpp src/scene.cpp
 		include/photon_integrator.hpp include/KDTree.hpp src/KDTree.cpp include/integrators/progressive_integrator.hpp
 	    include/integrator.hpp src/integrators/progressive_integrator.cpp src/scene_loaders/tungsten_loader.cpp
 		src/integrators/mc_integrator.cpp src/scene_loaders/obj_loader.cpp src/scene_loaders/veach_loader.cpp
-		include/integrators/mc_integrator.hpp include/materials/texture.hpp
+		include/integrators/mc_integrator.hpp include/textures/sampler2D.hpp
 		include/lights/directional.hpp include/lights/light.hpp src/lights/point.cpp src/lights/directional.cpp
-		include/lights/area.hpp src/lights/area.cpp)
+		include/lights/area.hpp src/lights/area.cpp src/primitives/quad.cpp src/textures/checkerboard.cpp)
 
 target_link_libraries(LibSoleil PUBLIC ${OpenCV_LIBS})
 target_include_directories(LibSoleil PUBLIC include)

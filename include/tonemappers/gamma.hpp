@@ -1,0 +1,8 @@
+//
+// Created by goksu on 5/21/20.
+//
+
+#ifndef SOLEILRENDERER_GAMMA_HPP
+#define SOLEILRENDERER_GAMMA_HPP
+
+#endif //SOLEILRENDERER_GAMMA_HPP

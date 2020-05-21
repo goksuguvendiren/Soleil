@@ -6,8 +6,8 @@
 glm::vec3 soleil::materials::base::f(const soleil::scene& scene, const soleil::payload& pld) const
 {
     glm::vec3 albedo = diffuse;
-    if (texture)
-        albedo = texture->getColor(pld.texture_coords);
+    if (m_texture)
+        albedo = m_texture->get_sample(pld.texture_coords);
 
     return albedo / glm::pi<float>(); // lambertian model
 }

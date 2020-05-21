@@ -4,11 +4,11 @@
 
 #pragma once
 
-#include "texture.hpp"
+#include "textures/sampler2D.hpp"
 #include "utils.hpp"
 
-#include <utility>
 #include <glm/vec3.hpp>
+#include <utility>
 #include <vector>
 
 namespace soleil
@@ -36,7 +36,7 @@ public:
         , exp(0)
         , trans(0)
         , refr_index(1.f)
-        , texture(std::nullopt)
+        , m_texture(nullptr)
     {}
 
     base(const glm::vec3& diff)
@@ -47,10 +47,10 @@ public:
         , exp(0)
         , trans(0)
         , refr_index(1.f)
-        , texture(std::nullopt)
+        , m_texture(nullptr)
     {}
 
-    base(const glm::vec3& diff, std::optional<soleil::materials::texture> tex, std::string name)
+    base(const glm::vec3& diff, soleil::textures::sampler2D* texture, std::string name)
         : diffuse(diff)
         , ambient({0.0f, 0.0f, 0.0f})
         , specular({0.f, 0.f, 0.f})
@@ -58,7 +58,7 @@ public:
         , exp(0)
         , trans(0)
         , refr_index(1.f)
-        , texture(std::move(tex))
+        , m_texture(texture)
         , m_name(name)
     {}
 
@@ -70,7 +70,7 @@ public:
         , exp(0)
         , trans(0)
         , refr_index(1.f)
-        , texture(std::nullopt)
+        , m_texture(nullptr)
     {}
 
     base(const glm::vec3& diff, const glm::vec3& amb, const glm::vec3& spec, const glm::vec3& ems, float p, float t)
@@ -81,7 +81,7 @@ public:
         , exp(p)
         , trans(t)
         , refr_index(1.0f)
-        , texture(std::nullopt)
+        , m_texture(nullptr)
     {
         if (trans > 0.f)
             refr_index = 1.5f;
@@ -120,7 +120,7 @@ public:
     std::string m_name;
 
 private:
-    std::optional<soleil::materials::texture> texture;
+    soleil::textures::sampler2D* m_texture;
 };
 } // namespace materials
 } // namespace soleil
