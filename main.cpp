@@ -68,5 +68,8 @@ int main(int argc, const char** argv)
     cv::imwrite(scene.output_hdr_name()  + "new_output.exr", image);
     cv::imwrite(scene.output_file_name() + "new_output.png", image * 255);
 
+    auto tonemapped = soleil::tonemappers::gamma().process(image);
+    cv::imwrite(scene.output_file_name() + "tonemapped.png", tonemapped * 255);
+
     return 0;
 }
