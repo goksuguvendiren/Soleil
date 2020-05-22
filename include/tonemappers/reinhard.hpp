@@ -8,11 +8,11 @@
 
 namespace soleil::tonemappers
 {
-class gamma
+class reinhard
 {
-    cv::Ptr<cv::Tonemap> m_tonemapper;
+    cv::Ptr<cv::TonemapReinhard> m_tonemapper;
 public:
-    gamma(float g = 1.0f);
+    reinhard(float gamma = 1.0f, float intensity = 0.0f, float light_adapt = 1.0f, float color_adapt = 0.0f);
 
     [[nodiscard]] cv::Mat process(const cv::Mat& exrimage);
 };

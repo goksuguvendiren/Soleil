@@ -9,9 +9,10 @@
 #include "materials/base.hpp"
 #include "scene.hpp"
 
-#include <renderer.hpp>
-#include <thread>
+#include <tonemappers/gamma.hpp>
+#include <tonemappers/reinhard.hpp>
 #include <vector>
+
 void mouse_click_handler(int event, int x, int y, int flags, void* userdata)
 {
     if  ( event == cv::EVENT_LBUTTONDOWN )
@@ -53,6 +54,9 @@ std::vector<glm::vec3> soleil::progressive_integrator::render(const soleil::scen
         cv::Mat image(h, w, CV_32FC3, result_buffer.data());
         cv::Mat rgb_img;
         cv::cvtColor(image, rgb_img, cv::COLOR_BGR2RGB);
+
+//        auto tonemapped = soleil::tonemappers::gamma(2.2).process(rgb_img);
+
         cv::imshow(scene.output_file_name(), rgb_img);
 
         cv::imwrite(scene.output_hdr_name(), rgb_img);
