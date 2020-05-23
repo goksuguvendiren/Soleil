@@ -19,7 +19,19 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
 
     if (!pld)
     {
-        return glm::vec3(0,0,0);
+        // in branch prediction we trust.
+        if (scene.environment_sphere())
+        {
+            auto env_pld = scene.environment_sphere()->hit(ray);
+
+            if (env_pld)
+            {
+                const auto &material = scene.get_material(env_pld->material_idx);
+                return material->f(scene, *env_pld);
+            }
+            assert(false && "all rays that miss the scene should hit the bounding sphere");
+        }
+        return scene.background_color();
     }
 
     auto visualize_direction = [](const glm::vec3& dir) -> glm::vec3
@@ -42,13 +54,17 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
     }
 
     // direct lighting.
-    const auto& light = scene.sample_light();
-    auto [li, light_dir] = light.sample_li(scene, *pld);
+    auto L_direct = glm::vec3(0.f);
+    if (scene.total_light_size() != 0)
+    {
+        const auto& light = scene.sample_light();
+        auto [li, light_dir] = light.sample_li(scene, *pld);
 
-    auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
-    auto bsdf = material->f(scene, *pld);
+        auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
+        auto bsdf = material->f(scene, *pld);
 
-    auto L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
+        L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
+    }
 
     if (pld->ray.rec_depth >= 6)
     {

@@ -57,10 +57,11 @@ std::vector<glm::vec3> soleil::progressive_integrator::render(const soleil::scen
 
 //        auto tonemapped = soleil::tonemappers::gamma(2.2).process(rgb_img);
 
-        cv::imshow(scene.output_file_name(), rgb_img);
+        cv::imshow(scene.output_file_name(), image);
 
-        cv::imwrite(scene.output_hdr_name(), rgb_img);
-        cv::imwrite(scene.output_file_name(), rgb_img * 255);
+        cv::imwrite("converted" + scene.output_hdr_name(), rgb_img);
+        cv::imwrite(scene.output_hdr_name(), image);
+        cv::imwrite(scene.output_file_name(), image * 255);
 
         key = cv::waitKey(100);
 
