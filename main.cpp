@@ -4,6 +4,8 @@
 #include "scene.hpp"
 #include "scene_loaders.hpp"
 
+#include "tonemappers/gamma.hpp"
+
 #include <integrators/mc_integrator.hpp>
 #include <iostream>
 #include <scene_io.h>
