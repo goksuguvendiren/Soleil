@@ -115,9 +115,9 @@ static soleil::primitives::mesh load_mesh(const std::string& filename, const glm
 }
 
 std::tuple<std::string, std::unique_ptr<soleil::materials::base>>
-    load_material(const nlohmann::json& material_json, const std::string& folder_path,
-        const std::vector<std::unique_ptr<soleil::textures::sampler2D>>& all_textures,
-        const std::map<std::string, int>& texture_mappings)
+load_material(const nlohmann::json& material_json, const std::string& folder_path,
+              const std::vector<std::unique_ptr<soleil::textures::sampler2D>>& all_textures,
+              const std::map<std::string, int>& texture_mappings)
 {
     static int default_id = 0;
     std::string name = "default_" + std::to_string(default_id++);
@@ -153,7 +153,7 @@ std::tuple<std::string, std::unique_ptr<soleil::materials::base>>
     }
 
     return std::make_tuple(name,
-        std::make_unique<soleil::materials::base>(soleil::materials::base(albedo, texture, name)));
+                           std::make_unique<soleil::materials::base>(soleil::materials::base(albedo, texture, name)));
 }
 
 std::tuple<std::string, std::unique_ptr<soleil::textures::sampler2D>> load_texture(const nlohmann::json& material_json, const std::string& folder_path)
@@ -200,9 +200,9 @@ std::tuple<std::string, std::unique_ptr<soleil::textures::sampler2D>> load_textu
 soleil::primitives::quad load_quad(const glm::mat4x4& transform)
 {
     std::vector<soleil::vertex> vertices = {soleil::vertex({-0.5f, 0.0f, -0.5f}),
-                                         soleil::vertex({0.5f, 0.0f, -0.5f}),
-                                         soleil::vertex({0.5f, 0.0f, 0.5f}),
-                                         soleil::vertex({-0.5f, 0.0f, 0.5f})};
+                                            soleil::vertex({0.5f, 0.0f, -0.5f}),
+                                            soleil::vertex({0.5f, 0.0f, 0.5f}),
+                                            soleil::vertex({-0.5f, 0.0f, 0.5f})};
 
     for (auto& vertex : vertices) vertex.transform(transform);
 
@@ -256,9 +256,9 @@ soleil::primitives::mesh load_cube(const glm::mat4x4 &transform, const std::stri
     for (int i = 0; i < vertices.size() / 4; i++)
     {
         faces.emplace_back(soleil::primitives::face({vertices[4 * i], vertices[4 * i + 1], vertices[4 * i + 2]},
-                                                 soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
+                                                    soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
         faces.emplace_back(soleil::primitives::face({vertices[4 * i], vertices[4 * i + 2], vertices[4 * i + 3]},
-                                                 soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
+                                                    soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
     }
 
     std::cerr << faces.size() << '\n';
@@ -379,26 +379,28 @@ soleil::scene load_tungsten(const std::string &filename)
         auto type = primitive["type"];
         std::string name = "";
 
-        auto material_id = primitive["bsdf"];
-        int mesh_material_idx = 0;
-        if (material_id.is_string())
+        int mesh_material_idx = -1;
+        if (primitive.find("bsdf") != primitive.end())
         {
-            name = std::string(material_id);
-            mesh_material_idx = material_mappings[material_id];
-        }
-        else if (material_id.is_object())
-        {
-            // that's a very basic bsdf that's inlined.
-            auto [nm, material] = load_material(material_id, folder_path, all_textures, texture_mappings);
-            all_materials.push_back(std::move(material)); // put the material to the list, get its index, and put it into the map
-            material_mappings.insert({nm, all_materials.size() - 1});
+            auto material_id = primitive["bsdf"];
+            if (material_id.is_string())
+            {
+                name = std::string(material_id);
+                mesh_material_idx = material_mappings[material_id];
+            } else if (material_id.is_object())
+            {
+                // that's a very basic bsdf that's inlined.
+                auto [nm, material] = load_material(material_id, folder_path, all_textures, texture_mappings);
+                all_materials.push_back(
+                    std::move(material)); // put the material to the list, get its index, and put it into the map
+                material_mappings.insert({nm, all_materials.size() - 1});
 
-            mesh_material_idx = material_mappings[nm];
-            name = nm;
-        }
-        else
-        {
-            assert(false && "unknown material type");
+                mesh_material_idx = material_mappings[nm];
+                name = nm;
+            } else
+            {
+                assert(false && "unknown material type");
+            }
         }
 
         std::cerr << "Tungsten Loader | Loading primitive : " << name << '\n';
@@ -407,12 +409,14 @@ soleil::scene load_tungsten(const std::string &filename)
             auto model_file = std::string(primitive["file"]);
             auto mesh = load_mesh(folder_path + "/" + std::string(model_file), transform);
 
+            assert(mesh_material_idx != -1);
             mesh.material_idx.push_back(mesh_material_idx);
             info.meshes.emplace_back(std::move(mesh));
         }
         else if (type == "quad")
         {
             auto quad = load_quad(transform);
+            assert(mesh_material_idx != -1);
             quad.add_material(mesh_material_idx);
 
             // NOT an emissive quad, directly add as a mesh.
@@ -429,8 +433,19 @@ soleil::scene load_tungsten(const std::string &filename)
         else if (type == "cube")
         {
             auto cube = load_cube(transform, name);
+            assert(mesh_material_idx != -1);
             cube.material_idx.push_back(mesh_material_idx);
             info.meshes.emplace_back(std::move(cube));
+        }
+        else if (type == "infinite_sphere")
+        {
+            auto hdr_path = std::string(primitive["emission"]);
+            all_textures.push_back(std::make_unique<soleil::textures::texture>(folder_path + "/" + hdr_path));
+            all_materials.push_back(std::make_unique<soleil::materials::base>(glm::vec3{0}, all_textures.back().get(), name));
+
+            auto material_idx = all_materials.size() - 1;
+            auto environment_sphere = soleil::primitives::sphere("environment sphere", {0, 0, 0}, 1.f, material_idx);
+            info.m_bounding_sphere = environment_sphere;
         }
 
         if (primitive.find("power") != primitive.end() && type != "quad")
@@ -449,13 +464,19 @@ soleil::scene load_tungsten(const std::string &filename)
         {
             auto emission_json = primitive["emission"];
 
-            auto light_material = emission_json.is_array() ? std::unique_ptr<materials::emissive>(new materials::emissive(to_vec3(emission_json))) : std::unique_ptr<materials::emissive>(new materials::emissive(float(emission_json)));
-            all_materials.push_back(std::move(light_material));
-            auto mat_idx = int(all_materials.size() - 1);
-            info.meshes.back().material_idx.push_back(mat_idx);
+            if (!emission_json.is_string())
+            {
+                auto light_material =
+                    emission_json.is_array()
+                    ? std::unique_ptr<materials::emissive>(new materials::emissive(to_vec3(emission_json)))
+                    : std::unique_ptr<materials::emissive>(new materials::emissive(float(emission_json)));
+                all_materials.push_back(std::move(light_material));
+                auto mat_idx = int(all_materials.size() - 1);
+                info.meshes.back().material_idx.push_back(mat_idx);
 
-            auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
-            info.mesh_lights.push_back(std::move(mesh_light));
+                auto mesh_light = std::make_unique<primitives::emissive_mesh>(info.meshes.back().copy(), mat_idx);
+                info.mesh_lights.push_back(std::move(mesh_light));
+            }
         }
 
 //        std::cerr << "Mesh id: " << id++ << "\n";
@@ -464,17 +485,20 @@ soleil::scene load_tungsten(const std::string &filename)
         // std::cerr << "Normals: " << info.meshes.back().material_idx[0] << "\n";
     }
     // Add a point light source when there's none!
-    if (info.total_light_size() == 0)
-    {
-        auto from = glm::vec3(-18.862, 69.2312, 69.651);
-        auto to = glm::vec3(0, 0, 0);
-        info.dir_lights.push_back(soleil::light::directional(to - from, {8.,8.,8.}));
-    }
-        //    info.lights.push_back(soleil::light::point({-18.862, 69.2312, 69.651}, {8000.0, 8000.0, 8000.0}));
+//    if (info.total_light_size() == 0)
+//    {
+//        auto from = glm::vec3(-18.862, 69.2312, 69.651);
+//        auto to = glm::vec3(0, 0, 0);
+//        info.dir_lights.push_back(soleil::light::directional(to - from, {8.,8.,8.}));
+//    }
+    //    info.lights.push_back(soleil::light::point({-18.862, 69.2312, 69.651}, {8000.0, 8000.0, 8000.0}));
 //    info.lights.push_back(soleil::light::point({10, 30, 69.651}, {60000.0, 60000.0, 60000.0}));
 
     info.materials = std::move(all_materials);
     info.textures = std::move(all_textures);
+
+    info.background_color = {0.f, 0.f, 0.f};
+
     return soleil::scene(std::move(info));
 }
 } // namespace loaders
