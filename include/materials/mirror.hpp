@@ -1,0 +1,8 @@
+//
+// Created by goksu on 5/23/20.
+//
+
+#ifndef SOLEILRENDERER_MIRROR_HPP
+#define SOLEILRENDERER_MIRROR_HPP
+
+#endif // SOLEILRENDERER_MIRROR_HPP
