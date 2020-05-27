@@ -9,17 +9,15 @@
 
 namespace soleil::light
 {
-area::area(const soleil::primitives::mesh& quad, const glm::vec3& intens) : m_intensity(intens), m_quad(quad.copy())
+area::area(const soleil::primitives::quad& quad, const glm::vec3& intens) : m_intensity(intens), m_quad(quad)
 {
-    const auto& top_left = quad.faces[0].vertices[0].position();
-    const auto& right    = quad.faces[0].vertices[1].position();
-    const auto& bottom   = quad.faces[1].vertices[2].position();
+    const auto& top_left = quad.a().position();
+    const auto& right    = quad.b().position();
+    const auto& bottom   = quad.d().position();
 
     m_position = top_left;
     m_u = right  - top_left;
     m_v = bottom - top_left;
-
-    assert(quad.faces.size() == 2);
 }
 
 std::optional<soleil::payload> area::hit(const soleil::ray& ray) const

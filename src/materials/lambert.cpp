@@ -12,8 +12,8 @@ static glm::vec3 reflect(const glm::vec3& light, const glm::vec3& normal)
 glm::vec3 soleil::materials::base::f(const soleil::scene& scene, const soleil::payload& pld, const glm::vec3& light_direction) const
 {
     glm::vec3 albedo = diffuse;
-    if (texture)
-        albedo = texture->getColor(pld.texture_coords);
+    if (m_texture)
+        albedo = m_texture->get_sample(pld.texture_coords);
 
     auto lambertian = albedo / glm::pi<float>();
 
@@ -33,6 +33,7 @@ glm::vec3 soleil::materials::base::f(const soleil::scene& scene, const soleil::p
 //    return lambertian + modified_phong * 10.f; // lambertian + modified phong model
 }
 
+// TODO: Move this to the correct place
 static glm::vec3 refract(const glm::vec3& I, const glm::vec3& N, const float& ior)
 {
     float cosi = std::clamp(glm::dot(I, N), -1.f, 1.f);

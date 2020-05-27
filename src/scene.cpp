@@ -46,6 +46,23 @@ std::optional<soleil::payload> soleil::scene::hit(const soleil::ray& ray) const
         }
     }
 
+    for (auto& quad : information.m_quads)
+    {
+        auto hit = quad.hit(ray);
+        if (!hit)
+            continue;
+
+        if (std::isnan(hit->param))
+            throw std::runtime_error("param is nan in scene::hit()!");
+
+        if (!min_hit || hit->param < min_hit->param)
+        {
+            if (std::isnan(hit->param))
+                throw std::runtime_error("param is nan in scene::hit() 1!");
+            min_hit = *hit;
+        }
+    }
+
     for (auto& mesh : information.meshes)
     {
         auto hit = mesh.hit(ray);
