@@ -101,12 +101,14 @@ public:
         return PathType::Absorbed;
     }
 
-    glm::vec3 sample(const glm::vec3& hit_normal, const payload& pld) const;
+    virtual glm::vec3 sample(const glm::vec3& hit_normal, const payload& pld) const;
 
     virtual bool is_emissive() const
     {
         return false;
     }
+
+    virtual bool is_mirror() const { return false; }
 
     glm::vec3 diffuse;
     glm::vec3 ambient;

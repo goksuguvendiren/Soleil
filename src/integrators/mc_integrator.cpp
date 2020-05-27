@@ -55,7 +55,7 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
 
     // direct lighting.
     auto L_direct = glm::vec3(0.f);
-    if (scene.total_light_size() != 0)
+    if (scene.total_light_size() != 0 && !material->is_mirror())
     {
         const auto& light = scene.sample_light();
         auto [li, light_dir] = light.sample_li(scene, *pld);

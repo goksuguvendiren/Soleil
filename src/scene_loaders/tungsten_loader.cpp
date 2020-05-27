@@ -1,5 +1,6 @@
 #include "lights/area.hpp"
 #include "materials/emissive.hpp"
+#include "materials/mirror.hpp"
 #include "nlohmann/json.hpp"
 #include "scene_loaders.hpp"
 #include "utils.hpp"
@@ -152,8 +153,15 @@ load_material(const nlohmann::json& material_json, const std::string& folder_pat
         albedo.z = albedo_json[2];
     }
 
-    return std::make_tuple(name,
-                           std::make_unique<soleil::materials::base>(soleil::materials::base(albedo, texture, name)));
+    auto material_type = material_json["type"];
+    std::cerr << "Material type: " << std::string(material_type) << '\n';
+
+    if (material_type == "mirror")
+    {
+        return std::make_tuple(name, std::make_unique<soleil::materials::mirror>(albedo, name));
+    }
+
+    return std::make_tuple(name, std::make_unique<soleil::materials::base>(albedo, texture, name));
 }
 
 std::tuple<std::string, std::unique_ptr<soleil::textures::sampler2D>> load_texture(const nlohmann::json& material_json, const std::string& folder_path)
@@ -376,7 +384,7 @@ soleil::scene load_tungsten(const std::string &filename)
     {
         //     std::cerr << std::setw(4) << primitive << '\n';
         auto transform = get_transform_matrix(primitive["transform"]);
-        auto type = primitive["type"];
+        auto type = primitive["type"]; // take this below
         std::string name = "";
 
         int mesh_material_idx = -1;
