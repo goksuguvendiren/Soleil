@@ -21,7 +21,9 @@ add_library(LibSoleil src/scene_io.cpp include/scene.hpp src/scene.cpp
 		src/integrators/mc_integrator.cpp src/scene_loaders/obj_loader.cpp src/scene_loaders/veach_loader.cpp
 		include/integrators/mc_integrator.hpp include/textures/sampler2D.hpp
 		include/lights/directional.hpp include/lights/light.hpp src/lights/point.cpp src/lights/directional.cpp
-		include/lights/area.hpp src/lights/area.cpp src/primitives/quad.cpp src/textures/checkerboard.cpp
+		include/lights/area.hpp src/lights/area.cpp src/primitives/quad.cpp
+		#textures
+		src/textures/checkerboard.cpp src/textures/texture.cpp
 		src/tonemappers/gamma.cpp src/tonemappers/reinhard.cpp src/materials/mirror.cpp include/materials/mirror.hpp
 		src/materials/plastic.cpp include/materials/plastic.hpp)
 
