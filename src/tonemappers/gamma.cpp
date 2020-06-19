@@ -16,6 +16,8 @@ cv::Mat gamma::process(const cv::Mat& exrimage)
     cv::Mat outputimage;
     m_tonemapper->process(exrimage, outputimage);
 
+//    cv::pow(exrimage, 1.0f/2.2f, outputimage);
+
     return outputimage;
 }
 }

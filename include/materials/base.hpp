@@ -121,8 +121,10 @@ public:
 
     std::string m_name;
 
-private:
+protected:
     soleil::textures::sampler2D* m_texture;
+
+private:
 };
 } // namespace materials
 } // namespace soleil

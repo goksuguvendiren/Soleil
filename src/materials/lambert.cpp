@@ -18,6 +18,7 @@ glm::vec3 soleil::materials::base::f(const soleil::scene& scene, const soleil::p
     auto lambertian = albedo / glm::pi<float>();
 
     return lambertian;
+//  TODO: Won't be in this material! Remove specular stuff
 //
 //    auto n = exp;
 //

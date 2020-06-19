@@ -8,7 +8,7 @@
 
 namespace soleil::materials
 {
-glm::vec3 mirror::f(const scene &scene, const payload &pld) const
+glm::vec3 mirror::f(const scene &scene, const payload &pld, const glm::vec3& light_direction) const
 {
     return glm::vec3(1.f);
 }

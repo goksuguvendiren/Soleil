@@ -27,7 +27,7 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
             if (env_pld)
             {
                 const auto &material = scene.get_material(env_pld->material_idx);
-                return material->f(scene, *env_pld);
+                return {1.f, 1.f, 1.f};// material->f(scene, *env_pld, {0, 0, 0});
             }
             assert(false && "all rays that miss the scene should hit the bounding sphere");
         }
@@ -60,8 +60,8 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
         const auto& light = scene.sample_light();
         auto [li, light_dir] = light.sample_li(scene, *pld);
 
-    auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
-    auto bsdf = material->f(scene, *pld, light_dir);
+        auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
+        auto bsdf = material->f(scene, *pld, light_dir);
 
         L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
     }
@@ -80,8 +80,8 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
     auto L_in = shade(scene, reflection_ray);
 
     auto cos_theta = glm::max(glm::dot(pld->hit_normal, sample_direction), 0.f);
-    // TODO: Material->f() ?? is this necessary ??
-    auto L_indirect = L_in * material->f(scene, *pld, sample_direction) * cos_theta * 2.f * glm::pi<float>();
+    auto bsdf = material->f(scene, *pld, sample_direction);
+    auto L_indirect = L_in * bsdf * cos_theta * 2.f * glm::pi<float>();
 
     return (L_indirect + L_direct) / 2.f;
 }
@@ -91,7 +91,7 @@ glm::vec3 soleil::mc_integrator::render_pixel(const soleil::scene& scene, const 
                                                     const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 1;
+    constexpr int sq_sample_pp = 2;
     auto is_lens = std::bool_constant<false>();
 
     glm::vec3 color = {0, 0, 0};

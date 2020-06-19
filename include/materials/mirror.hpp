@@ -18,7 +18,7 @@ public:
 
     bool is_mirror() const override { return true; }
 
-    glm::vec3 f(const scene& scene, const payload& pld) const override;
+    glm::vec3 f(const scene& scene, const payload& pld, const glm::vec3& light_direction) const override;
 
     glm::vec3 sample(const glm::vec3 &hit_normal, const payload &pld) const override;
 
