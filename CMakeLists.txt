@@ -13,7 +13,7 @@ add_library(LibSoleil src/scene_io.cpp include/scene.hpp src/scene.cpp
         include/primitives/sphere.hpp include/materials/base.hpp include/primitives/mesh.hpp 
         include/vertex.hpp src/sphere.cpp include/aabb.hpp include/kd_tree.hpp 
 		src/kd_tree.cpp src/mesh.cpp include/dir_light.hpp include/tinyobjloader.hpp 
-		include/scene_loaders.hpp src/materials/lambert.cpp include/payload.hpp include/utils.hpp
+		include/scene_loaders.hpp  include/payload.hpp include/utils.hpp
         include/area_light.hpp	include/tinyxml/tinyxml2.h include/tinyxml/tinyxml2.cpp 
 		include/photon_map.hpp src/photon_map.cpp include/photon.hpp src/photon_integrator.cpp 
 		include/photon_integrator.hpp include/KDTree.hpp src/KDTree.cpp include/integrators/progressive_integrator.hpp
@@ -24,8 +24,10 @@ add_library(LibSoleil src/scene_io.cpp include/scene.hpp src/scene.cpp
 		include/lights/area.hpp src/lights/area.cpp src/primitives/quad.cpp
 		#textures
 		src/textures/checkerboard.cpp src/textures/texture.cpp
+		#bsdfs
+		src/bsdfs/lambert.cpp src/bsdfs/orennayar.cpp
 		# materials
-		src/materials/mirror.cpp src/materials/plastic.cpp src/materials/orennayar.cpp
+		src/materials/mirror.cpp src/materials/plastic.cpp src/materials/base.cpp src/materials/matte.cpp
 		#tonemappers
 		src/tonemappers/gamma.cpp src/tonemappers/reinhard.cpp )
 

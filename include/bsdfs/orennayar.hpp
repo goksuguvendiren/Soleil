@@ -4,19 +4,20 @@
 
 #pragma once
 
-#include "base.hpp"
+#include "bsdf.hpp"
+#include "materials/base.hpp"
 
 #include <glm/vec3.hpp>
 #include <payload.hpp>
 #include <scene.hpp>
 #include <string>
 
-namespace soleil::materials
+namespace soleil::bsdfs
 {
-class orennayar final: public base
+class orennayar
 {
 public:
-    orennayar(const glm::vec3& albedo, soleil::radians sigma, std::string  name);
+    orennayar(const glm::vec3& albedo, soleil::radians sigma, std::string name);
 
     glm::vec3 f(const scene& scene, const payload& pld, const glm::vec3& light_direction) const;
 

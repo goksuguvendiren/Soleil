@@ -48,7 +48,7 @@ std::optional<soleil::payload> hit_face(const soleil::ray& ray, const soleil::ve
     tex_coords = alpha * a.m_uv + beta * b.m_uv + gamma * c.m_uv;
 
     if (std::isnan(param))
-        throw std::runtime_error("param is nan in face::hit()!");
+        throw std::runtime_error("param is nan in quad::hit()!");
 
     return soleil::payload{normal, point, ray, param, mat_idx, tex_coords};
 

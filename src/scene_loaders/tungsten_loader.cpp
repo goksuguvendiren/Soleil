@@ -6,10 +6,11 @@
 #include "utils.hpp"
 
 #include <algorithm>
+#include <bsdfs/orennayar.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
-#include <materials/orennayar.hpp>
+#include <materials/matte.hpp>
 #include <primitives/quad.hpp>
 #include <string>
 #include <textures/checkerboard.hpp>
@@ -163,11 +164,11 @@ load_material(const nlohmann::json& material_json, const std::string& folder_pat
     }
     else if (material_type == "oren_nayar")
     {
-        std::unique_ptr<soleil::materials::base> mat = std::make_unique<soleil::materials::orennayar>(albedo, soleil::radians{glm::radians(20.f)}, name);
-        return std::make_tuple(name, std::move(mat));
+        return std::make_tuple(name, std::make_unique<soleil::materials::matte>(albedo, soleil::radians{glm::radians(20.f)}, name));
     }
 
-    return std::make_tuple(name, std::make_unique<soleil::materials::base>(albedo, texture, name));
+    //TODO: Give albedo as texture!
+    return std::make_tuple(name, std::make_unique<soleil::materials::matte>(albedo, texture, name));
 }
 
 std::tuple<std::string, std::unique_ptr<soleil::textures::sampler2D>> load_texture(const nlohmann::json& material_json, const std::string& folder_path)

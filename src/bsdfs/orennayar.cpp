@@ -2,11 +2,11 @@
 // Created by goksu on 6/18/20.
 //
 
-#include <materials/orennayar.hpp>
+#include <bsdfs/orennayar.hpp>
 #include <utility>
 #include <utils.hpp>
 
-namespace soleil::materials
+namespace soleil::bsdfs
 {
 orennayar::orennayar(const glm::vec3& albedo, soleil::radians sigma, std::string  name)
     : m_albedo(albedo)
@@ -23,10 +23,6 @@ orennayar::orennayar(const glm::vec3& albedo, soleil::radians sigma, std::string
 glm::vec3 apply(const orthonormal_basis& onb, const glm::vec3& vector)
 {
     return glm::normalize(glm::vec3(glm::dot(onb.x, vector), glm::dot(onb.y, vector), glm::dot(onb.z, vector)));
-//    return  glm::vec3{vector.x * onb.x.x + vector.y * onb.y.x + vector.z * onb.z.x,
-//                      vector.x * onb.x.y + vector.y * onb.y.y + vector.z * onb.z.y,
-//                      vector.x * onb.x.z + vector.y * onb.y.z + vector.z * onb.z.z};
-
 }
 
 glm::vec3 orennayar::f(const soleil::scene& scene, const soleil::payload& pld, const glm::vec3& light_direction) const

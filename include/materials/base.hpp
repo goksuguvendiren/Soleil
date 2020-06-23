@@ -121,6 +121,8 @@ public:
 
     std::string m_name;
 
+    virtual ~base() = default;
+
 protected:
     soleil::textures::sampler2D* m_texture;
 
