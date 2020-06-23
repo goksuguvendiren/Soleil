@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <materials/orennayar.hpp>
 #include <primitives/quad.hpp>
 #include <string>
 #include <textures/checkerboard.hpp>
@@ -159,6 +160,11 @@ load_material(const nlohmann::json& material_json, const std::string& folder_pat
     if (material_type == "mirror")
     {
         return std::make_tuple(name, std::make_unique<soleil::materials::mirror>(albedo, name));
+    }
+    else if (material_type == "oren_nayar")
+    {
+        std::unique_ptr<soleil::materials::base> mat = std::make_unique<soleil::materials::orennayar>(albedo, soleil::radians{glm::radians(20.f)}, name);
+        return std::make_tuple(name, std::move(mat));
     }
 
     return std::make_tuple(name, std::make_unique<soleil::materials::base>(albedo, texture, name));

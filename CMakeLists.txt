@@ -24,8 +24,10 @@ add_library(LibSoleil src/scene_io.cpp include/scene.hpp src/scene.cpp
 		include/lights/area.hpp src/lights/area.cpp src/primitives/quad.cpp
 		#textures
 		src/textures/checkerboard.cpp src/textures/texture.cpp
-		src/tonemappers/gamma.cpp src/tonemappers/reinhard.cpp src/materials/mirror.cpp include/materials/mirror.hpp
-		src/materials/plastic.cpp include/materials/plastic.hpp)
+		# materials
+		src/materials/mirror.cpp src/materials/plastic.cpp src/materials/orennayar.cpp
+		#tonemappers
+		src/tonemappers/gamma.cpp src/tonemappers/reinhard.cpp )
 
 target_link_libraries(LibSoleil PUBLIC ${OpenCV_LIBS})
 target_include_directories(LibSoleil PUBLIC include)
@@ -35,7 +37,9 @@ target_compile_options(LibSoleil PUBLIC -pg)
 target_link_libraries(LibSoleil PUBLIC -pg)
 
 add_executable(SoleilRenderer main.cpp)
+add_executable(SoleilDebugger debug_main.cpp)
 target_link_libraries(SoleilRenderer PUBLIC LibSoleil)
+target_link_libraries(SoleilDebugger PUBLIC LibSoleil)
 
 enable_testing()
 add_subdirectory(tests)

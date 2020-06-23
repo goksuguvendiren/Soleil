@@ -1,0 +1,8 @@
+//
+// Created by goksu on 6/21/20.
+//
+
+#ifndef SOLEILRENDERER_UTILS_HPP
+#define SOLEILRENDERER_UTILS_HPP
+
+#endif //SOLEILRENDERER_UTILS_HPP
