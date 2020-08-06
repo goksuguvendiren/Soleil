@@ -130,4 +130,5 @@ inline glm::vec3 to_vec3(nlohmann::json& vert)
         return {float(vert), float(vert), float(vert)};
 
     assert(false);
+    return glm::vec3(0.f);
 }
