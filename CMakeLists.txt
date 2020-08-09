@@ -29,7 +29,7 @@ add_library(LibSoleil src/scene_io.cpp include/scene.hpp src/scene.cpp
 		# materials
 		src/materials/mirror.cpp src/materials/plastic.cpp src/materials/base.cpp src/materials/matte.cpp
 		#tonemappers
-		src/tonemappers/gamma.cpp src/tonemappers/reinhard.cpp )
+		src/tonemappers/gamma.cpp src/tonemappers/reinhard.cpp include/textures/single_color.hpp include/bsdfs/cooktorrance.hpp src/bsdfs/cooktorrance.cpp include/bsdfs/microfacet_distribution/beckmann.hpp src/bsdfs/microfacet_distributions/beckmann.cpp include/bsdfs/fresnel/dielectric.hpp src/bsdfs/fresnel/dielectric.cpp)
 
 target_link_libraries(LibSoleil PUBLIC ${OpenCV_LIBS})
 target_include_directories(LibSoleil PUBLIC include)

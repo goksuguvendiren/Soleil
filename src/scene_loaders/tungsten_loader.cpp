@@ -11,9 +11,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <materials/matte.hpp>
+#include <materials/plastic.hpp>
 #include <primitives/quad.hpp>
 #include <string>
 #include <textures/checkerboard.hpp>
+#include <textures/single_color.hpp>
 #include <textures/texture.hpp>
 
 namespace soleil
@@ -165,6 +167,20 @@ load_material(const nlohmann::json& material_json, const std::string& folder_pat
     else if (material_type == "oren_nayar")
     {
         return std::make_tuple(name, std::make_unique<soleil::materials::matte>(albedo, soleil::radians{glm::radians(20.f)}, name));
+    }
+    else if (material_type == "rough_plastic")
+    {
+        auto ks = glm::vec3(0.04f);
+        float ior = material_json["ior"];
+        float roughness = material_json["roughness"];
+
+        bsdfs::mf_distributions::beckmann distribution(roughness, roughness);
+        bsdfs::fresnels::dielectric fresnel(1.0f, ior);
+
+        if (!texture)
+            return std::make_tuple(name, std::make_unique<soleil::materials::plastic>(albedo, ks, distribution, fresnel, name));
+        else
+            return std::make_tuple(name, std::make_unique<soleil::materials::plastic>(texture, ks, distribution, fresnel, name));
     }
 
     //TODO: Give albedo as texture!

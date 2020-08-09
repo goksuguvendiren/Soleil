@@ -19,6 +19,7 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
 
     if (!pld)
     {
+        return {1.f, 1.f, 1.f};
         // in branch prediction we trust.
         if (scene.environment_sphere())
         {
@@ -75,8 +76,10 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
     // BRDF sampling:
     auto sample_direction = material->sample(pld->hit_normal, *pld);
 
+//    return visualize_direction(sample_direction);
+
     // incoming light from the random ray.
-    auto reflection_ray = soleil::ray(pld->hit_pos + (pld->hit_normal * 7e-2f), sample_direction, pld->ray.rec_depth + 1, false);
+    auto reflection_ray = soleil::ray(pld->hit_pos + (pld->hit_normal * 7e-5f), sample_direction, pld->ray.rec_depth + 1, false);
     auto L_in = shade(scene, reflection_ray);
 
     auto cos_theta = glm::max(glm::dot(pld->hit_normal, sample_direction), 0.f);

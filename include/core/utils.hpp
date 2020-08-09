@@ -2,7 +2,7 @@
 // Created by goksu on 6/21/20.
 //
 
-#ifndef SOLEILRENDERER_UTILS_HPP
-#define SOLEILRENDERER_UTILS_HPP
+#pragma once
 
-#endif //SOLEILRENDERER_UTILS_HPP
+namespace soleil
+{}

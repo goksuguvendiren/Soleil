@@ -19,7 +19,7 @@ orennayar::orennayar(const glm::vec3& albedo, soleil::radians sigma, std::string
     m_B = (0.45f * m_sigma_squared) / (m_sigma_squared + 0.09f);
 }
 
-// local->global
+// global->local
 glm::vec3 apply(const orthonormal_basis& onb, const glm::vec3& vector)
 {
     return glm::normalize(glm::vec3(glm::dot(onb.x, vector), glm::dot(onb.y, vector), glm::dot(onb.z, vector)));
