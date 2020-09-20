@@ -164,4 +164,5 @@ inline glm::vec3 to_vec3(nlohmann::json& vert)
 
     __builtin_unreachable();
     assert(false);
+    return glm::vec3(0.f);
 }

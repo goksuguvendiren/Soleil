@@ -36,6 +36,8 @@ target_link_libraries(LibSoleil PUBLIC ${OpenCV_LIBS})
 target_include_directories(LibSoleil PUBLIC include)
 target_include_directories(LibSoleil PUBLIC /usr/local/include )
 
+target_compile_features(LibSoleil PUBLIC cxx_std_17)
+
 #target_compile_options(LibSoleil PUBLIC -pg)
 #target_link_libraries(LibSoleil PUBLIC -pg)
 
