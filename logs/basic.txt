@@ -1,0 +1,1 @@
+[2020-03-27 23:12:07.133] [basic_logger] [info] Starting Soleil Renderer
