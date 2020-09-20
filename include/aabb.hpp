@@ -6,7 +6,7 @@
 #include <array>
 #include <glm/glm.hpp>
 
-namespace rtr
+namespace soleil
 {
 class ray;
 namespace primitives
@@ -26,7 +26,7 @@ public:
                         -std::numeric_limits<float>::infinity());
     }
 
-    aabb(const std::array<rtr::vertex, 3>& face) : aabb()
+    aabb(const std::array<soleil::vertex, 3>& face) : aabb()
     {
         for (auto& vert : face)
         {
@@ -71,7 +71,7 @@ public:
         return box;
     }
 
-    bool hit(const rtr::ray& ray) const
+    bool hit(const soleil::ray& ray) const
     {
         auto inv = ray.inv_direction();
 
@@ -99,4 +99,4 @@ public:
         return t_max >= std::max(.0f, t_min);
     }
 };
-} // namespace rtr
+} // namespace soleil

@@ -6,33 +6,9 @@
 #include "scene.hpp"
 #include "tinyxml/tinyxml2.h"
 
-inline rtr::primitives::face::normal_types to_rtr(NormType normal)
+inline soleil::vertex get_vertex(std::istringstream& stream, int id)
 {
-    using rtr::primitives::face;
-    switch (normal)
-    {
-    case NormType::PER_FACE_NORMAL:
-        return face::normal_types::per_face;
-    case NormType::PER_VERTEX_NORMAL:
-        return face::normal_types::per_vertex;
-    }
-}
-
-inline rtr::primitives::face::material_binding to_rtr(MaterialBinding material)
-{
-    using rtr::primitives::face;
-    switch (material)
-    {
-    case MaterialBinding::PER_OBJECT_MATERIAL:
-        return face::material_binding::per_object;
-    case MaterialBinding::PER_VERTEX_MATERIAL:
-        return face::material_binding::per_vertex;
-    }
-}
-
-inline rtr::vertex get_vertex(std::istringstream& stream, int id)
-{
-    rtr::vertex vert;
+    soleil::vertex vert;
 
     float datax;
     float datay;
@@ -42,14 +18,14 @@ inline rtr::vertex get_vertex(std::istringstream& stream, int id)
     stream >> datay;
     stream >> dataz;
 
-    return rtr::vertex{glm::vec3{datax, datay, dataz}};
+    return soleil::vertex{glm::vec3{datax, datay, dataz}};
 }
 
-inline std::vector<rtr::vertex> LoadVertexData(tinyxml2::XMLElement *elem)
+inline std::vector<soleil::vertex> LoadVertexData(tinyxml2::XMLElement *elem)
 {
     std::istringstream stream{elem->GetText()};
 
-    std::vector<rtr::vertex> verts;
+    std::vector<soleil::vertex> verts;
     int id = 0;
     while (stream)
     {
@@ -60,8 +36,8 @@ inline std::vector<rtr::vertex> LoadVertexData(tinyxml2::XMLElement *elem)
     return verts;
 }
 
-inline std::optional<rtr::primitives::face>
-get_face(std::istringstream& stream, const std::vector<rtr::vertex>& vertices, int vertexOffset, int texCoordsOffset)
+inline std::optional<soleil::primitives::face>
+get_face(std::istringstream& stream, const std::vector<soleil::vertex>& vertices, int vertexOffset, int texCoordsOffset)
 {
     int x, y, z;
     if (!(stream >> x))
@@ -79,13 +55,13 @@ get_face(std::istringstream& stream, const std::vector<rtr::vertex>& vertices, i
     auto pos_b = vertices[y - 1];
     auto pos_c = vertices[z - 1];
 
-    std::array<rtr::vertex, 3> face_vertices;
+    std::array<soleil::vertex, 3> face_vertices;
     face_vertices[0] = pos_a;
     face_vertices[1] = pos_b;
     face_vertices[2] = pos_c;
 
-    return rtr::primitives::face{face_vertices, rtr::primitives::face::normal_types::per_face,
-                                 rtr::primitives::face::material_binding::per_object};
+    return soleil::primitives::face{face_vertices, soleil::primitives::face::normal_types::per_face,
+                                 soleil::primitives::face::material_binding::per_object};
 }
 
 inline auto GetTransformations(std::istringstream& stream)
@@ -102,9 +78,9 @@ inline auto GetTransformations(std::istringstream& stream)
     return result;
 }
 
-inline std::vector<rtr::primitives::sphere> load_spheres(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices)
+inline std::vector<soleil::primitives::sphere> load_spheres(tinyxml2::XMLElement *elem, const std::vector<soleil::vertex>& vertices)
 {
-    std::vector<rtr::primitives::sphere> spheres;
+    std::vector<soleil::primitives::sphere> spheres;
 
     for (auto child = elem->FirstChildElement("Sphere"); child != NULL; child = child->NextSiblingElement("Sphere"))
     {
@@ -115,8 +91,8 @@ inline std::vector<rtr::primitives::sphere> load_spheres(tinyxml2::XMLElement *e
         float radius = child->FirstChildElement("Radius")->FloatText(0);
 
         glm::vec3 center = vertices[centerID - 1].position();
-        
-        rtr::primitives::sphere sp("", center, radius, matID);
+
+        soleil::primitives::sphere sp("", center, radius, matID);
         
         spheres.push_back(std::move(sp));
     }
@@ -124,9 +100,9 @@ inline std::vector<rtr::primitives::sphere> load_spheres(tinyxml2::XMLElement *e
     return spheres;
 }
 
-inline std::vector<rtr::primitives::mesh> load_meshes(tinyxml2::XMLElement *elem, const std::vector<rtr::vertex>& vertices)
+inline std::vector<soleil::primitives::mesh> load_meshes(tinyxml2::XMLElement *elem, const std::vector<soleil::vertex>& vertices)
 {
-    std::vector<rtr::primitives::mesh> meshes;
+    std::vector<soleil::primitives::mesh> meshes;
 
     for (auto child = elem->FirstChildElement("Mesh"); child != nullptr; child = child->NextSiblingElement("Mesh"))
     {
@@ -149,12 +125,12 @@ inline std::vector<rtr::primitives::mesh> load_meshes(tinyxml2::XMLElement *elem
         if (FaceData->QueryIntAttribute("textureOffset", &texCoordOffset))
             ;
 
-        std::optional<rtr::primitives::face> fc;
+        std::optional<soleil::primitives::face> fc;
         int index = 1;
 
         int matID = child->FirstChildElement("Material")->IntText(0);
 
-        std::vector<rtr::primitives::face> faces;
+        std::vector<soleil::primitives::face> faces;
         while ((fc = get_face(stream, vertices, vertexOffset, texCoordOffset)))
         {
             auto tri = *fc;
@@ -170,7 +146,7 @@ inline std::vector<rtr::primitives::mesh> load_meshes(tinyxml2::XMLElement *elem
     return meshes;
 }
 
-namespace rtr
+namespace soleil
 {
 namespace loaders
 {
@@ -197,7 +173,7 @@ inline glm::vec3 GetElem(tinyxml2::XMLElement* element)
     return color;
 }
 
-inline std::unique_ptr<rtr::materials::base> load_material(tinyxml2::XMLElement* child)
+inline std::unique_ptr<soleil::materials::base> load_material(tinyxml2::XMLElement* child)
 {
     int id;
     child->QueryIntAttribute("id", &id);
@@ -213,7 +189,7 @@ inline std::unique_ptr<rtr::materials::base> load_material(tinyxml2::XMLElement*
     if ((tmp = child->FirstChildElement("PhongExponent")))
         phongEx = tmp->FloatText(1);
 
-    rtr::materials::base mat{diffuse, ambient, specular, glm::vec3{0, 0, 0}, phongEx, 0};
+    soleil::materials::base mat{diffuse, ambient, specular, glm::vec3{0, 0, 0}, phongEx, 0};
 
     if ((tmp = child->FirstChildElement("Transparency"))) // then the material should be a glass (transparent)
     {
@@ -230,10 +206,10 @@ inline std::unique_ptr<rtr::materials::base> load_material(tinyxml2::XMLElement*
         mat.refr_index = refraction_index;
     }
 
-    return std::make_unique<rtr::materials::base>(mat);
+    return std::make_unique<soleil::materials::base>(mat);
 }
 
-inline rtr::light::point load_point_light(tinyxml2::XMLElement* child)
+inline soleil::light::point load_point_light(tinyxml2::XMLElement* child)
 {
     assert(child->Name() == std::string("PointLight"));
     int id;
@@ -242,10 +218,10 @@ inline rtr::light::point load_point_light(tinyxml2::XMLElement* child)
     auto position = GetElem(child->FirstChildElement("Position"));
     auto intensity = GetElem(child->FirstChildElement("Intensity"));
 
-    return rtr::light::point(position, intensity);
+    return soleil::light::point(position, intensity);
 }
 
-inline rtr::light::directional load_directional_light(tinyxml2::XMLElement* child)
+inline soleil::light::directional load_directional_light(tinyxml2::XMLElement* child)
 {
     int id;
     child->QueryIntAttribute("id", &id);
@@ -253,12 +229,12 @@ inline rtr::light::directional load_directional_light(tinyxml2::XMLElement* chil
     auto direction = GetElem(child->FirstChildElement("Direction"));
     auto radiance = GetElem(child->FirstChildElement("Radiance"));
 
-    return rtr::light::directional(direction, radiance);
+    return soleil::light::directional(direction, radiance);
 }
 
-inline rtr::scene load_from_xml(const std::string& filename)
+inline soleil::scene load_from_xml(const std::string& filename)
 {
-    rtr::scene_information info;
+    soleil::scene_information info;
 
     tinyxml2::XMLDocument document;
     document.LoadFile(filename.c_str());
@@ -316,7 +292,7 @@ inline rtr::scene load_from_xml(const std::string& filename)
 
         auto res = GetIntPair(elem->FirstChildElement("ImageResolution"));
 
-        info.camera = rtr::camera(position, view, up, rtr::radians{vertical_fov}, 400, 400);
+        info.camera = soleil::camera(position, view, up, soleil::radians{vertical_fov}, 400, 400);
     }
     else
     {
@@ -335,7 +311,7 @@ inline rtr::scene load_from_xml(const std::string& filename)
         }
     }
 
-    std::vector<std::unique_ptr<rtr::materials::base>> materials;
+    std::vector<std::unique_ptr<soleil::materials::base>> materials;
     if (auto elem = docscene->FirstChildElement("Materials"))
     {
         for (auto child = elem->FirstChildElement("Material"); child != NULL; child = child->NextSiblingElement())
@@ -345,7 +321,7 @@ inline rtr::scene load_from_xml(const std::string& filename)
     }
     info.materials = std::move(materials);
 
-    std::vector<rtr::vertex> vertices;
+    std::vector<soleil::vertex> vertices;
     if (auto elem = docscene->FirstChildElement("VertexData"))
     {
         vertices = LoadVertexData(elem);
@@ -368,105 +344,14 @@ inline rtr::scene load_from_xml(const std::string& filename)
 
     // scene.print();
 
-    return rtr::scene(std::move(info));
+    return soleil::scene(std::move(info));
 }
 
-inline rtr::scene load_from_veach(const std::string& filename)
-{
-    rtr::scene_information info;
+soleil::scene load_from_veach(const std::string& filename);
+soleil::scene load_tungsten(const std::string& filename);
+soleil::scene load_obj(const std::string& filename);
 
-    auto io = readScene(filename.c_str());
-    auto& cam = io->camera;
-    int width = 400;
-    int height = 400;
-    info.camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp),
-                              rtr::radians{cam->focalDistance}, cam->verticalFOV, width, height);
-    //    camera = rtr::camera(to_vec3(cam->position), to_vec3(cam->viewDirection), to_vec3(cam->orthoUp),
-    //    cam->focalDistance, cam->verticalFOV, 12.f, false);
-
-    auto* light = io->lights;
-    while (light != nullptr)
-    {
-        if (light->type == LightType::POINT_LIGHT)
-        {
-            info.lights.emplace_back(to_vec3(light->position), to_vec3(light->color));
-        } else if (light->type == LightType::DIRECTIONAL_LIGHT)
-        {
-            info.dir_lights.emplace_back(to_vec3(light->direction), to_vec3(light->color));
-        }
-        light = light->next;
-    }
-
-    int id = 0;
-
-    std::vector<std::unique_ptr<rtr::materials::base>> all_materials;
-
-    auto* obj = io->objects;
-    while (obj != nullptr) // iterate through the objects
-    {
-        if (obj->type == ObjType::SPHERE_OBJ)
-        {
-            auto data = reinterpret_cast<SphereIO*>(obj->data);
-
-            info.spheres.emplace_back(obj->name ? obj->name : "", to_vec3(data->origin), data->radius,
-                                      to_vec3(data->xaxis), data->xlength, to_vec3(data->yaxis), data->ylength,
-                                      to_vec3(data->zaxis), data->zlength);
-
-            auto& sph = info.spheres.back();
-
-            //            std::cerr << glm::length(sph.origin - to_vec3(cam->position)) << '\n';
-            sph.id = id++;
-            for (int i = 0; i < obj->numMaterials; ++i)
-            {
-                all_materials.emplace_back(std::make_unique<rtr::materials::base>(to_vec3(obj->material->diffColor), to_vec3(obj->material->ambColor),
-                                                                                  to_vec3(obj->material->specColor), to_vec3(obj->material->emissColor),
-                                                                                  obj->material->shininess, obj->material->ktran));
-                sph.material_idx.push_back(all_materials.size() - 1);
-            }
-        } else
-        {
-            auto data = reinterpret_cast<PolySetIO*>(obj->data);
-            assert(data->type == PolySetType::POLYSET_TRI_MESH);
-
-            std::vector<int> material_idx;
-            for (int i = 0; i < obj->numMaterials; ++i)
-            {
-                all_materials.emplace_back(std::make_unique<rtr::materials::base>(to_vec3(obj->material[i].diffColor), to_vec3(obj->material[i].ambColor),
-                                                                                  to_vec3(obj->material[i].specColor), to_vec3(obj->material[i].emissColor),
-                                                                                  obj->material[i].shininess, obj->material[i].ktran));
-            }
-
-            std::vector<rtr::primitives::face> faces;
-            for (int i = 0; i < data->numPolys; ++i)
-            {
-                auto polygon = data->poly[i];
-                assert(polygon.numVertices == 3);
-
-                std::array<rtr::vertex, 3> vertices;
-                for (int j = 0; j < polygon.numVertices; ++j)
-                {
-                    auto& poly = polygon.vert[j];
-                    vertices.at(j) = rtr::vertex(to_vec3(poly.pos), to_vec3(poly.norm),
-                                                 poly.materialIndex, poly.s, poly.t);
-                }
-                faces.emplace_back(vertices, to_rtr(data->normType), to_rtr(data->materialBinding));
-            }
-
-            info.meshes.emplace_back(faces, obj->name ? obj->name : "");
-            auto& mesh = info.meshes.back();
-            mesh.id = id++;
-            mesh.material_idx = std::move(material_idx);
-        }
-        obj = obj->next;
-    }
-    info.materials = std::move(all_materials);
-    return rtr::scene(std::move(info));
-}
-
-rtr::scene load_tungsten(const std::string& filename);
-rtr::scene load_obj(const std::string& filename);
-
-inline rtr::scene load(const std::string& filename)
+inline soleil::scene load(const std::string& filename)
 {
     if (hasEnding(filename, ".obj"))
     {
@@ -490,4 +375,4 @@ inline rtr::scene load(const std::string& filename)
     }
 }
 } // namespace loaders
-} // namespace rtr
+} // namespace soleil

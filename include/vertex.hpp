@@ -8,7 +8,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace rtr
+namespace soleil
 {
 class vertex
 {
@@ -18,24 +18,20 @@ public:
         : poss(pos)
         , normal({0, 0, 0})
         , mat(-1)
-        , u(0)
-        , v(0)
+        , m_uv(0, 0)
     {}
 
     vertex(const glm::vec3& pos, const glm::vec3& n)
         : poss(pos)
         , normal(n)
         , mat(-1)
-        , u(0)
-        , v(0)
+        , m_uv(0, 0)
     {}
 
     vertex(const glm::vec3& pos, const glm::vec3& n, const glm::vec2 uv)
         : poss(pos)
         , normal(n)
         , mat(-1)
-        , u(uv.x)
-        , v(uv.y)
         , m_uv(uv)
     {}
 
@@ -43,8 +39,7 @@ public:
         : poss(pos)
         , normal(n)
         , mat(m)
-        , u(s)
-        , v(t)
+        , m_uv(s, t)
     {}
 
     int mat;
@@ -52,7 +47,6 @@ public:
 
     glm::vec3 poss;
     glm::vec2 m_uv;
-    float u, v;
 
     glm::vec3& position()
     {
@@ -72,4 +66,4 @@ public:
         normal = glm::vec3(inv_tr_transform * glm::vec4(normal, 0.0f));
     }
 };
-} // namespace rtr
+} // namespace soleil

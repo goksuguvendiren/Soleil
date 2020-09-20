@@ -23,13 +23,13 @@ inline bool is_back_face(const glm::vec3& surface_normal, const glm::vec3& direc
     return glm::dot(surface_normal, direction) < 0;
 }
 
-thread_local std::array<rtr::materials::base, 4096> interpolated_material;
+thread_local std::array<soleil::materials::base, 4096> interpolated_material;
 thread_local int idx = 0;
 
-//inline rtr::material interpolate_materials(rtr::material* a, float alpha, rtr::material* b, float beta,
-//                                           rtr::material* c, float gamma)
+//inline soleil::material interpolate_materials(soleil::material* a, float alpha, soleil::material* b, float beta,
+//                                           soleil::material* c, float gamma)
 //{
-//    rtr::materials::base mat;
+//    soleil::materials::base mat;
 //
 //    auto interpolate = [alpha, beta, gamma](auto propa, auto propb, auto propc)
 //    {
@@ -48,7 +48,7 @@ thread_local int idx = 0;
 //    return mat;
 //}
 
-std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray& ray) const
+std::optional<soleil::payload> soleil::primitives::face::hit(const soleil::ray& ray) const
 {
     const auto& a = vertices[0];
     const auto& b = vertices[1];
@@ -103,10 +103,10 @@ std::optional<rtr::payload> rtr::primitives::face::hit(const rtr::ray& ray) cons
     if (std::isnan(param))
         throw std::runtime_error("param is nan in face::hit()!");
 
-    return rtr::payload{normal, point, ray, param, -1, tex_coords};
+    return soleil::payload{normal, point, ray, param, -1, tex_coords};
 }
 
-void rtr::primitives::face::set_normal()
+void soleil::primitives::face::set_normal()
 {
     auto normal = glm::normalize(
         glm::cross(vertices[1].position() - vertices[0].position(), vertices[2].position() - vertices[0].position()));
@@ -114,7 +114,7 @@ void rtr::primitives::face::set_normal()
     for (auto& vert : vertices) vert.normal = normal;
 }
 
-std::optional<rtr::payload> rtr::primitives::mesh::hit(const rtr::ray& ray) const
+std::optional<soleil::payload> soleil::primitives::mesh::hit(const soleil::ray& ray) const
 {
     auto hit = tree.hit(ray);
 

@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <payload.hpp>
 
-namespace rtr
+namespace soleil
 {
 namespace materials
 {
@@ -34,4 +34,4 @@ private:
     glm::vec3 power;
 };
 } // namespace materials
-} // namespace rtr
+} // namespace soleil

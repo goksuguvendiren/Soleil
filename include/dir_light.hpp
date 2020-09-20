@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include "photon.hpp"
 
-namespace rtr
+namespace soleil
 {
 class dir_light
 {
@@ -34,7 +34,7 @@ public:
         return 1.0f;
     }
 
-    std::vector<rtr::photon> distribute_photons(int num_photons)
+    std::vector<soleil::photon> distribute_photons(int num_photons)
     {
     	assert(false && "Doesn't return any photons");
         std::vector<photon> photons;
@@ -42,4 +42,4 @@ public:
         return photons;
     }
 };
-} // namespace rtr
+} // namespace soleil

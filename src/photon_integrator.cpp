@@ -13,9 +13,9 @@
 #include <thread>
 #include <vector>
 
-void trace_photons(const rtr::scene& scene, const rtr::photon& photon, std::vector<rtr::photon>& hit_photons)
+void trace_photons(const soleil::scene& scene, const soleil::photon& photon, std::vector<soleil::photon>& hit_photons)
 {
-    auto photon_ray = rtr::ray(photon.origin(), photon.direction(), 0, false);
+    auto photon_ray = soleil::ray(photon.origin(), photon.direction(), 0, false);
     auto payload = scene.hit(photon_ray);
 
     if (!payload)
@@ -28,9 +28,9 @@ void trace_photons(const rtr::scene& scene, const rtr::photon& photon, std::vect
     hit_photons.emplace_back(photon.power() * clr, payload->hit_pos, photon_ray.direction());
 
     // decide the photon's fate with russian roulette
-    rtr::PathType decision = material->russian_roulette();
+    soleil::PathType decision = material->russian_roulette();
 
-    if (decision == rtr::PathType::Absorbed)
+    if (decision == soleil::PathType::Absorbed)
     {
         return;
     }
@@ -38,7 +38,7 @@ void trace_photons(const rtr::scene& scene, const rtr::photon& photon, std::vect
     auto direction = material->sample(payload->hit_normal, *payload);
 
     ////  TODO: update the power now!
-    rtr::photon new_photon(photon.power() * clr, payload->hit_pos + direction * 1e-4f, direction);
+    soleil::photon new_photon(photon.power() * clr, payload->hit_pos + direction * 1e-4f, direction);
     trace_photons(scene, new_photon, hit_photons);
 }
 
@@ -61,7 +61,7 @@ inline void UpdateProgress(float progress)
     std::cout.flush();
 };
 
-glm::vec3 rtr::photon_integrator::render_ray(const rtr::scene& scene, const rtr::ray& ray, const rtr::photon_map& p_map)
+glm::vec3 soleil::photon_integrator::render_ray(const soleil::scene& scene, const soleil::ray& ray, const soleil::photon_map& p_map)
 {
     glm::vec3 color{0, 0, 0};
     auto payload = scene.hit(ray);
@@ -75,7 +75,7 @@ glm::vec3 rtr::photon_integrator::render_ray(const rtr::scene& scene, const rtr:
     {
         auto dir = material->sample(payload->hit_normal, *payload);
 
-        rtr::ray ref_ray{payload->hit_pos + dir * 1e-4f, dir, ray.rec_depth + 1, false};
+        soleil::ray ref_ray{payload->hit_pos + dir * 1e-4f, dir, ray.rec_depth + 1, false};
 
         auto ref_color = render_ray(scene, ref_ray, p_map);
 
@@ -98,9 +98,9 @@ glm::vec3 rtr::photon_integrator::render_ray(const rtr::scene& scene, const rtr:
     return color;
 }
 
-glm::vec3 rtr::photon_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
-                                               const rtr::photon_map& p_map, const glm::vec3& pix_center,
-                                               const rtr::image_plane& plane, const glm::vec3& right,
+glm::vec3 soleil::photon_integrator::render_pixel(const soleil::scene& scene, const soleil::camera& camera,
+                                               const soleil::photon_map& p_map, const glm::vec3& pix_center,
+                                               const soleil::image_plane& plane, const glm::vec3& right,
                                                const glm::vec3& below)
 {
     // supersampling - jittered stratified
@@ -116,7 +116,7 @@ glm::vec3 rtr::photon_integrator::render_pixel(const rtr::scene& scene, const rt
             auto camera_pos = camera.position(); // random sample on the lens if not pinhole
             auto sub_pix_position =
                 get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
-            auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
+            auto ray = soleil::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
             color += render_ray(scene, ray, p_map);
         }
@@ -125,11 +125,11 @@ glm::vec3 rtr::photon_integrator::render_pixel(const rtr::scene& scene, const rt
     return color / float(sq_sample_pp * sq_sample_pp);
 }
 
-void rtr::photon_integrator::render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i,
-                                         const rtr::photon_map& p_map)
+void soleil::photon_integrator::render_line(const soleil::scene& scene, const glm::vec3& row_begin, int i,
+                                         const soleil::photon_map& p_map)
 {
     const auto& camera = scene.get_camera();
-    rtr::image_plane plane(camera, width, height);
+    soleil::image_plane plane(camera, width, height);
 
     auto right = (1 / float(width)) * plane.right();
     auto below = -(1 / float(height)) * plane.up();
@@ -144,10 +144,10 @@ void rtr::photon_integrator::render_line(const rtr::scene& scene, const glm::vec
     }
 }
 
-void rtr::photon_integrator::sub_render(const rtr::scene& scene, const rtr::photon_map& p_map)
+void soleil::photon_integrator::sub_render(const soleil::scene& scene, const soleil::photon_map& p_map)
 {
     const auto& camera = scene.get_camera();
-    rtr::image_plane plane(camera, width, height);
+    soleil::image_plane plane(camera, width, height);
 
     auto right = (1 / float(width)) * plane.right();
     auto below = -(1 / float(height)) * plane.up();
@@ -181,11 +181,11 @@ void rtr::photon_integrator::sub_render(const rtr::scene& scene, const rtr::phot
     }
 }
 
-std::vector<glm::vec3> rtr::photon_integrator::render(const rtr::scene& scene)
+std::vector<glm::vec3> soleil::photon_integrator::render(const soleil::scene& scene)
 {
 //    // Phase 1 for photon mapping:
 //    // Iterate through all the lights, and shoot photons in random directions.
-//    std::vector<rtr::photon> emitted_photons;
+//    std::vector<soleil::photon> emitted_photons;
 //    scene.for_each_light([this, &emitted_photons](auto light) {
 //        auto new_photons = light.distribute_photons(num_photons);
 //        emitted_photons.insert(emitted_photons.end(), std::make_move_iterator(new_photons.begin()),
@@ -194,14 +194,14 @@ std::vector<glm::vec3> rtr::photon_integrator::render(const rtr::scene& scene)
 //
 //    // actual photon mapping. Trace all the photons through their paths and
 //    // save their positions and directions.
-//    std::vector<rtr::photon> hit_photons;
+//    std::vector<soleil::photon> hit_photons;
 //    for (auto& photon : emitted_photons)
 //    {
 //        trace_photons(scene, photon, hit_photons);
 //    }
 //    // std::cout << hit_photons.size() << '\n';
 //
-//    rtr::photon_map p_map(hit_photons);
+//    soleil::photon_map p_map(hit_photons);
 //    sub_render(scene, p_map);
 //
     return frame_buffer;

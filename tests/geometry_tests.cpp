@@ -3,34 +3,34 @@
 #include "utils.hpp"
 #include <glm/glm.hpp>
 
-rtr::primitives::mesh load_quad(const glm::mat4x4 &transform)
+soleil::primitives::mesh load_quad(const glm::mat4x4 &transform)
 {
-    std::vector<rtr::vertex> vertices = {rtr::vertex({-0.5f, 0.0f, -0.5f}),
-                                         rtr::vertex({0.5f, 0.0f, -0.5f}),
-                                         rtr::vertex({0.5f, 0.0f, 0.5f}),
-                                         rtr::vertex({-0.5f, 0.0f, 0.5f})};
+    std::vector<soleil::vertex> vertices = {soleil::vertex({-0.5f, 0.0f, -0.5f}),
+                                         soleil::vertex({0.5f, 0.0f, -0.5f}),
+                                         soleil::vertex({0.5f, 0.0f, 0.5f}),
+                                         soleil::vertex({-0.5f, 0.0f, 0.5f})};
 
     for (auto &vertex : vertices)
         vertex.transform(transform);
 
-    std::vector<rtr::primitives::face> faces;
-    faces.emplace_back(rtr::primitives::face({vertices[0], vertices[1], vertices[2]},
-                                             rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
-    faces.emplace_back(rtr::primitives::face({vertices[0], vertices[2], vertices[3]},
-                                             rtr::primitives::face::normal_types::per_face, rtr::primitives::face::material_binding::per_object));
+    std::vector<soleil::primitives::face> faces;
+    faces.emplace_back(soleil::primitives::face({vertices[0], vertices[1], vertices[2]},
+                                             soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
+    faces.emplace_back(soleil::primitives::face({vertices[0], vertices[2], vertices[3]},
+                                             soleil::primitives::face::normal_types::per_face, soleil::primitives::face::material_binding::per_object));
 
-    return rtr::primitives::mesh(faces, "quad");
+    return soleil::primitives::mesh(faces, "quad");
 }
 
 TEST_CASE("Testing Quads: Identity transformation")
 {
-    std::vector<rtr::vertex> vertices = {rtr::vertex({-0.5f, 0.0f, -0.5f}),
-                                         rtr::vertex({0.5f, 0.0f, -0.5f}),
-                                         rtr::vertex({0.5f, 0.0f, 0.5f}),
+    std::vector<soleil::vertex> vertices = {soleil::vertex({-0.5f, 0.0f, -0.5f}),
+                                         soleil::vertex({0.5f, 0.0f, -0.5f}),
+                                         soleil::vertex({0.5f, 0.0f, 0.5f}),
 
-                                         rtr::vertex({-0.5f, 0.0f, -0.5f}),
-                                         rtr::vertex({0.5f, 0.0f, 0.5f}),
-                                         rtr::vertex({-0.5f, 0.0f, 0.5f})};
+                                         soleil::vertex({-0.5f, 0.0f, -0.5f}),
+                                         soleil::vertex({0.5f, 0.0f, 0.5f}),
+                                         soleil::vertex({-0.5f, 0.0f, 0.5f})};
 
     auto quad = load_quad(glm::mat4x4(1.f));
     for (int i = 0; i < quad.faces.size(); ++i)
@@ -44,13 +44,13 @@ TEST_CASE("Testing Quads: Identity transformation")
 
 TEST_CASE("Testing Quads: Translation")
 {
-    std::vector<rtr::vertex> vertices = {rtr::vertex({0.5f, -1.0f, 1.5f}),
-                                         rtr::vertex({1.5f, -1.0f, 1.5f}),
-                                         rtr::vertex({1.5f, -1.0f, 2.5f}),
+    std::vector<soleil::vertex> vertices = {soleil::vertex({0.5f, -1.0f, 1.5f}),
+                                         soleil::vertex({1.5f, -1.0f, 1.5f}),
+                                         soleil::vertex({1.5f, -1.0f, 2.5f}),
 
-                                         rtr::vertex({0.5f, -1.0f, 1.5f}),
-                                         rtr::vertex({1.5f, -1.0f, 2.5f}),
-                                         rtr::vertex({0.5f, -1.0f, 2.5f})};
+                                         soleil::vertex({0.5f, -1.0f, 1.5f}),
+                                         soleil::vertex({1.5f, -1.0f, 2.5f}),
+                                         soleil::vertex({0.5f, -1.0f, 2.5f})};
 
     auto transform = glm::mat4x4(1.f);
     glm::vec3 translation = {1.0f, -1.0f, 2.0f};
@@ -68,13 +68,13 @@ TEST_CASE("Testing Quads: Translation")
 
 // TEST_CASE("Testing Quads: Rotation")
 // {
-//     std::vector<rtr::vertex> vertices = {rtr::vertex({0.5f, -1.0f, 1.5f}),
-//                                          rtr::vertex({1.5f, -1.0f, 1.5f}),
-//                                          rtr::vertex({1.5f, -1.0f, 2.5f}),
+//     std::vector<soleil::vertex> vertices = {soleil::vertex({0.5f, -1.0f, 1.5f}),
+//                                          soleil::vertex({1.5f, -1.0f, 1.5f}),
+//                                          soleil::vertex({1.5f, -1.0f, 2.5f}),
 
-//                                          rtr::vertex({0.5f, -1.0f, 1.5f}),
-//                                          rtr::vertex({1.5f, -1.0f, 2.5f}),
-//                                          rtr::vertex({0.5f, -1.0f, 2.5f})};
+//                                          soleil::vertex({0.5f, -1.0f, 1.5f}),
+//                                          soleil::vertex({1.5f, -1.0f, 2.5f}),
+//                                          soleil::vertex({0.5f, -1.0f, 2.5f})};
 
 //     auto transform = glm::mat4x4(1.f);
 //     glm::vec3 translation = {1.0f, -1.0f, 2.0f};
@@ -92,13 +92,13 @@ TEST_CASE("Testing Quads: Translation")
 
 // TEST_CASE("Testing Quads: Scale")
 // {
-//     std::vector<rtr::vertex> vertices = {rtr::vertex({0.5f, -1.0f, 1.5f}),
-//                                          rtr::vertex({1.5f, -1.0f, 1.5f}),
-//                                          rtr::vertex({1.5f, -1.0f, 2.5f}),
+//     std::vector<soleil::vertex> vertices = {soleil::vertex({0.5f, -1.0f, 1.5f}),
+//                                          soleil::vertex({1.5f, -1.0f, 1.5f}),
+//                                          soleil::vertex({1.5f, -1.0f, 2.5f}),
 
-//                                          rtr::vertex({0.5f, -1.0f, 1.5f}),
-//                                          rtr::vertex({1.5f, -1.0f, 2.5f}),
-//                                          rtr::vertex({0.5f, -1.0f, 2.5f})};
+//                                          soleil::vertex({0.5f, -1.0f, 1.5f}),
+//                                          soleil::vertex({1.5f, -1.0f, 2.5f}),
+//                                          soleil::vertex({0.5f, -1.0f, 2.5f})};
 
 //     auto transform = glm::mat4x4(1.f);
 //     glm::vec3 translation = {1.0f, -1.0f, 2.0f};
@@ -116,13 +116,13 @@ TEST_CASE("Testing Quads: Translation")
 
 // TEST_CASE("Testing Quads: Arbitrary transform")
 // {
-//     std::vector<rtr::vertex> vertices = {rtr::vertex({0.5f, -1.0f, 1.5f}),
-//                                          rtr::vertex({1.5f, -1.0f, 1.5f}),
-//                                          rtr::vertex({1.5f, -1.0f, 2.5f}),
+//     std::vector<soleil::vertex> vertices = {soleil::vertex({0.5f, -1.0f, 1.5f}),
+//                                          soleil::vertex({1.5f, -1.0f, 1.5f}),
+//                                          soleil::vertex({1.5f, -1.0f, 2.5f}),
 
-//                                          rtr::vertex({0.5f, -1.0f, 1.5f}),
-//                                          rtr::vertex({1.5f, -1.0f, 2.5f}),
-//                                          rtr::vertex({0.5f, -1.0f, 2.5f})};
+//                                          soleil::vertex({0.5f, -1.0f, 1.5f}),
+//                                          soleil::vertex({1.5f, -1.0f, 2.5f}),
+//                                          soleil::vertex({0.5f, -1.0f, 2.5f})};
 
 //     auto transform = glm::mat4x4(1.f);
 //     glm::vec3 translation = {1.0f, -1.0f, 2.0f};

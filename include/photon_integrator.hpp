@@ -8,7 +8,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace rtr
+namespace soleil
 {
 class ray;
 class scene;
@@ -23,7 +23,7 @@ public:
     {
         frame_buffer.resize(width * height);
     }
-    std::vector<glm::vec3> render(const rtr::scene& scene);
+    std::vector<glm::vec3> render(const soleil::scene& scene);
 
 private:
     int num_photons;
@@ -31,17 +31,17 @@ private:
     unsigned int height;
 
     std::vector<glm::vec3> frame_buffer;
-    void sub_render(const rtr::scene& scene, const rtr::photon_map& p_map);
-    void render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i, const rtr::photon_map& p_map);
-    glm::vec3 render_pixel(const rtr::scene& scene, const rtr::camera& camera, const rtr::photon_map& p_map,
-                           const glm::vec3& pix_center, const rtr::image_plane& plane, const glm::vec3& right,
+    void sub_render(const soleil::scene& scene, const soleil::photon_map& p_map);
+    void render_line(const soleil::scene& scene, const glm::vec3& row_begin, int i, const soleil::photon_map& p_map);
+    glm::vec3 render_pixel(const soleil::scene& scene, const soleil::camera& camera, const soleil::photon_map& p_map,
+                           const glm::vec3& pix_center, const soleil::image_plane& plane, const glm::vec3& right,
                            const glm::vec3& below);
 
-    glm::vec3 render_ray(const rtr::scene& scene, const rtr::ray& ray, const rtr::photon_map& p_map);
+    glm::vec3 render_ray(const soleil::scene& scene, const soleil::ray& ray, const soleil::photon_map& p_map);
 };
 
 template<int sq_sample_pp>
-glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
+glm::vec3 get_pixel_pos(const glm::vec3& top_left, const soleil::image_plane& plane, const soleil::camera& camera,
                         const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<true>)
 {
     auto random_u = get_random_float();
@@ -67,7 +67,7 @@ glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane
 }
 
 template<int sq_sample_pp>
-glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane, const rtr::camera& camera,
+glm::vec3 get_pixel_pos(const glm::vec3& top_left, const soleil::image_plane& plane, const soleil::camera& camera,
                         const glm::vec3& right, const glm::vec3& below, int u, int v, std::bool_constant<false>)
 {
     if constexpr (sq_sample_pp == 1)
@@ -85,4 +85,4 @@ glm::vec3 get_pixel_pos(const glm::vec3& top_left, const rtr::image_plane& plane
     return sample;
 }
 
-} // namespace rtr
+} // namespace soleil

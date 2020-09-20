@@ -1,7 +1,7 @@
 #include "../doctest/doctest.h"
 #include <aabb.hpp>
 
-namespace rtr {
+namespace soleil {
 namespace {
 TEST_CASE("bounding box works for trivial cases") {
     std::array<vertex, 3> face;

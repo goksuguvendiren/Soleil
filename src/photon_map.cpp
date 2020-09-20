@@ -11,7 +11,7 @@
 #include <random>
 #include <vector>
 
-rtr::photon_map::photon_map(const std::vector<rtr::photon>& photons)
+soleil::photon_map::photon_map(const std::vector<soleil::photon>& photons)
 {
     pointVec poss(photons.size());
     std::transform(photons.begin(), photons.end(), poss.begin(), [](auto& ph) {
@@ -23,10 +23,10 @@ rtr::photon_map::photon_map(const std::vector<rtr::photon>& photons)
     tree = KDTree(std::move(poss));
 }
 
-std::vector<rtr::photon> rtr::photon_map::search(const glm::vec3& position, float d) const
+std::vector<soleil::photon> soleil::photon_map::search(const glm::vec3& position, float d) const
 {
     auto res = tree.neighborhood_points(std::vector<double>{position.x, position.y, position.z}, d);
-    std::vector<rtr::photon> return_vec;
+    std::vector<soleil::photon> return_vec;
     return_vec.reserve(res.size());
     std::transform(res.begin(), res.end(), std::back_inserter(return_vec),
                    [&](auto& pt) { return map.find(pt)->second; });

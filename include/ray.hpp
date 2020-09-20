@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <stdexcept>
 
-namespace rtr
+namespace soleil
 {
 class ray
 {
@@ -51,4 +51,4 @@ public:
         return is_prim;
     }
 };
-} // namespace rtr
+} // namespace soleil

@@ -31,9 +31,9 @@ glm::vec3 refract(const glm::vec3& I, const glm::vec3& N, const float& ior)
     return k < 0 ? glm::vec3{0, 0, 0} : eta * I + (eta * cosi - sqrtf(k)) * n;
 }
 
-std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
+std::optional<soleil::payload> soleil::scene::hit(const soleil::ray& ray) const
 {
-    std::optional<rtr::payload> min_hit = std::nullopt;
+    std::optional<soleil::payload> min_hit = std::nullopt;
 
     for (auto& sphere : information.spheres)
     {
@@ -42,6 +42,23 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
             continue;
         if (!min_hit || hit->param < min_hit->param)
         {
+            min_hit = *hit;
+        }
+    }
+
+    for (auto& quad : information.m_quads)
+    {
+        auto hit = quad.hit(ray);
+        if (!hit)
+            continue;
+
+        if (std::isnan(hit->param))
+            throw std::runtime_error("param is nan in scene::hit()!");
+
+        if (!min_hit || hit->param < min_hit->param)
+        {
+            if (std::isnan(hit->param))
+                throw std::runtime_error("param is nan in scene::hit() 1!");
             min_hit = *hit;
         }
     }
@@ -85,10 +102,10 @@ std::optional<rtr::payload> rtr::scene::hit(const rtr::ray& ray) const
 }
 
 // Do it recursively
-glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) const
+glm::vec3 soleil::scene::shadow_trace(const soleil::ray& ray, float light_distance) const
 {
     auto shadow = glm::vec3{1.f, 1.f, 1.f};
-    std::optional<rtr::payload> pld = hit(ray);
+    std::optional<soleil::payload> pld = hit(ray);
 
     if (!pld)
         return shadow;
@@ -102,15 +119,15 @@ glm::vec3 rtr::scene::shadow_trace(const rtr::ray& ray, float light_distance) co
     }
 
     auto hit_position = pld->hit_pos + ray.direction() * 1e-4f;
-    rtr::ray shadow_ray = rtr::ray(hit_position, ray.direction(), ray.rec_depth, false);
+    soleil::ray shadow_ray = soleil::ray(hit_position, ray.direction(), ray.rec_depth, false);
 
     return shadow * shadow_trace(shadow_ray, light_distance - glm::length(pld->hit_pos - ray.origin()));
 }
 
-//glm::vec3 rtr::scene::photon_trace(const rtr::ray& photon_ray) const
+//glm::vec3 soleil::scene::photon_trace(const soleil::ray& photon_ray) const
 //{}
 
-void rtr::scene::print() const
+void soleil::scene::print() const
 {
     std::cerr << "Camera : \n";
     std::cerr << "\t Pos : " << information.camera.center() << '\n';
@@ -151,7 +168,7 @@ void rtr::scene::print() const
     });
 }
 
-const rtr::light::base& rtr::scene::sample_light() const
+const soleil::light::base& soleil::scene::sample_light() const
 {
     auto total_light_count = information.total_light_size();
     auto random = get_random_float();
@@ -174,5 +191,6 @@ const rtr::light::base& rtr::scene::sample_light() const
         return information.area_lights[index];
     }
 
+    __builtin_unreachable();
     assert(false);
 }

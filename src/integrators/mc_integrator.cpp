@@ -13,13 +13,25 @@
 #include <thread>
 #include <vector>
 
-glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray) const
+glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil::ray& ray) const
 {
     auto pld = scene.hit(ray);
 
     if (!pld)
     {
-        return glm::vec3(0,0,0);
+        // in branch prediction we trust.
+        if (scene.environment_sphere())
+        {
+            auto env_pld = scene.environment_sphere()->hit(ray);
+
+            if (env_pld)
+            {
+                const auto &material = scene.get_material(env_pld->material_idx);
+                return material->f(scene, *env_pld);
+            }
+            assert(false && "all rays that miss the scene should hit the bounding sphere");
+        }
+        return scene.background_color();
     }
 
     auto visualize_direction = [](const glm::vec3& dir) -> glm::vec3
@@ -27,13 +39,13 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
         return (dir + 1.f) * 0.5f;
     };
 
-    auto normal_visualized = visualize_direction(pld->hit_normal);
-
     // FIXME: quad loading bug, to be fixed
-//    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
-//    {
-//        pld->hit_normal *= -1;
-//    }
+    if (glm::dot(ray.direction(), pld->hit_normal) > 0)
+    {
+        pld->hit_normal *= -1;
+    }
+
+    auto normal_visualized = visualize_direction(pld->hit_normal);
 
     const auto &material = scene.get_material(pld->material_idx);
     if (pld->emission)
@@ -42,13 +54,17 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     }
 
     // direct lighting.
-    const auto& light = scene.sample_light();
-    auto [li, light_dir] = light.sample_li(scene, *pld);
+    auto L_direct = glm::vec3(0.f);
+    if (scene.total_light_size() != 0 && !material->is_mirror())
+    {
+        const auto& light = scene.sample_light();
+        auto [li, light_dir] = light.sample_li(scene, *pld);
 
-    auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
-    auto bsdf = material->f(scene, *pld);
+        auto ldotn = glm::max(glm::dot(light_dir, pld->hit_normal), 0.f);
+        auto bsdf = material->f(scene, *pld);
 
-    auto L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
+        L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
+    }
 
     if (pld->ray.rec_depth >= 6)
     {
@@ -60,7 +76,7 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     auto sample_direction = material->sample(pld->hit_normal, *pld);
 
     // incoming light from the random ray.
-    auto reflection_ray = rtr::ray(pld->hit_pos + (pld->hit_normal * 7e-2f), sample_direction, pld->ray.rec_depth + 1, false);
+    auto reflection_ray = soleil::ray(pld->hit_pos + (pld->hit_normal * 7e-2f), sample_direction, pld->ray.rec_depth + 1, false);
     auto L_in = shade(scene, reflection_ray);
 
     auto cos_theta = glm::max(glm::dot(pld->hit_normal, sample_direction), 0.f);
@@ -69,12 +85,12 @@ glm::vec3 rtr::mc_integrator::shade(const rtr::scene& scene, const rtr::ray& ray
     return (L_indirect + L_direct) / 2.f;
 }
 
-glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::camera& camera,
-                                                    const glm::vec3& pix_center, const rtr::image_plane& plane,
+glm::vec3 soleil::mc_integrator::render_pixel(const soleil::scene& scene, const soleil::camera& camera,
+                                                    const glm::vec3& pix_center, const soleil::image_plane& plane,
                                                     const glm::vec3& right, const glm::vec3& below)
 {
     // supersampling - jittered stratified
-    constexpr int sq_sample_pp = 2;
+    constexpr int sq_sample_pp = 1;
     auto is_lens = std::bool_constant<false>();
 
     glm::vec3 color = {0, 0, 0};
@@ -86,7 +102,7 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
             auto camera_pos = camera.position(); // random sample on the lens if not pinhole
             auto sub_pix_position =
                 get_pixel_pos<sq_sample_pp>(pix_center, plane, camera, right, below, k, m, is_lens); // get the q
-            auto ray = rtr::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
+            auto ray = soleil::ray(camera_pos, sub_pix_position - camera_pos, 0, true);
 
             auto pix_color = shade(scene, ray);
             color += pix_color;
@@ -96,16 +112,16 @@ glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, const rtr::c
     return color / float(sq_sample_pp * sq_sample_pp);
 }
 
-void rtr::mc_integrator::render_line(const rtr::scene& scene, const glm::vec3& row_begin, int i)
+void soleil::mc_integrator::render_line(const soleil::scene& scene, const glm::vec3& row_begin, int i)
 {
     const auto& camera = scene.get_camera();
-    rtr::image_plane plane(camera, width, height);
+    soleil::image_plane plane(camera, m_width, m_height);
 
-    auto right = (1 / float(width)) * plane.right();
-    auto below = -(1 / float(height)) * plane.up();
+    auto right = (1 / float(m_width)) * plane.right();
+    auto below = -(1 / float(m_height)) * plane.up();
 
     glm::vec3 pix_center = row_begin;
-    for (int j = 0; j < width; ++j)
+    for (int j = 0; j < m_width; ++j)
     {
         pix_center += right;
         glm::vec3 color = {0.f, 0.f, 0.f};
@@ -114,17 +130,17 @@ void rtr::mc_integrator::render_line(const rtr::scene& scene, const glm::vec3& r
             color += render_pixel(scene, camera, pix_center, plane, right, below);
         }
 
-        frame_buffer[i * width + j] = color;// / float(scene.samples_per_pixel());
+        frame_buffer[i * m_width + j] = color;// / float(scene.samples_per_pixel());
     }
 }
 
-void rtr::mc_integrator::sub_render(const rtr::scene& scene)
+void soleil::mc_integrator::sub_render(const soleil::scene& scene)
 {
     const auto& camera = scene.get_camera();
-    rtr::image_plane plane(camera, width, height);
+    soleil::image_plane plane(camera, m_width, m_height);
 
-    auto right = (1 / float(width)) * plane.right();
-    auto below = -(1 / float(height)) * plane.up();
+    auto right = (1 / float(m_width)) * plane.right();
+    auto below = -(1 / float(m_height)) * plane.up();
 
     auto pix_center = plane.top_left_position();
 
@@ -136,12 +152,12 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
     {
         threads.push_back(std::thread([i, &scene, pix_center, this, &below, &n, number_of_threads]
         {
-            for (int j = i; j < height; j += number_of_threads)
+            for (int j = i; j < m_height; j += number_of_threads)
             {
                 auto row_begin = pix_center + below * float(j);
                 render_line(scene, row_begin, j);
                 n++;
-                UpdateProgress(n / (float)height);
+                UpdateProgress(n / (float)m_height);
             }
         }));
     }
@@ -152,28 +168,28 @@ void rtr::mc_integrator::sub_render(const rtr::scene& scene)
     }
 }
 
-glm::vec3 rtr::mc_integrator::render_pixel(const rtr::scene& scene, int i, int j)
+glm::vec3 soleil::mc_integrator::render_pixel(const soleil::scene& scene, int i, int j)
 {
     const auto& camera = scene.get_camera();
-    rtr::image_plane plane(camera, width, height);
+    soleil::image_plane plane(camera, m_width, m_height);
 
-    auto right = (1 / float(width)) * plane.right();
-    auto below = -(1 / float(height)) * plane.up();
+    auto right = (1 / float(m_width)) * plane.right();
+    auto below = -(1 / float(m_height)) * plane.up();
 
     auto pix_center = plane.top_left_position();
 
-    auto row_begin = pix_center + below * float(j);
+    auto row_begin = pix_center + below * float(i);
     pix_center += float(j) * right;
     //    render_line(scene, row_begin, j);
-    pix_center += right;
+//    pix_center += right;
     auto color = render_pixel(scene, camera, pix_center, plane, right, below);
 
-    frame_buffer[i * width + j] = color;
+    frame_buffer[i * m_width + j] = color;
 
     return color;
 }
 
-std::vector<glm::vec3> rtr::mc_integrator::render(const rtr::scene& scene)
+std::vector<glm::vec3> soleil::mc_integrator::render(const soleil::scene& scene)
 {
     sub_render(scene);
 

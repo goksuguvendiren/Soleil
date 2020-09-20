@@ -17,7 +17,7 @@
 #include <string>
 #include <vector>
 
-namespace rtr
+namespace soleil
 {
 struct payload;
 class ray;
@@ -37,7 +37,7 @@ struct face
         per_object
     };
 
-    face(std::array<rtr::vertex, 3> vert,
+    face(std::array<soleil::vertex, 3> vert,
          normal_types norm_type = normal_types::per_vertex,
          material_binding mat_type = material_binding::per_object)
         : vertices(std::move(vert))
@@ -58,8 +58,8 @@ struct face
         box = aabb(vertices);
     }
 
-    std::array<rtr::vertex, 3> vertices;
-    std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+    std::array<soleil::vertex, 3> vertices;
+    std::optional<soleil::payload> hit(const soleil::ray& ray) const;
 
     aabb box;
 
@@ -72,22 +72,22 @@ struct face
 class mesh
 {
 public:
-    mesh(std::vector<rtr::primitives::face> fcs, const std::string& nm)
+    mesh(std::vector<soleil::primitives::face> fcs, const std::string& nm)
         : faces(std::move(fcs))
         , name(nm)
     {
         auto begin = std::chrono::system_clock::now();
-        std::vector<rtr::primitives::face*> face_ptrs;
+        std::vector<soleil::primitives::face*> face_ptrs;
         face_ptrs.reserve(faces.size());
         for (auto& f : faces)
         {
             face_ptrs.push_back(&f);
         }
-        tree = rtr::kd_tree(face_ptrs);
+        tree = soleil::kd_tree(face_ptrs);
 
         auto end = std::chrono::system_clock::now();
-        std::cout << "BVH construction took : "
-                  << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
+//        std::cout << "BVH construction took : "
+//                  << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " millisecs.\n";
 
     }
 
@@ -96,29 +96,29 @@ public:
         for (auto& face : faces)
             face.transform(transformer);
 
-        std::vector<rtr::primitives::face*> face_ptrs;
+        std::vector<soleil::primitives::face*> face_ptrs;
         face_ptrs.reserve(faces.size());
         for (auto& f : faces)
         {
             face_ptrs.push_back(&f);
         }
-        tree = rtr::kd_tree(face_ptrs);
+        tree = soleil::kd_tree(face_ptrs);
     }
 
     void update_tree()
     {
-        std::vector<rtr::primitives::face*> face_ptrs;
+        std::vector<soleil::primitives::face*> face_ptrs;
         face_ptrs.reserve(faces.size());
         for (auto& f : faces)
         {
             face_ptrs.push_back(&f);
         }
 
-        tree = rtr::kd_tree(face_ptrs);
+        tree = soleil::kd_tree(face_ptrs);
     }
 
     std::vector<int> material_idx;
-    [[nodiscard]] std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+    [[nodiscard]] std::optional<soleil::payload> hit(const soleil::ray& ray) const;
 
     int id;
     std::string name;
@@ -126,7 +126,7 @@ public:
     mesh(mesh&&) noexcept = default;
     mesh(const mesh&) = delete;
 
-    std::vector<rtr::primitives::face> faces;
+    std::vector<soleil::primitives::face> faces;
 
     mesh copy() const
     {
@@ -149,10 +149,10 @@ public:
             }
         }
     }
-    [[nodiscard]] const rtr::aabb& bounding_box() const { return tree.bounding_box(); }
+    [[nodiscard]] const soleil::aabb& bounding_box() const { return tree.bounding_box(); }
 
 private:
-    rtr::kd_tree tree;
+    soleil::kd_tree tree;
 };
 } // namespace primitives
-} // namespace rtr
+} // namespace soleil

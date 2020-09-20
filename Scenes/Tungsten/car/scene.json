@@ -1,0 +1,613 @@
+{
+    "media": [],
+    "bsdfs": [
+        {
+            "name": "CarPaint",
+            "albedo": 1.0,
+            "type": "smooth_coat",
+            "ior": 1.5,
+            "thickness": 0.75,
+            "sigma_a": [
+                1.110450029373169,
+                0.9261429905891418,
+                0.0
+            ],
+            "substrate": {
+                "albedo": 1.0,
+                "type": "rough_conductor",
+                "distribution": "ggx",
+                "roughness": 0.1,
+                "material": "Al"
+            }
+        },
+        {
+            "name": "Chrome",
+            "albedo": 1.0,
+            "type": "rough_conductor",
+            "distribution": "ggx",
+            "roughness": 0.01,
+            "material": "Cr"
+        },
+        {
+            "name": "WheelPaint",
+            "albedo": [
+                0.5607839822769165,
+                0.5607839822769165,
+                0.2784309983253479
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "WhiteRubber",
+            "albedo": 0.47451,
+            "type": "rough_plastic",
+            "ior": 1.5,
+            "thickness": 1.0,
+            "sigma_a": 0.0,
+            "distribution": "ggx",
+            "roughness": 0.4
+        },
+        {
+            "name": "DarkRubber",
+            "albedo": 0.01,
+            "type": "rough_plastic",
+            "ior": 1.5,
+            "thickness": 1.0,
+            "sigma_a": 0.0,
+            "distribution": "ggx",
+            "roughness": 0.4
+        },
+        {
+            "name": "WindowGlass",
+            "albedo": 1.0,
+            "type": "thinsheet",
+            "ior": 1.5,
+            "enable_interference": false,
+            "thickness": 0.5,
+            "sigma_a": 0.0
+        },
+        {
+            "name": "Seats",
+            "albedo": 0.8,
+            "type": "lambert"
+        },
+        {
+            "name": "Exhaust",
+            "albedo": [
+                0.137254998087883,
+                0.09411759674549103,
+                0.06666669994592667
+            ],
+            "type": "lambert"
+        },
+        {
+            "name": "CarBottom",
+            "albedo": 0.1,
+            "type": "lambert"
+        },
+        {
+            "name": "Ground",
+            "albedo": 0.1,
+            "type": "lambert"
+        },
+        {
+            "name": "RoughSteel",
+            "albedo": 1.0,
+            "type": "rough_conductor",
+            "distribution": "ggx",
+            "roughness": 0.1,
+            "material": "Cr"
+        },
+        {
+            "name": "Radiator",
+            "albedo": 0.028991,
+            "type": "lambert"
+        },
+        {
+            "name": "WheelColumn",
+            "albedo": 0.578596,
+            "type": "lambert"
+        }
+    ],
+    "primitives": [
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh014.wo3",
+            "bsdf": "Seats"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh017.wo3",
+            "bsdf": "Seats"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh018.wo3",
+            "bsdf": "Seats"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh009.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh016.wo3",
+            "bsdf": "WheelColumn"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh023.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh022.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh010.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh003.wo3",
+            "bsdf": "WindowGlass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh024.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh002.wo3",
+            "bsdf": "CarPaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh044.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh021.wo3",
+            "bsdf": "CarPaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh020.wo3",
+            "bsdf": "CarPaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh041.wo3",
+            "bsdf": "DarkRubber"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh006.wo3",
+            "bsdf": "Seats"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh004.wo3",
+            "bsdf": "RoughSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh042.wo3",
+            "bsdf": "RoughSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh007.wo3",
+            "bsdf": "RoughSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh001.wo3",
+            "bsdf": "RoughSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh011.wo3",
+            "bsdf": "DarkRubber"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh015.wo3",
+            "bsdf": "WhiteRubber"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh037.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh026.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh028.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh046.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh031.wo3",
+            "bsdf": "WindowGlass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh032.wo3",
+            "bsdf": "WindowGlass"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh034.wo3",
+            "bsdf": "CarBottom"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh033.wo3",
+            "bsdf": "CarBottom"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh035.wo3",
+            "bsdf": "CarBottom"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh036.wo3",
+            "bsdf": "CarBottom"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh038.wo3",
+            "bsdf": "CarBottom"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh040.wo3",
+            "bsdf": "Exhaust"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh029.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh025.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh012.wo3",
+            "bsdf": "RoughSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh030.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh019.wo3",
+            "bsdf": "Chrome"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh013.wo3",
+            "bsdf": "Radiator"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh043.wo3",
+            "bsdf": "WheelPaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh045.wo3",
+            "bsdf": "RoughSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh005.wo3",
+            "bsdf": "RoughSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh039.wo3",
+            "bsdf": "RoughSteel"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh047.wo3",
+            "bsdf": "CarPaint"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": false,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh008.wo3",
+            "bsdf": "CarBottom"
+        },
+        {
+            "transform": {},
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh000.wo3",
+            "bsdf": "CarBottom"
+        },
+        {
+            "transform": {
+                "position": [
+                    30.909700393676758,
+                    9.471369743347168,
+                    -4.603030204772949
+                ],
+                "rotation": [
+                    0.0,
+                    -34.95859909057617,
+                    0.0
+                ]
+            },
+            "type": "mesh",
+            "smooth": true,
+            "backface_culling": false,
+            "recompute_normals": false,
+            "file": "models/Mesh027.obj",
+            "bsdf": "Ground"
+        },
+        {
+            "transform": {},
+            "emission": "textures/envmap.pfm",
+            "type": "infinite_sphere",
+            "sample": true
+        }
+    ],
+    "camera": {
+        "tonemap": "filmic",
+        "resolution": [
+            1280,
+            720
+        ],
+        "reconstruction_filter": "tent",
+        "transform": {
+            "position": [
+                1.2689704895019531,
+                5.083189964294434,
+                8.197000503540039
+            ],
+            "look_at": [
+                6.863770008087158,
+                1.557129979133606,
+                -0.21986399590969086
+            ],
+            "up": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        "type": "pinhole",
+        "fov": 60.0
+    },
+    "integrator": {
+        "min_bounces": 0,
+        "max_bounces": 64,
+        "enable_consistency_checks": false,
+        "enable_two_sided_shading": true,
+        "type": "path_tracer",
+        "enable_light_sampling": true,
+        "enable_volume_light_sampling": true
+    },
+    "renderer": {
+        "overwrite_output_files": true,
+        "adaptive_sampling": true,
+        "enable_resume_render": false,
+        "stratified_sampler": true,
+        "scene_bvh": true,
+        "spp": 64,
+        "spp_step": 16,
+        "checkpoint_interval": "0",
+        "timeout": "0",
+        "output_file": "car.png",
+        "resume_render_file": "TungstenRenderState.dat",
+        "hdr_output_file": "car.exr"
+    }
+}

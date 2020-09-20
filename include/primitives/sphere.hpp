@@ -12,7 +12,7 @@
 #include <optional>
 #include <string>
 
-namespace rtr
+namespace soleil
 {
 struct payload;
 namespace primitives
@@ -46,11 +46,11 @@ public:
         , origin(glm::vec3(0, 0, 0))
         , radius(1.f)
     {
-        // materials.push_back(rtr::materials::base());
+        // materials.push_back(soleil::::materials::base());
     }
 
     std::vector<int> material_idx;
-    std::optional<rtr::payload> hit(const rtr::ray& ray) const;
+    std::optional<soleil::payload> hit(const soleil::ray& ray) const;
 
     // private:
     std::string name;
@@ -67,4 +67,4 @@ public:
     float z_len;
 };
 } // namespace primitives
-} // namespace rtr
+} // namespace soleil
