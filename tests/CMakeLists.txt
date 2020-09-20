@@ -4,7 +4,10 @@ add_executable(geometry_tests geometry_tests.cpp)
 target_link_libraries(geometry_tests tests_main LibSoleil)
 add_test(geometry_tests geometry_tests)
 
-
 add_executable(bounding_box_test bounding_box_test.cpp)
 target_link_libraries(bounding_box_test tests_main LibSoleil)
 add_test(bounding_box_test bounding_box_test)
+
+add_executable(microfacet_test microfacet_test.cpp)
+target_link_libraries(microfacet_test tests_main LibSoleil)
+add_test(microfacet_test microfacet_test)

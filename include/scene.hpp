@@ -91,6 +91,7 @@ public:
         if (information.m_bounding_sphere)
         information.m_bounding_sphere->radius = glm::length(center - bounding_box.max) * constant;
     }
+    scene() = default;
 
     [[nodiscard]] int samples_per_pixel() const
     {
