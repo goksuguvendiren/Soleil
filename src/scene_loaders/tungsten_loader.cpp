@@ -161,7 +161,6 @@ load_material(const nlohmann::json& material_json, const std::string& folder_pat
     {
         return std::make_tuple(name, std::make_unique<soleil::materials::mirror>(albedo, name));
     }
-
     return std::make_tuple(name, std::make_unique<soleil::materials::base>(albedo, texture, name));
 }
 

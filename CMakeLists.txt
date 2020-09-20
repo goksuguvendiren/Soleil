@@ -4,6 +4,7 @@ project(SoleilRenderer)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 17)
 
 find_package(OpenCV REQUIRED)
 find_package(ZLIB REQUIRED)
@@ -32,6 +33,10 @@ target_compile_features(LibSoleil PUBLIC cxx_std_17)
 
 #target_compile_options(LibSoleil PUBLIC -pg)
 #target_link_libraries(LibSoleil PUBLIC -pg)
+
+#target_compile_options(LibSoleil PUBLIC -fsanitize=undefined)
+#target_link_options(LibSoleil PUBLIC -fsanitize=undefined)
+
 
 add_executable(SoleilRenderer main.cpp)
 target_link_libraries(SoleilRenderer PUBLIC LibSoleil)
