@@ -191,5 +191,6 @@ const soleil::light::base& soleil::scene::sample_light() const
         return information.area_lights[index];
     }
 
+    __builtin_unreachable();
     assert(false);
 }
