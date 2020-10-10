@@ -4,7 +4,8 @@
 
 #include "bsdfs/orennayar.hpp"
 #include "include/camera.hpp"
-int main()
+
+void debug_orennayar()
 {
     soleil::bsdfs::orennayar orennayar({1.f, 1.f, 1.f}, soleil::radians{40.f}, "debug_orennayar");
 
@@ -17,6 +18,12 @@ int main()
     pld.ray = ray;
 
     orennayar.f(scene, pld, direction);
+}
+
+int main()
+{
+    auto n = glm::vec3{0, 0.34, -0.93};
+    auto onb = create_onb(glm::normalize(n));
 
     return 0;
 }
