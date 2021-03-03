@@ -17,6 +17,8 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
 {
     auto pld = scene.hit(ray);
 
+   return glm::vec3(scene.environment_sphere() ? 1.0f : 0.0f);
+
     if (!pld)
     {
         // in branch prediction we trust.
@@ -29,10 +31,13 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
                 const auto &material = scene.get_material(env_pld->material_idx);
                 return material->f(scene, *env_pld);
             }
+            std::cerr << "hi\n";
             assert(false && "all rays that miss the scene should hit the bounding sphere");
         }
         return scene.background_color();
     }
+
+//    return glm::vec3(1.f);
 
     auto visualize_direction = [](const glm::vec3& dir) -> glm::vec3
     {
@@ -46,6 +51,8 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
     }
 
     auto normal_visualized = visualize_direction(pld->hit_normal);
+
+//    return normal_visualized;
 
     const auto &material = scene.get_material(pld->material_idx);
     if (pld->emission)
@@ -66,6 +73,8 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
         L_direct = ldotn * li * bsdf * 2.f * glm::pi<float>();
     }
 
+//    return L_direct;
+
     if (pld->ray.rec_depth >= 6)
     {
         // return direct lighting at the hit point
@@ -75,9 +84,13 @@ glm::vec3 soleil::mc_integrator::shade(const soleil::scene& scene, const soleil:
     // BRDF sampling:
     auto sample_direction = material->sample(pld->hit_normal, *pld);
 
+//    return visualize_direction(sample_direction);
+
     // incoming light from the random ray.
     auto reflection_ray = soleil::ray(pld->hit_pos + (pld->hit_normal * 7e-2f), sample_direction, pld->ray.rec_depth + 1, false);
     auto L_in = shade(scene, reflection_ray);
+
+    return L_in;
 
     auto cos_theta = glm::max(glm::dot(pld->hit_normal, sample_direction), 0.f);
     auto L_indirect = L_in * material->f(scene, *pld) * cos_theta * 2.f * glm::pi<float>();

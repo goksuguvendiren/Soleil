@@ -89,7 +89,7 @@ public:
 //
         float constant = 3.f;
         if (information.m_bounding_sphere)
-        information.m_bounding_sphere->radius = glm::length(center - bounding_box.max) * constant;
+            information.m_bounding_sphere->radius = glm::length(center - bounding_box.max) * constant;
     }
 
     [[nodiscard]] int samples_per_pixel() const

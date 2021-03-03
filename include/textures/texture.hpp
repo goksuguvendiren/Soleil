@@ -19,13 +19,13 @@ public:
     explicit texture(const std::string& image_path)
     {
         image_data = cv::imread(image_path, cv::IMREAD_ANYCOLOR | cv::IMREAD_ANYDEPTH);
-        cv::cvtColor(image_data, image_data, cv::COLOR_RGB2BGR);
+        // cv::cvtColor(image_data, image_data, cv::COLOR_RGB2BGR);
 
         width = image_data.cols;
         height = image_data.rows;
 
-//        cv::imshow("image", image_data);
-//        cv::waitKey(0);
+       cv::imshow("image", image_data);
+       cv::waitKey(0);
     }
 
     [[nodiscard]] glm::vec3 get_sample(const glm::vec2& uv) const override
