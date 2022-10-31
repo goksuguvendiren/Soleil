@@ -32,33 +32,27 @@ private:
 
 class mtk_renderer
 {
-    public:
-        mtk_renderer(MTL::Device* pDevice);
-        ~mtk_renderer();
-        void draw(MTK::View* pView);
+public:
+    mtk_renderer(MTL::Device* device);
+    ~mtk_renderer();
+    void build_shaders();
+    void build_buffers();
+    void draw(MTK::View* pView);
 
-    private:
-        MTL::Device* _pDevice;
-        MTL::CommandQueue* _pCommandQueue;
-};
-
-class MyMTKViewDelegate : public MTK::ViewDelegate
-{
-    public:
-        MyMTKViewDelegate(MTL::Device* pDevice);
-        virtual ~MyMTKViewDelegate() override;
-        virtual void drawInMTKView(MTK::View* pView) override;
-
-    private:
-        mtk_renderer* _pRenderer;
+private:
+    MTL::Device* device;
+    MTL::CommandQueue* command_queue;
+    MTL::RenderPipelineState* pipeline_state;
+    MTL::Buffer* vertex_pos_buffer;
+    MTL::Buffer* vertex_color_buffer;
 };
 
 class MTK_view_delegate : public MTK::ViewDelegate
 {
 public:
-    MTK_view_delegate(MTL::Device* pDevice);
+    MTK_view_delegate(MTL::Device* device);
     virtual ~MTK_view_delegate() override;
-    virtual void drawInMTKView(MTK::View* pView) override;
+    virtual void drawInMTKView(MTK::View* view) override;
 
 private:
     mtk_renderer* renderer;
@@ -71,9 +65,9 @@ public:
 
     NS::Menu* createMenuBar();
 
-    virtual void applicationWillFinishLaunching(NS::Notification* pNotification) override;
-    virtual void applicationDidFinishLaunching(NS::Notification* pNotification) override;
-    virtual bool applicationShouldTerminateAfterLastWindowClosed(NS::Application* pSender) override;
+    virtual void applicationWillFinishLaunching(NS::Notification* notification) override;
+    virtual void applicationDidFinishLaunching(NS::Notification* notification) override;
+    virtual bool applicationShouldTerminateAfterLastWindowClosed(NS::Application* sender) override;
 
 private:
     NS::Window* window;
