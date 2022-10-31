@@ -32,7 +32,7 @@ public:
         refr_indices.push(1.f);
     }
 
-    std::vector<glm::vec3> render(const soleil::scene& scene)
+    std::vector<glm::vec4> render(const soleil::scene& scene)
     {
         return integrator.render(scene);
     }

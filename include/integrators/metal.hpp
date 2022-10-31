@@ -21,7 +21,7 @@ class metal
 {
 public:
     metal(unsigned int w, unsigned int h, int sq = 1);
-    std::vector<glm::vec3> render(const soleil::scene& scene);
+    std::vector<glm::vec4> render(const soleil::scene& scene);
 
 private:
     int width = 100;

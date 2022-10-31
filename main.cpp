@@ -73,7 +73,7 @@ int main(int argc, const char** argv)
     std::cout << "Rendering took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";
 
-    cv::Mat image(height, width, CV_32FC3, output_buffer.data());
+    cv::Mat image(height, width, CV_32FC4, output_buffer.data());
 //    cv::cvtColor(image, image, cv::COLOR_RGB2BGR);
     cv::imshow(scene.output_file_name(), image);
     cv::waitKey(0);
@@ -81,8 +81,8 @@ int main(int argc, const char** argv)
     cv::imwrite(scene.output_hdr_name()  + "_new_output.exr", image);
     cv::imwrite(scene.output_file_name() + "_new_output.png", image * 255);
 
-    auto tonemapped = soleil::tonemappers::gamma().process(image);
-    cv::imwrite(scene.output_file_name() + "_tonemapped.png", tonemapped * 255);
+//    auto tonemapped = soleil::tonemappers::gamma().process(image);
+//    cv::imwrite(scene.output_file_name() + "_tonemapped.png", tonemapped * 255);
 
     return 0;
 }
