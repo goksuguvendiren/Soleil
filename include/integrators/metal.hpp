@@ -26,6 +26,14 @@ public:
 private:
     int width = 100;
     int height = 100;
+    
+    MTL::Device* device;
+    dispatch_semaphore_t in_flight_semaphore;
+    MTL::TextureDescriptor* output_desc;
+    MTL::Texture* texture;
+    
+    MTL::RenderPipelineDescriptor* build_shaders();
+    MTL::Library* library;
 };
 
 } // namespace soleil
