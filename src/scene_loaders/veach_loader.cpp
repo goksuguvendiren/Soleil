@@ -5,27 +5,27 @@
 #include "scene_loaders.hpp"
 #include "scene_io.h"
 
-inline soleil::primitives::face::normal_types to_rtr(NormType normal)
+inline soleil::primitives::face::normal_types to_rtr(scene_io::NormType normal)
 {
     using soleil::primitives::face;
     switch (normal)
     {
-    case NormType::PER_FACE_NORMAL:
-        return face::normal_types::per_face;
-    case NormType::PER_VERTEX_NORMAL:
-        return face::normal_types::per_vertex;
+        case scene_io::NormType::PER_FACE_NORMAL:
+            return face::normal_types::per_face;
+        case scene_io::NormType::PER_VERTEX_NORMAL:
+            return face::normal_types::per_vertex;
     }
 }
 
-inline soleil::primitives::face::material_binding to_rtr(MaterialBinding material)
+inline soleil::primitives::face::material_binding to_rtr(scene_io::MaterialBinding material)
 {
     using soleil::primitives::face;
     switch (material)
     {
-    case MaterialBinding::PER_OBJECT_MATERIAL:
-        return face::material_binding::per_object;
-    case MaterialBinding::PER_VERTEX_MATERIAL:
-        return face::material_binding::per_vertex;
+        case scene_io::MaterialBinding::PER_OBJECT_MATERIAL:
+            return face::material_binding::per_object;
+        case scene_io::MaterialBinding::PER_VERTEX_MATERIAL:
+            return face::material_binding::per_vertex;
     }
 }
 
@@ -37,7 +37,7 @@ soleil::scene load_from_veach(const std::string& filename)
 {
     soleil::scene_information info;
 
-    auto io = readScene(filename.c_str());
+    auto io = scene_io::readScene(filename.c_str());
     auto& cam = io->camera;
     int width = 400;
     int height = 400;
@@ -50,10 +50,10 @@ soleil::scene load_from_veach(const std::string& filename)
     auto brightness = 50.f;
     while (light != nullptr)
     {
-        if (light->type == LightType::POINT_LIGHT)
+        if (light->type == scene_io::LightType::POINT_LIGHT)
         {
             info.lights.emplace_back(to_vec3(light->position), to_vec3(light->color) * brightness);
-        } else if (light->type == LightType::DIRECTIONAL_LIGHT)
+        } else if (light->type == scene_io::LightType::DIRECTIONAL_LIGHT)
         {
             info.dir_lights.emplace_back(to_vec3(light->direction), to_vec3(light->color));
         }
@@ -67,9 +67,9 @@ soleil::scene load_from_veach(const std::string& filename)
     auto* obj = io->objects;
     while (obj != nullptr) // iterate through the objects
     {
-        if (obj->type == ObjType::SPHERE_OBJ)
+        if (obj->type == scene_io::ObjType::SPHERE_OBJ)
         {
-            auto data = reinterpret_cast<SphereIO*>(obj->data);
+            auto data = reinterpret_cast<scene_io::SphereIO*>(obj->data);
 
             info.spheres.emplace_back(obj->name ? obj->name : "", to_vec3(data->origin), data->radius,
                                       to_vec3(data->xaxis), data->xlength, to_vec3(data->yaxis), data->ylength,
@@ -89,8 +89,8 @@ soleil::scene load_from_veach(const std::string& filename)
             }
         } else
         {
-            auto data = reinterpret_cast<PolySetIO*>(obj->data);
-            assert(data->type == PolySetType::POLYSET_TRI_MESH);
+            auto data = reinterpret_cast<scene_io::PolySetIO*>(obj->data);
+            assert(data->type == scene_io::PolySetType::POLYSET_TRI_MESH);
 
             std::vector<int> material_idx;
             for (int i = 0; i < obj->numMaterials; ++i)

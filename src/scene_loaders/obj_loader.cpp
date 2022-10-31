@@ -116,7 +116,7 @@ soleil::scene load_obj(const std::string& filename)
         }
 
         std::string tex_name = "spot_texture";
-        info.textures.push_back(std::make_unique<soleil::textures::texture>("../Scenes/obj/spot/" + tex_name + ".png"));
+        info.textures.push_back(std::make_unique<soleil::textures::texture>("/Users/goksuguvendiren/Workspace/Soleil/scenes/obj/spot/" + tex_name + ".png"));
         info.materials.push_back(std::make_unique<soleil::materials::base>(soleil::materials::base({0.63, 0.065, 0.05}, info.textures.back().get(), tex_name)));
 
         info.meshes.emplace_back(faces, "");

@@ -31,6 +31,8 @@
 
 #include <stdio.h>
 
+namespace scene_io {
+
 /* Definitions of fundamental types a la Heckbert	*/
 /*  in Glassner''s _Introduction_to_Ray_Tracing_	*/
 
@@ -294,4 +296,5 @@ extern "C"
 
 #define COMPOSER_DEFAULT_EXPORT_NAME "composer.out"
 
+}
 #endif

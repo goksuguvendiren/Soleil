@@ -10,13 +10,24 @@
 #include <iostream>
 #include <scene_io.h>
 
+#define NS_PRIVATE_IMPLEMENTATION
+#define MTL_PRIVATE_IMPLEMENTATION
+#define MTK_PRIVATE_IMPLEMENTATION
+#define CA_PRIVATE_IMPLEMENTATION
+
+#include "Foundation/Foundation.hpp"
+#include <Metal/Metal.hpp>
+#include <QuartzCore/QuartzCore.hpp>
+
+#include "integrators/metal.hpp"
+
 int main(int argc, const char** argv)
 {
     auto begin = std::chrono::system_clock::now();
 
     std::string folder_name = "obj";
     std::string scene_name = "spot";
-    std::string scene_path = "../Scenes/" + folder_name + "/" + scene_name + "/spot_triangulated_good.obj";
+    std::string scene_path = "/Users/goksuguvendiren/Workspace/Soleil/scenes/" + folder_name + "/" + scene_name + "/spot_triangulated_good.obj";
     bool pinhole_camera = true;
     float image_plane_distance = 1.f;
     float lens_width = 1.f;
@@ -52,8 +63,8 @@ int main(int argc, const char** argv)
     std::cerr << "Scene loading took : " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count()
               << " millisecs.";
 
-//    soleil::renderer<soleil::progressive_integrator> r(width, height);
-    soleil::progressive_integrator r(width, height);
+    soleil::renderer<soleil::metal> r(width, height);
+//    soleil::progressive_integrator r(width, height);
 
     begin = std::chrono::system_clock::now();
     auto output_buffer = r.render(scene);

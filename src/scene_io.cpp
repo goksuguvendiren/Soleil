@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
-
+namespace scene_io {
 static SceneIO* readSceneA(FILE* fp);
 static SceneIO* readSceneB(FILE* fp);
 
@@ -1189,4 +1189,5 @@ static void delete_poly_set(PolySetIO* pset)
 
     free(pset->poly);
     free(pset);
+}
 }

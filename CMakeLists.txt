@@ -17,7 +17,9 @@ add_library(LibSoleil src/scene_io.cpp include/scene.hpp src/scene.cpp
 		include/scene_loaders.hpp src/materials/lambert.cpp include/payload.hpp include/utils.hpp
         include/area_light.hpp	include/tinyxml/tinyxml2.h include/tinyxml/tinyxml2.cpp 
 		include/photon_map.hpp src/photon_map.cpp include/photon.hpp src/photon_integrator.cpp 
-		include/photon_integrator.hpp include/KDTree.hpp src/KDTree.cpp include/integrators/progressive_integrator.hpp
+		include/photon_integrator.hpp include/KDTree.hpp src/KDTree.cpp 
+	include/integrators/progressive_integrator.hpp
+	include/integrators/metal.hpp src/integrators/metal.cpp
 	    include/integrator.hpp src/integrators/progressive_integrator.cpp src/scene_loaders/tungsten_loader.cpp
 		src/integrators/mc_integrator.cpp src/scene_loaders/obj_loader.cpp src/scene_loaders/veach_loader.cpp
 		include/integrators/mc_integrator.hpp include/textures/sampler2D.hpp
@@ -26,8 +28,9 @@ add_library(LibSoleil src/scene_io.cpp include/scene.hpp src/scene.cpp
 		src/tonemappers/gamma.cpp src/tonemappers/reinhard.cpp src/materials/mirror.cpp include/materials/mirror.hpp)
 
 target_link_libraries(LibSoleil PUBLIC ${OpenCV_LIBS})
+target_link_libraries(LibSoleil PUBLIC "-framework Metal" "-framework QuartzCore" "-framework Foundation")
 target_include_directories(LibSoleil PUBLIC include)
-target_include_directories(LibSoleil PUBLIC /usr/local/include )
+target_include_directories(LibSoleil PUBLIC /usr/local/include/metal-cpp-extensions /usr/local/include/metal-cpp)
 
 target_compile_features(LibSoleil PUBLIC cxx_std_17)
 
