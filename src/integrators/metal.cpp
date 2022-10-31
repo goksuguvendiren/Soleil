@@ -19,7 +19,7 @@ typedef struct
 } VertexData;
 
 // the main rendering / app event happens here
-std::vector<glm::vec3> metal::render(const soleil::scene &scene) {
+std::vector<glm::vec4> metal::render(const soleil::scene &scene) {
     using NS::StringEncoding::UTF8StringEncoding;
     
     MTL::RenderPipelineDescriptor* pipeline_state_desc = build_shaders();
@@ -27,7 +27,10 @@ std::vector<glm::vec3> metal::render(const soleil::scene &scene) {
     NS::Error* error = nullptr;
     MTL::RenderPipelineState* pipeline_state = device->newRenderPipelineState(pipeline_state_desc, &error);
     if (!pipeline_state || error) {
-        std::cout << "Failed to create pipeline state, error: " << error << '\n';
+        __builtin_printf("Failed to create pipeline state, error: %s", error->localizedDescription()->utf8String());
+
+        std::cout << "Failed to create pipeline state, error: " << &error << '\n';
+        abort();
     }
     
     MTL::CommandQueue* command_queue = device->newCommandQueue();
@@ -74,15 +77,10 @@ std::vector<glm::vec3> metal::render(const soleil::scene &scene) {
     
     dispatch_semaphore_wait(in_flight_semaphore, DISPATCH_TIME_FOREVER);
     
-    std::vector<glm::u8vec4> result(output_desc->width() * output_desc->height());
-    std::vector<glm::vec3> rgb(output_desc->width() * output_desc->height());
+    std::vector<glm::vec4> rgb(output_desc->width() * output_desc->height());
 
-    texture->getBytes(result.data(), sizeof(uint8_t) * 4 * output_desc->width(), MTL::Region::Make2D(0, 0, output_desc->width(), output_desc->height()), 0);
+    texture->getBytes(rgb.data(), sizeof(glm::vec4) * output_desc->width(), MTL::Region::Make2D(0, 0, output_desc->width(), output_desc->height()), 0);
     
-    std::transform(result.begin(), result.end(), rgb.begin(), [](const auto& pix){
-        return glm::vec3{float(pix.x), float(pix.y), float(pix.z)};
-    });
-
     pool->release();
     return rgb;
 }
@@ -90,15 +88,14 @@ std::vector<glm::vec3> metal::render(const soleil::scene &scene) {
 metal::metal(unsigned int w, unsigned int h, int sq) : width(w), height(h) {
     device = MTL::CreateSystemDefaultDevice();
     in_flight_semaphore = dispatch_semaphore_create(0);
-    output_desc = MTL::TextureDescriptor::texture2DDescriptor(MTL::PixelFormat::PixelFormatRGBA8Uint, width, height, false);
+    output_desc = MTL::TextureDescriptor::texture2DDescriptor(MTL::PixelFormat::PixelFormatRGBA32Float, width, height, false);
 
     output_desc->setUsage(MTL::TextureUsageRenderTarget | MTL::TextureUsageShaderRead);
     texture = device->newTexture(output_desc);
 
-    // initialize all pixels with 1
-    std::vector<uint8_t> pixels(output_desc->width() * output_desc->height() * 4, 1);
-    texture->replaceRegion(MTL::Region::Make2D(0, 0, output_desc->width(), output_desc->height()), 0, pixels.data(), output_desc->width() * 4);
-
+    // initialize all pixels with 0
+    std::vector<glm::vec4> pixels(output_desc->width() * output_desc->height(), glm::vec4(0));
+    texture->replaceRegion(MTL::Region::Make2D(0, 0, output_desc->width(), output_desc->height()), 0, pixels.data(), sizeof(glm::vec4) * output_desc->width());
 }
 
 MTL::RenderPipelineDescriptor* metal::build_shaders() {
@@ -122,9 +119,9 @@ MTL::RenderPipelineDescriptor* metal::build_shaders() {
            return in[vid];
        }
 
-       fragment uint4 fragmentShader(Vertex in [[stage_in]])
+       fragment float4 fragmentShader(Vertex in [[stage_in]])
        {
-           return uint4(0, in.texCoord.x * 255, in.texCoord.y * 255, 1);
+           return float4(0, in.texCoord.x, in.texCoord.y, 1);
        }
     )";
     
