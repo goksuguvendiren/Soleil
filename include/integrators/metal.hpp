@@ -47,33 +47,5 @@ private:
     MTL::Buffer* vertex_color_buffer;
 };
 
-class MTK_view_delegate : public MTK::ViewDelegate
-{
-public:
-    MTK_view_delegate(MTL::Device* device);
-    virtual ~MTK_view_delegate() override;
-    virtual void drawInMTKView(MTK::View* view) override;
-
-private:
-    mtk_renderer* renderer;
-};
-
-class app_delegate : public NS::ApplicationDelegate
-{
-public:
-    ~app_delegate();
-
-    NS::Menu* createMenuBar();
-
-    virtual void applicationWillFinishLaunching(NS::Notification* notification) override;
-    virtual void applicationDidFinishLaunching(NS::Notification* notification) override;
-    virtual bool applicationShouldTerminateAfterLastWindowClosed(NS::Application* sender) override;
-
-private:
-    NS::Window* window;
-    MTK::View* mtk_view;
-    MTL::Device* device;
-    MTK_view_delegate* view_delegate = nullptr;
-};
 
 } // namespace soleil
