@@ -12,114 +12,11 @@
 
 namespace soleil {
 
-app_delegate::~app_delegate() {
-    window->release();
-    mtk_view->release();
-    device->release();
-    delete view_delegate;
-}
-
-#pragma mark - AppDelegate
-#pragma region AppDelegate {
-
-void app_delegate::applicationWillFinishLaunching(NS::Notification* notification) {
-    NS::Menu* menu = createMenuBar();
-    NS::Application* app = reinterpret_cast<NS::Application*>(notification->object());
-    app->setMainMenu(menu);
-    app->setActivationPolicy(NS::ActivationPolicy::ActivationPolicyRegular);
-}
-
-void app_delegate::applicationDidFinishLaunching(NS::Notification* notification) {
-    CGRect frame = (CGRect){ {100.0, 100.0}, {512.0, 512.0} };
-
-    window = NS::Window::alloc()->init(
-        frame,
-        NS::WindowStyleMaskClosable|NS::WindowStyleMaskTitled,
-        NS::BackingStoreBuffered,
-        false );
-
-    device = MTL::CreateSystemDefaultDevice();
-
-    mtk_view = MTK::View::alloc()->init(frame, device);
-    mtk_view->setColorPixelFormat( MTL::PixelFormat::PixelFormatBGRA8Unorm_sRGB );
-    mtk_view->setClearColor( MTL::ClearColor::Make( 1.0, 0.0, 0.0, 1.0 ) );
-
-    view_delegate = new MTK_view_delegate(device);
-    mtk_view->setDelegate(view_delegate);
-
-    window->setContentView(mtk_view);
-    window->setTitle(NS::String::string("01 - Primitive", NS::StringEncoding::UTF8StringEncoding));
-
-    window->makeKeyAndOrderFront(nullptr);
-
-    NS::Application* current_app = reinterpret_cast<NS::Application*>(notification->object());
-    current_app->activateIgnoringOtherApps(true);
-}
-
-bool app_delegate::applicationShouldTerminateAfterLastWindowClosed(NS::Application *sender) {
-    return true;
-}
-
-NS::Menu* app_delegate::createMenuBar() {
-    using NS::StringEncoding::UTF8StringEncoding;
-
-    NS::Menu* main_menu = NS::Menu::alloc()->init();
-    NS::MenuItem* app_menu_item = NS::MenuItem::alloc()->init();
-    NS::Menu* app_menu = NS::Menu::alloc()->init(NS::String::string("Appname", UTF8StringEncoding));
-
-    NS::String* app_name = NS::RunningApplication::currentApplication()->localizedName();
-    NS::String* quit_item_name = NS::String::string("Quit ", UTF8StringEncoding)->stringByAppendingString(app_name);
-    SEL quit_cb = NS::MenuItem::registerActionCallback( "appQuit", [](void*, SEL, const NS::Object* sender){
-        auto current_app = NS::Application::sharedApplication();
-        current_app->terminate(sender);
-    } );
-
-    NS::MenuItem* app_quit_item = app_menu->addItem(quit_item_name, quit_cb, NS::String::string("q", UTF8StringEncoding));
-    app_quit_item->setKeyEquivalentModifierMask(NS::EventModifierFlagCommand);
-    app_menu_item->setSubmenu(app_menu);
-
-    NS::MenuItem* window_menu_item = NS::MenuItem::alloc()->init();
-    NS::Menu* window_menu = NS::Menu::alloc()->init(NS::String::string( "Window", UTF8StringEncoding));
-
-    SEL close_window_cb = NS::MenuItem::registerActionCallback("windowClose", [](void*, SEL, const NS::Object*){
-        auto current_app = NS::Application::sharedApplication();
-        current_app->windows()->object<NS::Window>(0)->close();
-    } );
-    NS::MenuItem* close_window_item = window_menu->addItem(NS::String::string("Close Window", UTF8StringEncoding), close_window_cb, NS::String::string("w", UTF8StringEncoding));
-    close_window_item->setKeyEquivalentModifierMask(NS::EventModifierFlagCommand);
-
-    window_menu_item->setSubmenu(window_menu);
-
-    main_menu->addItem(app_menu_item);
-    main_menu->addItem(window_menu_item);
-
-    app_menu_item->release();
-    window_menu_item->release();
-    app_menu->release();
-    window_menu->release();
-
-    return main_menu->autorelease();
-}
-
-#pragma endregion AppDelegate }
-
-#pragma mark - ViewDelegate
-#pragma region ViewDelegate {
-
-MTK_view_delegate::MTK_view_delegate(MTL::Device* device) : MTK::ViewDelegate(), renderer(new mtk_renderer(device)) {}
-
-MTK_view_delegate::~MTK_view_delegate()
+typedef struct
 {
-    delete renderer;
-}
-
-void MTK_view_delegate::drawInMTKView(MTK::View* view)
-{
-    renderer->draw(view);
-}
-
-#pragma endregion ViewDelegate }
-
+    vector_float4 position;
+    vector_float2 texCoord;
+} VertexData;
 
 #pragma mark - Renderer
 #pragma region Renderer {
@@ -258,16 +155,141 @@ void mtk_renderer::build_buffers()
 
 // the main rendering / app event happens here
 std::vector<glm::vec3> metal::render(const soleil::scene &scene) {
-    NS::AutoreleasePool* autorelease_pool = NS::AutoreleasePool::alloc()->init();
+    MTL::Device* device = MTL::CreateSystemDefaultDevice();
+    dispatch_semaphore_t in_flight_semaphone = dispatch_semaphore_create(0);
     
-    app_delegate delegate;
-    NS::Application* application = NS::Application::sharedApplication();
-    application->setDelegate(&delegate);
-    application->run();
+    MTL::TextureDescriptor* output_desc = MTL::TextureDescriptor::texture2DDescriptor(MTL::PixelFormat::PixelFormatRGBA8Uint, width, height, false);
+    output_desc->setUsage(MTL::TextureUsageRenderTarget | MTL::TextureUsageShaderRead);
     
-    autorelease_pool->release();
+    MTL::Texture* texture = device->newTexture(output_desc);
+    {
+        std::vector<uint8_t> pixels(output_desc->width() * output_desc->height() * 4, 1);
+        texture->replaceRegion(MTL::Region::Make2D(0, 0, output_desc->width(), output_desc->height()), 0, pixels.data(), output_desc->width() * 4);
+    }
     
-    return {};
+    using NS::StringEncoding::UTF8StringEncoding;
+    
+    const char* shader_source = R"(
+       #include <metal_stdlib>
+       #include <simd/simd.h>
+       using namespace metal;
+
+
+       typedef struct
+       {
+           float4 position [[position]];
+           float2 texCoord;
+       } Vertex;
+
+
+       vertex Vertex vertexShader(constant Vertex* in [[buffer(0)]], uint vid [[vertex_id]])
+       {
+           return in[vid];
+       }
+
+       fragment uint4 fragmentShader(Vertex in [[stage_in]])
+       {
+           return uint4(0, in.texCoord.x * 255, in.texCoord.y * 255, 1);
+       }
+    )";
+    
+    NS::Error* error = nullptr;
+    MTL::Library* library = device->newLibrary(NS::String::string(shader_source, UTF8StringEncoding), nullptr, &error);
+    if (!library)
+    {
+        __builtin_printf("%s", error->localizedDescription()->utf8String());
+        exit(1);
+    }
+
+//    MTL::Library* default_library = device->newDefaultLibrary();
+    MTL::RenderPipelineDescriptor* pipeline_state_desc = MTL::RenderPipelineDescriptor::alloc()->init();
+    pipeline_state_desc->setSampleCount(1);
+    pipeline_state_desc->setVertexFunction(library->newFunction(NS::String::string("vertexShader", UTF8StringEncoding)));
+    pipeline_state_desc->setFragmentFunction(library->newFunction(NS::String::string("fragmentShader", UTF8StringEncoding)));
+    pipeline_state_desc->colorAttachments()->object(0)->setPixelFormat(output_desc->pixelFormat());
+    
+    error = nullptr;
+    MTL::RenderPipelineState* pipeline_state = device->newRenderPipelineState(pipeline_state_desc, &error);
+    if (!pipeline_state || error) {
+        std::cout << "Failed to create pipeline state, error: " << error << '\n';
+    }
+    
+    MTL::CommandQueue* command_queue = device->newCommandQueue();
+    // loadAssets
+    VertexData vertexData[3] = {
+        {{-1,  -1, 0, 1}, {0, 0}},
+        {{ 1,  -1, 0, 1}, {1, 0}},
+        {{ 0,   1, 0, 1}, {0, 1}}
+    };
+
+    MTL::Buffer* vertex_buffer = device->newBuffer(vertexData, sizeof(vertexData), MTL::ResourceCPUCacheModeDefaultCache);
+    
+    NS::AutoreleasePool* pool = NS::AutoreleasePool::alloc()->init();
+    
+    MTL::CommandBuffer* command_buffer = command_queue->commandBuffer();
+    command_buffer->setLabel(NS::String::string("my_command", UTF8StringEncoding));
+    
+    __block dispatch_semaphore_t block_sem = in_flight_semaphone;
+    command_buffer->addCompletedHandler(^(MTL::CommandBuffer* buffer)
+    {
+        dispatch_semaphore_signal(block_sem);
+    });
+    
+    MTL::RenderPassDescriptor* render_pass_desc = MTL::RenderPassDescriptor::renderPassDescriptor();
+    render_pass_desc->colorAttachments()->object(0)->setTexture(texture);
+    render_pass_desc->colorAttachments()->object(0)->setClearColor(MTL::ClearColor::Make(1, 2, 3, 4));
+    render_pass_desc->colorAttachments()->object(0)->setStoreAction(MTL::StoreActionStore);
+    render_pass_desc->colorAttachments()->object(0)->setLoadAction(MTL::LoadActionClear);
+    
+    MTL::RenderCommandEncoder* rce = command_buffer->renderCommandEncoder(render_pass_desc);
+    if (!rce) {
+        std::cout << "No encoder\n";
+        abort();
+    }
+
+    rce->pushDebugGroup(NS::String::string("DrawBox", UTF8StringEncoding));
+    rce->setRenderPipelineState(pipeline_state);
+    rce->setVertexBuffer(vertex_buffer, 0, 0);
+    rce->drawPrimitives(MTL::PrimitiveType::PrimitiveTypeTriangle, NS::UInteger(0), sizeof(vertexData) / sizeof(VertexData));
+    
+    rce->popDebugGroup();
+    rce->endEncoding();
+    command_buffer->commit();
+    
+    dispatch_semaphore_wait(in_flight_semaphone, DISPATCH_TIME_FOREVER);
+    
+    std::vector<glm::u8vec4> result(output_desc->width() * output_desc->height());
+    std::vector<glm::vec3> rgb(output_desc->width() * output_desc->height());
+//    uint8_t pixels[output_desc->width() * output_desc->height() * 4];
+//    memset(pixels, 2, sizeof(pixels));
+//    texture->getBytes(pixels, sizeof(uint8_t) * 4 * output_desc->width(), MTL::Region::Make2D(0, 0, output_desc->width(), output_desc->height()), 0);
+    
+    texture->getBytes(result.data(), sizeof(uint8_t) * 4 * output_desc->width(), MTL::Region::Make2D(0, 0, output_desc->width(), output_desc->height()), 0);
+    
+//    uint8_t* p = pixels;
+//    int i = 0;
+//    for (int y = 0; y < output_desc->height(); ++y)
+//    {
+//        for (int x = 0; x < output_desc->width(); ++x)
+//        {
+//            std::cout << "( ";
+////            rgb[i++]
+//            for (int k = 0; k < 4; ++k)
+//            {
+//                std::cout << int(*(p++)) << ", ";
+//            }
+//            std::cout << " ) - ";
+//            std::cout << int(result[i].x) << ", " << int(result[i].y) << ", " << int(result[i].z) << ", " << int(result[i].w) << ")\n";
+//            ++i;
+//        }
+//    }
+    
+    std::transform(result.begin(), result.end(), rgb.begin(), [](const auto& pix){
+        return glm::vec3{float(pix.x), float(pix.y), float(pix.z)};
+    });
+
+    pool->release();
+    return rgb;
 }
 
 metal::metal(unsigned int w, unsigned int h, int sq) : width(w), height(h) {}
